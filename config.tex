@@ -1,0 +1,253 @@
+%!TEX root = main.tex
+
+\documentclass[conference]{IEEEtran}
+% \IEEEoverridecommandlockouts
+% The preceding line is only needed to identify funding in the first footnote. If that is unneeded, please comment it out.
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+%% -- Own packages below --
+
+%\graphicspath{{images/}}
+\graphicspath{{images/}{graphics/}}
+\DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+%\usepackage[caption=false,font=footnotesize]{subfig}
+% \usepackage{fixltx2e}
+\usepackage{stfloats}
+\usepackage{url}
+\usepackage{color}
+
+% correct bad hyphenation here
+% \hyphenation{op-tical net-works semi-conduc-tor}
+
+\usepackage{caption}
+\usepackage{subcaption}			%two figures next to each other
+\usepackage{ifthen}
+\usepackage[smaller,nolist,nohyperlinks]{acronym}
+
+\usepackage[group-separator=\text{\,},
+            group-minimum-digits=4,
+            detect-all,
+            binary-units=true]{siunitx}
+
+\usepackage{listings}
+%% Listing Style and Languages
+
+% BLC von F. Gretz am 15.03.2021
+\lstdefinelanguage{blc}
+{
+	classoffset=0,
+	morekeywords={
+		repeat, if, cobegin, match, do, while, until, for, in, of, then, elseif, else, case, return, await, emit, run, when, abort, reset, suspend, with, weak, assert, assume, where, with, returns, shares, default, end, mutual, false, true, and, or, not, as, _, before, after, label, branch
+	},keywordstyle=\color[HTML]{0000FF},
+	%
+	classoffset=1,
+	morekeywords={
+		bool, byte, byte1, byte2, byte4, byte8, extern, uint8, uint16, uint32, uint64, int8, int16, int32, int64, ufix8, ufix16, ufix32, fix8, fix16, fix32, float32, float64, var, let, ref, event, param
+	},keywordstyle=\color[HTML]{0080C0},
+	%
+	classoffset=2,
+	morekeywords={
+		module, reftype, function, activity, struct, enum, union, typealias, singleton, public, mutating, const
+	},keywordstyle=\color[HTML]{0000FF},
+	%
+	classoffset=3,
+	morekeywords={
+		prev, next, on, tick,
+	},keywordstyle=\color[HTML]{DF0000},
+	%
+	classoffset=0,
+	sensitive=true, % keywords are case-sensitive
+	morecomment=[l]{//}, % l is for line comment
+	morecomment=[s]{/*}{*/}, % s is for start and end delimiter
+	morestring=[b]" % defines that strings are enclosed in double quotes
+}
+
+\lstdefinelanguage{sctx}{
+  language=C,
+  morekeywords={scchart, region, state, initial, period, go, to, input, output, during, class, print, host},
+  breaklines=true,
+  tabsize=2,
+  breakindent=2mm,
+}
+
+% General style
+\lstset{ %
+  numbers=left,
+  numberstyle=\tiny,
+  % basicstyle=\small\tt,
+  basicstyle=\sffamily\lst@ifdisplaystyle\footnotesize\fi,
+  % basicstyle=\footnotesize\sffamily,
+  %stringstyle=\color{blue},
+  keywordstyle=\bfseries,%\color[rgb]{0.482,0,0.323},
+  %commentstyle=\color[rgb]{0.224,0.49,0.353},
+  commentstyle=\color[HTML]{008000},
+  emphstyle=\bfseries,
+  breaklines=true,
+  tabsize=2,
+  showtabs=false,
+  showspaces=false,
+  keepspaces=true,
+  showstringspaces=false,
+  columns=fullflexible,
+  captionpos=b,
+  abovecaptionskip=1pt,
+  belowcaptionskip=0pt,
+  belowskip=0pt,
+  numbersep=5pt,
+  %xleftmargin=\parindent,
+  escapeinside={§}{§},
+  mathescape=true,
+  %escapechar=@,  % @ conflicts with Blech pragmas
+  framexleftmargin=20ex,
+  xleftmargin=0ex
+}
+
+\newcommand{\foo}{}
+\newcommand{\sctx}[1]{\foo\lstinline[language=sctx]{#1}}
+
+% From https://tex.stackexchange.com/questions/30504/how-can-i-properly-align-the-line-numbers-of-a-source-code-listing-with-the-marg
+\newlength{\linenumwidth} \setlength{\linenumwidth}{1em}% Redefine as required
+\makeatletter
+\def\lst@PlaceNumber{%
+  \makebox[\linenumwidth][l]{\normalfont\lst@numberstyle{\thelstnumber}}%
+}
+\makeatother
+
+
+% From http://mintaka.sdsu.edu/GF/bibliog/latex/floats.html
+% Alter some LaTeX defaults for better treatment of figures:
+% See p.105 of "TeX Unbound" for suggested values.
+% See pp. 199-200 of Lamport's "LaTeX" book for details.
+%   General parameters, for ALL pages:
+\renewcommand{\topfraction}{0.9}    % max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8} % max fraction of floats at bottom
+%   Parameters for TEXT pages (not float pages):
+\setcounter{topnumber}{2}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{4}     % 2 may work better
+\setcounter{dbltopnumber}{2}    % for 2-column pages
+\renewcommand{\dbltopfraction}{0.8} % fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}  % allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+%\renewcommand{\floatpagefraction}{0.7} % require fuller float pages
+\renewcommand{\floatpagefraction}{0.9}  % require fuller float pages
+% N.B.: floatpagefraction MUST be less than topfraction !!
+%\renewcommand{\dblfloatpagefraction}{0.7}  % require fuller float pages
+\renewcommand{\dblfloatpagefraction}{0.9}   % require fuller float pages
+% remember to use [htp] or [htpb] for placement
+
+\usepackage[inline]{enumitem}
+\newlist{inparaenum}{enumerate*}{1}
+%\setlist[inparaenum,1]{label=(\textit{\alph*})}
+\setlist[inparaenum,1]{label=\arabic*),ref=\arabic*}
+
+\usepackage{xspace}
+
+% RvH: now use helvet package to get smaller textsf
+%\newcommand{\textsff}[1]{\textsf{\small #1}}
+\newcommand{\textsff}[1]{\textsf{#1}}
+\newcommand{\Eg}{E.\,g.\xspace}
+\newcommand{\eg}{e.\,g.\xspace}
+\newcommand{\Ie}{I.\,e.\xspace}
+\newcommand{\ie}{i.\,e.\xspace}
+\newcommand{\vs}{vs.\xspace}
+\newcommand{\etal}{et\,al.\xspace}
+\newcommand{\wrt}{w.\,r.\,t.\xspace}
+
+\newboolean{authorcomments}
+\setboolean{authorcomments}{true}
+\newcommand{\new}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{red}#1}}{#1}}
+\newcommand{\old}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{violet}#1}}{#1}}
+\newcommand{\bals}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{blue}\textit{[#1 -als-]}}\xspace}{}}
+\newcommand{\rals}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{red}\textit{[#1 -als-]}}\xspace}{}}
+\newcommand{\gals}[1]{\ifthenelse{\boolean{authorcomments}}{{\color[rgb]{0,0.6,0}\textit{[#1 -als-]}}\xspace}{}}
+\newcommand{\brcd}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{blue}\textit{[#1 -rcd-]}}\xspace}{}}
+\newcommand{\rssm}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{red}\textit{[#1 -ssm-]}}\xspace}{}}
+\newcommand{\gssm}[1]{\ifthenelse{\boolean{authorcomments}}{{\color[rgb]{0,0.6,0}\textit{[#1 -ssm-]}}\xspace}{}}
+\newcommand{\brvh}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{blue}\textit{[#1 -rvh-]}}\xspace}{}}
+\newcommand{\rrvh}[1]{\ifthenelse{\boolean{authorcomments}}{{\color{red}\textit{[#1 -rvh-]}}\xspace}{}}
+\newcommand{\grvh}[1]{\ifthenelse{\boolean{authorcomments}}{{\color[rgb]{0,0.6,0}\textit{[#1 -rvh-]}}\xspace}{}}
+
+% RvH: the following looks nice, but uses up extra space:
+%\usepackage{amsthm}
+% %
+% % Environments
+% %
+%\theoremstyle{plain}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}[definition]{Proposition}
+\newtheorem{theorem}[definition]{Theorem}
+
+% Make sf fonts in size comparable to rm (normally it's too large)
+%\usepackage[scaled=0.92]{helvet}
+\usepackage[scaled=0.88]{helvet}
+
+\usepackage[bookmarks=false]{hyperref}
+\def\sectionautorefname{Sec.}
+\def\subsectionautorefname{Sec.}
+\def\figureautorefname{Fig.}
+\def\subfigureautorefname{Fig.}
+% \def\lstlistingautorefname{Lst.}
+% \def\lstnumberautorefname{Lst.}
+\def\lstlistingautorefname{Fig.}
+\def\lstnumberautorefname{Fig.}
+
+\let\subsectionautorefname\sectionautorefname
+\let\subsubsectionautorefname\sectionautorefname
+
+\newboolean{long} % LONG version 
+
+% remove for short version
+% \setboolean{long}{true}
+
+% Material only for LONG versions:
+\newcommand{\onlylv}[1]{\lvsv{#1}{}}
+% Material only for SHORT version:
+\newcommand{\onlysv}[1]{\lvsv{}{#1}}
+% Use this as follows:
+%\lvsv{contents for LONG versions}{contents for SHORT}
+\newcommand{\lvsv}[2]{\ifthenelse{\boolean{long}}{#1}{#2}}
+
+
+\newboolean{anonymous} % anonymous version
+% \setboolean{anonymous}{true}
+\setboolean{anonymous}{false}
+
+% Material only for anonymous version:
+\newcommand{\onlyan}[1]{\ifthenelse{\boolean{anonymous}}{#1}{}}
+% Material only for non-anonymous version:
+\newcommand{\onlynonan}[1]{\ifthenelse{\boolean{anonymous}}{}{#1}}
+% Command for both versionsn non-anonymous and anonymous
+\newcommand{\annonan}[2]{\ifthenelse{\boolean{anonymous}}{#1}{#2}}
+
+% For consistent scaling of SCCharts - as far as space permits
+\newcommand{\scchartscale}{.56}
+
+% From http://mintaka.sdsu.edu/GF/bibliog/latex/floats.html
+% Alter some LaTeX defaults for better treatment of figures:
+% See p.105 of "TeX Unbound" for suggested values.
+% See pp. 199-200 of Lamport's "LaTeX" book for details.
+%   General parameters, for ALL pages:
+\renewcommand{\topfraction}{0.9}	% max fraction of floats at top
+\renewcommand{\bottomfraction}{0.8}	% max fraction of floats at bottom
+%   Parameters for TEXT pages (not float pages):
+\setcounter{topnumber}{5}
+\setcounter{bottomnumber}{5}
+\setcounter{totalnumber}{5}     % 2 may work better
+\setcounter{dbltopnumber}{5}    % maximum number of floats allowed at the top of the page. The LaTeX default is 2.
+\renewcommand{\dbltopfraction}{0.8}	% fit big float above 2-col. text
+\renewcommand{\textfraction}{0.07}	% allow minimal text w. figs
+%   Parameters for FLOAT pages (not text pages):
+\renewcommand{\floatpagefraction}{0.7}	% minimum fraction that must be occupied by floats. 
+% N.B.: floatpagefraction MUST be less than topfraction !!
+\renewcommand{\dblfloatpagefraction}{0.7}	% minimum fraction that must be occupied by floats. Default is .5
+% remember to use [htp] or [htpb] for placement
+
+

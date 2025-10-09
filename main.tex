@@ -1,0 +1,1558 @@
+
+\input{config}
+
+\begin{document}
+
+\title{Extracting Mode Diagrams from Blech Code}
+
+\author{%
+  \onlyan{Anonymous Authors\\[1.3cm]}% Keep space for actual author list
+  \onlynonan{
+    \IEEEauthorblockN{
+      Daniel Lucas\IEEEauthorrefmark{1},
+      Alexander Schulz-Rosengarten\IEEEauthorrefmark{2},\\
+      Reinhard von Hanxleden\IEEEauthorrefmark{2}
+    }
+    \IEEEauthorblockA{
+      \textit{{Department} of Computer Science, Kiel University}\\
+      Kiel, Germany\\
+      \IEEEauthorrefmark{1}stu124145@mail.uni-kiel.de\\
+      \IEEEauthorrefmark{2}\{als, rvh\}@informatik.uni-kiel.de
+    }
+    \and
+    \IEEEauthorblockN{
+      Friedrich Gretz,
+      Franz-Josef Grosch
+    }
+    \IEEEauthorblockA{
+      \textit{Robert Bosch GmbH, Corporate Research}\\
+      Renningen, Germany\\
+      \{Friedrich.Gretz, Franz-Josef.Grosch\}@de.bosch.com
+    }
+  }
+}
+
+\begin{acronym}
+  \acro{ide}[IDE]{integrated development environment}
+  \acro{kieler}[KIELER]{KIEL Integrated Environment for Layout Eclipse Rich Client}
+  \acro{moc}[MoC]{Model of Computation}
+  \acro{sc}[SC]{Sequentially Constructive}
+  \acro{uml}[UML]{Unified Modeling Language}
+  \acro{elk}[ELK]{Eclipse Layout Kernel}
+  \acro{epl}[EPL]{Eclipse Public License}
+  \acro{klighd}[KLighD]{\acs{kieler} Lightweight Diagrams}
+  \acro{modeldrivenengineering}[MDE]{Model Driven Engineering}
+  \acro{scchart}[\textlarger{SCChart}]{Sequentially Constructive Statechart}
+  \acro{sv}[SVi]{Software Visualization}
+\end{acronym}
+% do not introduce:
+\acused{ide}
+\acused{uml}
+\acused{kieler}
+
+
+%  IEEEpubid mark:
+\IEEEoverridecommandlockouts
+\IEEEpubid{\makebox[\columnwidth]{
+978-1-6654-1825-6/21/\$31.00
+\copyright 2021 IEEE \hfill}
+\hspace{\columnsep}\makebox[\columnwidth]{ }}
+
+% gain some space that seems to be removed when more than one author column is present
+\IEEEaftertitletext{\vspace*{-4.5mm}}
+
+\maketitle
+
+\begin{abstract}
+TODO: update abstract
+\end{abstract}
+
+\begin{IEEEkeywords}
+TODO: update keywords
+\end{IEEEkeywords}
+
+% Authors' Guidelines:
+% - abstract of 100 to 150 words
+% - up to 5 keywords
+% - a maximum of 8 pages (long), 4 pages (short)
+% - papers must be anonymous (double blind)
+
+\section{Introduction}
+\label{sec:intro}
+
+Software development is more than the process of writing source code. It begins by recording the requirements for the desired software and continues with planning of the software architecture, its components, and its environment. Only then, actual source code is written. The process then includes the generation of documentation. It can be generated with visualization tools and languages such as UML. Creating such models can be a tedious task that takes a lot of effort and time. The purpose of documentation is to offer an overview of the software (components) and providing a help for understanding the code base in different abstraction levels. Documentation is beneficial to use for experienced developers as well as developers that just started out working on a given project. 
+
+Code, however, is not static. Code improvements, refactoring, new features, customer requests or updated technology are all reasons to change existing code. 
+%Documentation that was manually created when the code was firstly written is outdated after the code changes. Hence, the documentation also has to be updated manually. This is a tedious task that has to be remembered to be done. As soon as this task is not executed, code and documentation are out of sync and all types of issues arise. 
+Therefore, automatic generation of up-to-date code documentation could enhance the software development process. 
+
+\onlylv{
+Apart from interface documentations, documentation of software is often of visual nature. Generating visual representations of code is generally called Software Visualization and is a broad field of diverse issues~\cite{gravcanin05}. Most of the time, graph structures are used to visualize source code. With the help of directed edges, the control flow of a program can be visualized intuitively. Therefore, automatically extracting models from source code and visualizing them is a set task when trying to automatically visualize software. 
+%
+Visualized software serves more purpose than documentation. Visualized software can enhance collaboration in projects with multiple members or can make it easier to find possible improvements in the code structure~\cite{gravcanin05}.
+
+Software can be visualized using many different levels of abstraction. The most abstract way software can be viewed is by its requirements. The software itself is a black-box, where only the in- and outputs are known. 
+%This is a very high level of abstraction. 
+The lowest level of abstraction is given by the complete code including all operations, as no information on the implementation is missing. Abstraction is a spectrum and any point in between these two extremes is an abstraction level that can possibly be desired to be visualized. Possible abstractions may discard simple calculations and only show the control flow in the program or consider the software components to be black-boxes and only visualize their interactions. The sought level of abstraction depends on the intention behind the visualization. For example, if the interaction between software components is of interest, an abstraction will be chosen that hides the inner behavior of the software components and highlights their interactions only.
+}
+
+%
+% % For Blech code with annotations, see graphics/intro/proposal_ex_BIG.blc
+% \addtolength{\textfloatsep}{-1mm}
+% \begin{figure}[tp]
+% 	\centering 
+% 	\begin{subfigure}[b]{\linewidth}
+% 		%\lstinputlisting[language=blc, xleftmargin= 0.2\textwidth, numbers=left, numbersep=10pt]{graphics/intro/proposal_ex.blc}
+% 		\lstinputlisting[language=blc, xleftmargin= 5mm, numbers=left, numbersep=10pt]{graphics/intro/proposal_ex.blc}
+% 		\caption{Original Blech code.}
+% 		\label{fig:proposal_ex_blech}
+% 	\end{subfigure}
+% 	\medskip
+
+% 	\begin{subfigure}[b]{\linewidth}
+% 		\centering
+% 		% \includegraphics[width=.55\linewidth]{graphics/eval/proposal_result_compact}
+%     \includegraphics[width=\linewidth]{graphics/eval/proposal_result_compact_lr}
+% 		\caption{The corresponding mode diagram, automatically extracted with the approach presented here.}
+% 		\label{fig:proposal_ex_result}
+% 	\end{subfigure}
+% 	\caption{The \textsf{StopWatchController} example.}
+% 	\label{fig:proposal_ex}
+% \end{figure}
+
+
+In this paper, we investigate how to harness software visualization~\cite{gravcanin05} for the Blech programming language~\cite{GretzG18}.
+%A relatively young programming language that does not have many tools available for automatically visualizing its source code is Blech\footnote{\url{https://www.blech-lang.org/docs/user-manual/}}. \autoref{fig:proposal_ex_blech} shows an example of Blech code that was used for the announcement of this paper. 
+Blech is an imperative synchronous programming language for embedded, reactive, real-time, safety-critical systems.
+% that allows to write reactive subprograms, which are combined sequentially and concurrently~\cite{GretzG18}. Blech can be compiled to C and thus, be integrated in existing projects or simulation frameworks. The language differs from its competitors Esterel~\cite{Berry00}, Quartz~\cite{Schneider09}, Lustre~\cite{CaspiPHP87} or Céu~\cite{santanna2015} in terms of targeting application-level software development with a flat learning curve in industrial contexts, easy project integration and its notion of causality. Unlike older languages with broad applications and many users such as C or Java, it does not have a broad variety of supporting tools available. Apart from the compiler, an extension for Visual Studio Code with a language server for syntax checking and highlighting is available. To use Blech in large-scale software projects, a tool for automatically generating documentation and visualizations for collaborative work could improve its usefulness.
+%
+It is a \emph{synchronous} language~\cite{BenvenisteCEH+03}, and is inspired by languages like Esterel~\cite{Berry00}, Céu~\cite{SantAnnaIRRB17} or \acp{scchart}~\cite{vonHanxledenDM+14} that are used to implement stateful behavior.
+To illustrate that stateful nature, consider the \textsf{StopWatchController} example in \autoref{fig:proposal_ex}.
+In the initial \emph{tick} we perform some initializations and then pause at the \lstinline{await} statement in line 10, which we can consider as the initial \emph{state} of the program.
+We remain in that state until, in some future reaction, the Boolean flag \textsf{startStop} is \textsf{true} and we enter a repeat loop.
+In that loop, the program concurrently does two things (over several reaction steps): it waits for another occurrence of \textsf{startStop}, while also executing the \textsf{Measurement} sub-activity.
+After that, we wait for the \textsf{startStop} or \textsf{resetLap} flags; if the latter occurs, we loop back to the initial state.
+
+While the underlying state machine is explicitly laid down in the program, extracting it requires some fairly careful reading of the source code.
+In real life, the code quickly becomes more complex than this simple example and keeping track of the stateful behavior may become a challenging task.
+This is where software visualization and the work presented here come into play.
+
+\onlylv{
+To determine the value of such illustrations, existing visualization tools could be used. This way, not all parts of such project regarding the graphical elements and their layout have to to be developed. A research project about the graphical model-based design of complex-system is the \ac{kieler}. Its pragmatics part aims to improve comprehensibility of diagrams, improve development and maintenance time and improve the analysis of dynamic behavior. Automatic layout is applied to graphical components of models. A visual language illustrated by \ac{kieler} is \acfp{scchart}, designed for modeling safety-critical reactive systems. \acp{scchart} are based on a statechart notation~\cite{vonHanxledenDM+14a}. \acp{scchart} are further described in \autoref{subsec:sccharts} and an example is given in \autoref{fig:scchartexample}.
+}
+
+\subsection*{Contributions and Outline}
+%\autoref{chap:concept} presents
+We here investigate the automatic synthesis of mode diagrams, such as \autoref{fig:proposal_ex_result}, from Blech code.
+We first present in \autoref{sec:synthesis} a \emph{structural translation} (``Phase 1''), which takes care of directly translating Blech code into \acp{scchart} statement by statement.
+This results in an \ac{scchart} that reflects the modes in the given Blech code.
+However, the states will not be labelled, which limits their usefulness, and the diagram will typically be quite bloated.
+This motivates ``Phase 2,'' presented in \autoref{sec:labelextraction}, where we propose different approaches to label mode diagrams based on Blech source code annotations, and ``Phase 3,'' covered in \autoref{sec:optimization}, where we present optimization approaches to generate more concise mode diagrams.
+\autoref{sec:evaluation} presents evaluation results based on feedback from industrial Blech users.
+We wrap up with a discussion of further related work in \autoref{sec:related-work} and conclusions in \autoref{sec:conclusions-outlook}.
+
+For space considerations, we will focus here on the concepts underlying our approach.
+For full technical detail, we refer to the thesis of the first author%
+\onlynonan{\cite{lucas20}}
+\onlyan{\cite{Anonymous}}.
+
+\subsection{Background on SCCharts}
+\label{sec:sccharts}
+
+Our mode diagrams are finite state machines with hierarchy and concurrency.
+It is not our goal to find an accurate representation of a low-level control flow graph.
+The term \emph{mode} emphasizes the objective to represent somewhat higher-level modes of operation of a program.
+A mode may persist over several reactions and comprise an arbitrary amount of \emph{program states} (evaluations of program counters and variables).
+We borrow syntax and semantics from \acp{scchart}~\cite{vonHanxledenDM+14}.
+However, we only use a subset of SCCharts that visualizes the high-level behavior, omitting transition effects, variable declarations, etc.
+
+To get full value from the mode diagrams, we now summarize the key syntactical \ac{scchart} elements used here.
+States with a thick border, as state \textsf{init} in \autoref{fig:proposal_ex_result}, are \emph{initial states}, through which a \emph{super state}, such as \textsf{StopWatchController}, is entered.
+States with a double border are \emph{final states}, which denote termination of the enclosing super state.
+Super states consist of one or more \emph{regions} that execute concurrently, see for example \autoref{fig:blech_cobegin_to_sccharts}.
+
+%Beyond these standard features of FSMs and Statecharts, 
+\acp{scchart} also adopt the distinction introduced by SyncCharts~\cite{Andre03} between \emph{delayed} transitions, drawn with a solid line, and \emph{immediate} transitions, drawn with a dashed line.
+Roughly speaking, delayed transitions denote tick/reaction boundaries, whereas immediate transitions denote control flow within a reaction.
+When a state is entered in a reaction, the state can be left within the same reaction only through immediate transition.
+\Eg, in the \textsf{StopWatchController}, the \textsf{stop} state is entered when we are in the \textsf{Measurement} state at the beginning of the tick and the \textsf{startStop} \emph{event} is \emph{present}.
+Since \textsf{stop} does not have any outgoing immediate transitions, we end the reaction in that state.
+To leave the state we require another event \textsf{startStop} in a subsequent reaction, or an event \textsf{resetLap}.
+\emph{Connectors}, drawn as a small black disk, are states that are guaranteed to be left again in the tick they are entered.
+Transitions leaving connectors must be immediate, and there must be a \emph{default transtion} that is taken unconditionally.
+If a state or connector has multiple outgoing transtions, these are checked in order of their \emph{priority}, where 1 is the highest priority.
+Coming back to the \textsf{StopWatchController} in \autoref{fig:proposal_ex}, we observe that if we are in \textsf{stop} at the beginning of the tick, we advance to \textsf{init} if \textsf{resetLap} is present, and we transition to \textsf{Measurement} (via the default transition from the connector) if \textsf{resetLap} is present.
+
+Finally, \acp{scchart} also offers different types for transitions that leave super states.
+\emph{Termination transitions}, indicated with a green triangle, are taken when all regions in a super state have reached a final state.
+\emph{Strong abort transtions}, indicated with a red circle, suppress execution of the inner behavior of the super state when they are taken.
+Transitions out of a super state without any adornments are \emph{weak abort transtions}, which permit inner behavior (a ``last wish'') of the left super state.
+Strong aborts and termination transitions are used for example to translate the when-abort statement, as shown in \autoref{fig:blech_whenabort_to_sccharts}.
+
+In addition to these pre-existing \acp{scchart} language features, our mode diagrams also include \emph{final regions}, indicated by a double outline, as illustrated in \autoref{fig:blech_cobegin_to_sccharts}.
+Final regions effectively make each of their states final, which allows to capture weak branches of the Blech cobegin statement, see also \autoref{subsec:cobegin}.
+
+
+\onlylv{
+%\subsection{Extracting and Generating \acp{scchart} from Blech}\label{chap:concept}
+\subsection{Overview of the mode diagram synthesis from Blech}\label{chap:concept}
+
+The main goal of this paper is to generate abstract \acp{scchart} from Blech code. The focus lies on the abstraction of Blech code with special interest in visualizing the implicitly contained states inside the code. The intended purpose of the visualization lies in supporting the development process of software.
+\onlylv{As explained in the introduction, the currently available visualization of the program graph that visualizes all statements was found to be too confusing and big, as it contained many states that are unnecessary to understand the control flow in the program. Further, that visualization does not focus on the important implicitly contained states of the Blech code. This is an important point to be made, since Blech is a language for reactive, embedded systems.}
+Hence, this paper does not intend to generate semantically identical \acp{scchart}. Rather we synthesize \acp{scchart} that represent the Blech code in a more abstract matter with focus on the stateful nature of the code. 
+%This was discussed in \autoref{sec:problemstatement}. 
+The development into semantically identical \acp{scchart} is recommended for future work, as explained in detail in \autoref{sec:futurework}.
+
+The first step to take is to determine the desired \acp{scchart} equivalent to individual Blech statements.
+However, translating the statements one by one introduces unneeded hierarchies and transient states through translating non-stateful inner behavior of Blech constructs or inlining activity calls. Hence, to generate the described abstract \acp{scchart}, multiple phases are needed.
+
+The extraction of mode diagrams based on \acp{scchart} from Blech code is divided into three phases.
+Phase 1 takes care of directly translating Blech code into \acp{scchart} statement by statement. Each statement is translated into an \acp{scchart} element. Blech statements that are not relevant to the stateful nature of the code, such as simple assignments, are neglected in this step.
+%Only elements that are important to the statefulness or corresponding control flow are taken care of. 
+This step is called the \emph{structural translation} and is covered in \autoref{sec:synthesis}.
+After this step, we will have an \ac{scchart} that reflects the modes in the given Blech code.
+However, the states will not be labelled, which limits their usefulness, and the diagram will typically be quite bloated.
+These issues are taken care of by the remaining phases.
+
+In Phase 2, information is added to the states via labels defined by the user in Blech. This way, for documentation purposes, users might add more information to the graph or they might be able to debug their program better if they understand the context surrounding their defined label by examining the visualization. The extraction of labels is discussed in \autoref{sec:labelextraction}. 
+
+In Phase 3, simplification steps are taken to improve the generated \acp{scchart} for a more intuitive and simple illustration of the source code. 
+\onlylv{As discussed in the motivation, we want to eliminate transient states that are not relevant to the stateful behavior or necessary control flow. 
+Further, we aim for a visualization that is as simple as possible. The simplification steps take care of flattening added hierarchies in the generated \acp{scchart}. Due to the statement by statement translation in the first phase, multiple hierarchies are added, such as a hierarchy for the body of a loop. This is necessary as no information is known about the inner behavior of hierarchical elements such as a repeat statements, when encountering the statement. Such hierarchies are to be flattened in the simplification. Further, this phase simplifies the generated \ac{scchart} in terms of their immediate transitions. If a state in the \ac{scchart} can be exited immediately via an immediate transition, it is not a conceptual real state. Hence, there must be a way to collapse immediate transitions and omit transient states without losing information about real conceptual states.}
+The simplification phase is discussed in \autoref{sec:optimization} and is divided into flattening of hierarchies and collapsing immedediate transitions and is discussed in detail in \autoref{subsec:flatten_hierarchy} and \autoref{subsec:immediate_trans}, respectively.
+}
+
+%
+%
+%
+%
+%
+\section{Phase 1: Structural Translation}\label{sec:synthesis}
+
+\onlylv{
+In the first step, \acp{scchart} are generated from Blech code statement by statement.
+Since it is desired to illustrate the stateful nature of the code, most statements will be ignored, such as simple calculations. We focus on the statements that switch the implicit state of the code. Generally, the translation sequentially checks the statements of the code and visualizes the statements accordingly. 
+
+Different activities in the Blech code might call each other via run statements. It is assumed that a list of activities to visualize is given. This list is handled sequentially.
+
+In the following, the structures and elements of Blech that are to be translated in this section are listed. Additionally, the translation of each of these elements is discussed.
+}
+
+Generally, the translation rules are applied recursively. 
+%\Eg the list of statements contained in the body of a loop will be translated as any other list of statements in the program.
+The body of a hierarchical Blech element will be translated before the rest of the list on the same hierarchy level is evaluated. Unnecessary hierarchies originating from this procedure, as well as hierarchies that contain no stateful behavior, will be simplified in Phase 3.
+
+Some translation rules append an empty \emph{exit} state to the chart representing a Blech construct.
+This additional exit state serves as a connection point when combining two charts in sequence, for instance.
+The connecting transition emanates from the designated exit state and therefore does not interfere with transitions that are relevant for the inner behavior of the first state chart in the sequence.
+As before, unnecessary exit states will be removed in Phase 3.
+
+\onlylv{
+Note that these translation steps are initial translation steps that do not yield good-looking and compact results yet. However, having simple translation rules makes the translation easier as it allows self-contained translation that does not require look-ahead implementations. As mentioned before, simplification steps are taken to achieve a more readable and compact visualization.
+}
+
+%
+%
+%
+\subsection{Activities}\label{subsec:activity}
+In Blech, an \emph{activity} is an encapsulated piece of code that contains reactive behavior with at least one \lstinline{await} statement. Besides standard sequential composition, behaviors can be composed concurrently using \lstinline{cobegin} and hierarchically using \lstinline{run} statements.
+This differs from \emph{functions} in Blech which must not contain stateful behavior and are used to encapsulate sequential computation that finishes immediately within a tick. Consequently, functions are ignored by our synthesis. 
+
+The designated entry point activity in the Blech source code will always be the outermost part of our visualization, unless the user selects another activity to start the visualization from.
+
+Blech activities declare two list of parameters: read-only inputs and read-write outputs.
+This significantly simplifies the readability of interfaces and allows for a simple causality analysis.
+For our visualization parameters, that distinction could be ignored.
+However, parameters may occur in expressions guarding mode transitions.
+In order to help the user to distinguish local activity variables from parameters we preserve the declared parameters, as shown in \autoref{fig:blech_activity_to_sccharts}.
+
+An activity is visualized and initialized as follows.
+%
+\begin{enumerate}[noitemsep]
+	\item Create an empty \ac{scchart} with the name of the activity.
+	\item Add input and output variables of the activity as the input and output variables of the \ac{scchart} using the same names and types.
+	\item Add an initial state and a final state.
+	\item Translate the activity's body and add the result to the body of the current \ac{scchart}. 
+	\onlylv{Some Blech elements are illustrated hierarchically, this means that a repeat-loop, for example, is considered to be one statement. Its body is translated hierarchically inside the generated hierarchical state.}
+	\item Connect the final state of the inner (body) \ac{scchart} to the final state of the current chart, if it exists.
+	      Otherwise (if the inner \ac{scchart} corresponds to an infinite behavior without an exit state) remove the obsolete final state from the current \ac{scchart}.
+	%When all statements are examined, connect the state of the last statement to the final state, except if the last statement was translated to a complex state without a final state such as a repeat without ending conditions or an infinite run statement. If the last statement is such described statement, remove the now unused final state.
+\end{enumerate}
+%
+
+An example of the synthesis for an activity is given by \autoref{fig:blech_activity_to_sccharts}. 
+%\autoref{subfig:activity_a} shows an example of Blech code, defining an activity. 
+The Blech code contains a comment that abstracts away the code of the body.
+%represents code of the body. %It can be of arbitrary complexity. 
+%The details of this code are irrelevant for this translation rule. 
+%In this and following examples, the abstracted arbitrary code elements are represented by an empty square. 
+%\autoref{subfig:activity_b} shows the generated \ac{scchart}.
+%
+%The generated \ac{scchart} reflects the translations rules described above. 
+The abstracted inner behavior is the square that is connected to the initial state \textsf{a} and final state \textsf{b} via immediate transitions. The name of the activity is preserved, as well as the input and output variables. 
+%States, according to the translation of of the body of the activity, were to be illustrated between the initial and final state.
+
+The names of the states \textsf{a} and \textsf{b} are added here for easier description of the figures. Those labels will not be added automatically through the synthesis. However, it is possible to add custom labels for states in Phase 2, as will be discussed in \autoref{sec:labelextraction}. 
+
+Now that the translation of activities has been established, we consider the statements in their bodies. 
+
+%
+\lstset{numbers=none}
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.45\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/activity.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:activity_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.5\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_activity}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:activity_b}
+	\end{subfigure}
+	\caption{Blech activity and synthesized \ac{scchart}.}
+	\label{fig:blech_activity_to_sccharts}
+\end{figure}
+%
+
+%
+%
+%
+\subsection{Run}\label{subsec:synt_run}
+
+\onlylv{
+As described in the beginning of \autoref{sec:synthesis}, each activity and every other hierarchical construct contains at least one state, the initial state. Through step by step translation of the statements, more states are added and connected to the previous states. Therefore, there is always a previous state available to use as a source of the immediate or delayed transition leading to the state or states introduced for the translation of a certain statement.
+
+The statement introduced in this section is closely related to the previous construct. This subsection covers the run statement. A run statement includes the name of an activity. The run statement starts the execution of an activity. How an activity works and how it itself is illustrated is covered in the previous subsection. A run statement is translated as follows:
+
+\begin{enumerate}[noitemsep]
+	\item Add a new state for the called activity and name it as the name of the activity.
+	\item Make the state a referenced \ac{scchart} that references the \ac{scchart} with the name of the called activity. 
+	\item Add an immediate transition from the always present previous state, as mentioned before, to the newly added state.
+	\item The activity that is referenced is illustrated as its own \ac{scchart} as mentioned before, and is of no concern at this point.
+	\item Connect the complex state via an immediate termination transition to a newly added empty state.
+\end{enumerate}
+}
+
+The \lstinline{run} statement calls one Blech activity from another.
+For the sake of brevity, we skip the step-by-step translation rules and simply illustrate the translation in
+\autoref{fig:blech_run_to_sccharts}.
+
+\onlylv{
+Further, in order to call a referenced \ac{scchart}, arguments are needed. If the given arguments in the Blech program are variables rather than literals, the compiler expects variables to be defined in the state that references an \ac{scchart}. Therefore it also a necessary step to define the variables that are expected from the referenced \ac{scchart} in the calling \ac{scchart}. To achieve this, we accumulate all needed variables and their types while synthesizing the body of an activity and add the accumulated variables as local variables at the start of the \ac{scchart}. Variables need to be defined at the beginning of a \ac{scchart} before any states are specified.
+
+Remember that adding the empty state after the referenced \ac{scchart} is necessary for serving as a connection point for subsequent statements. This is needed since a distinct translation of subsequent statements might use different transitions than the terminating transition and the information about the referenced activity needing to terminate to continue the control flow in the graph must be preserved here.
+
+\autoref{fig:blech_run_to_sccharts} shows a translation from a run statement in Blech code as shown in \autoref{subfig:run_a} into a \ac{scchart} as shown in \autoref{subfig:run_b}. The \ac{scchart} shows an empty state \textsf{a}. This is the always available previous state that was added as a case-closing state from previous statements in the step by step translation or a given initial state that is always present in initial hierarchical elements.. Such state is always available as was discussed in the beginning of this subsection. From such state an immediate termination transition leads to the state that represents the called activity \textsf{act}. The name of the activity is preserved, as are its input and output variables. The called activity is a referenced \ac{scchart}. This enables the user to expand the referenced \ac{scchart} to view the behavior of the called activity. When the activity finished, it connects to a newly added state \textsf{c} that serves as a connection point for subsequent statements.
+}
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.5\textwidth}
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.5\linewidth]{graphics/concept/blc/run.blc}
+% 		\captionsetup{skip=30pt}
+% 		\caption{A run statement in Blech.}
+% 		\label{subfig:run_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.375\textwidth}
+% 		\centering 
+% 		\includegraphics[width=1\textwidth]{concept/scchart_ex_run}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:run_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from a run statement in Blech.}
+% 	\label{fig:blech_run_to_sccharts}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.3\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/run.blc}
+		\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:run_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.65\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_run}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:run_b}
+	\end{subfigure}
+	\caption{Blech run statement and synthesized \ac{scchart}.}
+	\label{fig:blech_run_to_sccharts}
+\end{figure}
+
+%The relevant Blech statements are to be translated as follows.
+
+
+
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.475\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.6\linewidth]{graphics/concept/blc/await.blc}
+% 		\captionsetup{skip=7.5pt}
+% 		\caption{An await statement in Blech.}
+% 		\label{subfig:await_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.475\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=0.6\textwidth]{concept/scchart_ex_await}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:await_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from an await statement in Blech.}
+% 	\label{fig:blech_await_to_sccharts}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.45\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/await.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:await_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.5\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_await}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:await_b}
+	\end{subfigure}
+	\caption{Blech await statement and synthesized \ac{scchart}.}
+	\label{fig:blech_await_to_sccharts}
+\end{figure}
+
+%
+%
+\subsection{Await}\label{subsec:await}
+
+The \lstinline{await} statement ends the current reaction of a thread.
+In the next tick, the thread will resume execution at this point, check the awaited condition and, if it holds, proceed execution.
+In the context of this work, \lstinline{await} is the most important statement as it clearly defines the end of a state and a transition to the next one. 
+%A state begins at the end of a previous await statement. However, as explained earlier, the final visualization is more complicated than that, since other statements add different important information to the visualization about the control flow or concurrency, such as if-else statements or cobegin constructs.
+%
+\onlylv{
+To synthesize an await statement add a new state. As described earlier, there is always a previous state available. Connect the previous state that is always present via a delayed transition to the newly added state. Add the condition of the await statement as a trigger to the delayed transition.
+}
+%
+\autoref{fig:blech_await_to_sccharts} shows the translation of an \lstinline{await} statement. 
+\onlylv{
+The Blech code given in \autoref{subfig:await_a} shows an await statement. The statement itself is simply translated as a transition from the previous state, which is always available as described \autoref{subsec:synt_run} and denoted as state \textsf{a}, to a newly added state \textsf{b}. The condition of the await statement is the trigger for the delayed transition.
+}
+
+%
+%
+%
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.45\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.45\linewidth]{graphics/concept/blc/repeat.blc}
+% 		\caption{A repeat construct with an end condition.}
+% 		\label{subfig:repeat_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.45\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=1\textwidth]{concept/scchart_ex_repeat}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:repeat_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from repeat construct in Blech.}
+% 	\label{fig:blech_repeat_to_sccharts}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.23\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/repeat.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:repeat_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.75\linewidth}
+		%\hfill 
+%		\includegraphics[scale=\scchartscale]{concept/scchart_ex_repeat}
+		\includegraphics[width=\linewidth]{concept/scchart_ex_repeat}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:repeat_b}
+	\end{subfigure}
+	\caption{Blech repeat statement and synthesized \ac{scchart}.}
+	\label{fig:blech_repeat_to_sccharts}
+\end{figure}
+
+
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.3\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/while.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:while_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.65\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_while}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:while_b}
+	\end{subfigure}
+	\caption{Blech while statement and synthesized \ac{scchart}.}
+	\label{fig:blech_while_to_sccharts}
+\end{figure}
+
+
+\subsection{Repeat}\label{subsec:repeat}
+%The next Blech element to be discussed is \emph{repeat}. 
+A \lstinline{repeat} loop executes its body and then exits if the condition is true, or restarts otherwise.
+\onlylv{
+The translation is simple. The repeat construct is translated hierarchically. The body of the repeat construct will be illustrated in a complex state that is initialized with an initial and a final state that are connected to the other elements of the body as it is the case with an activity and every other hierarchical element. The body will be sequentially synthesized statement by statement. The difference to the hierarchy in activities is the lack of input and output variables. The only information missing now is how to connect the new complex state to its surroundings. As mentioned before, there is always a previous state that the new complex state can be connected to. Therefore, we add an immediate transition from this state to the new complex state. As already mentioned, there are two cases to differ for outgoing transitions of the complex state containing the body. In the first case, there is no end condition. The only case where the control flow leaves the complex body is to reenter it, due to it representing a loop. In this case, a simple immediate termination transition is added with the complex repeat state as source and target. After each execution, the complex state is simply started all over again. The second case covers repeats that do have an ending condition. This case causes the control flow to take one of two ways. The first checks the given condition and if the condition is met, an immediate termination transition will be taken to a new state that serves as the previous state for statements following the repeat. The other way is taken via an immediate termination transition if the condition is not met, and leads back to the complex state representing the body of the repeat, starting the loop all over again. This translation is simple and the introduced hierarchy can be flattened in simplification steps later on.
+}
+\autoref{fig:blech_repeat_to_sccharts} illustrates the translation rule.
+Optionally, the \lstinline{until} condition can be left out, which then yields an infinite loop.
+\onlylv{
+\autoref{subfig:repeat_a} shows a repeat construct with an end condition in Blech code. In \autoref{subfig:repeat_b}, the previous state \textsf{a} leads with an immediate transition to a state with two outgoing transitions. That state is denoted as state \textsf{b} and is the complex state and would contain the illustration of the body of the repeat construct, which is abstractly illustrated between the initial and final state of the complex state. Two outgoing termination transitions show the control flow of the end condition of the repeat construct. If the condition is met, a transition leads to state \textsf{c} and if not, the other transition leads back to the complex state itself. State \textsf{c} is the state subsequent statements are connected to.
+
+A repeat construct without an end condition is not visualized here because of the triviality of the translation. If the example shown in \autoref{fig:blech_repeat_to_sccharts} were a repeat construct without an end condition, the transition with the end condition and its target would disappear.
+}
+
+% rvh: for now, put it back in, as it is referenced later as well.
+% If we want to remove it after all, please use \onlylv macro instead of commenting.
+% SAVE SPACE DO NOT EXPLAIN WHILE LOOPS; ANY READER BELIEVES WE CAN ILLUSTRATE THEM IF WE CAN ILLUSTRATE REPEAT
+%
+%
+\subsection{While}\label{subsec:while}
+The while construct is very similar to the repeat construct just described. The main difference in the workflow is that the condition is checked at the beginning of the loop. The loop-starting state, which was considered to be the previous state in previous translation steps, therefore has a transition into a complex state containing the body of the loop and to a state that was newly added and is the starting point for connecting subsequent statements. If the previous state is simple, it simply serves as a connection point for transitions and is not really a state. If this is the case, the previous node can be replaced by a connector (see \autoref{sec:sccharts}), as shown in \autoref{fig:blech_while_to_sccharts}.
+%, a special state in \acp{scchart} that serves exactly this purpose. 
+\onlylv{The body of the while loop is illustrated according to the list this section gives and starts with an initial state and a final state, which are connected to the rest of the states in the same manner as was the case in activities and repeats. Further, an immediate termination transition is added that leads from the complex state to the state starting the loop.
+%
+\autoref{fig:blech_while_to_sccharts} illustrates such translation. \autoref{subfig:while_a} shows a Blech code example with a while-loop that is ended through a condition. Using the above translation, this Blech code translates to the \ac{scchart} illustrated in \autoref{subfig:while_b}. The previous state, which is always present as discussed before, connects to two states. As described above, it has been transformed into a connector state. If a condition is met, it connects to state \textsf{b} that would contain the body of the while loop. The body would be illustrated between the initial and final state of the complex state is abstractly illustrated. If the condition is not met, the connector state connects to state \textsf{c}, which would be the connection point for subsequent statements.
+}
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.45\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.35\linewidth]{graphics/concept/blc/while.blc}
+% 		\captionsetup{skip=20pt}
+% 		\caption{A while construct with an end condition in Blech.}
+% 		\label{subfig:while_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.45\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=1\textwidth]{concept/scchart_ex_while}
+% 		\caption{The translated \ac{scchart}. The source of the conditional transitions, state \textsf{a}, has been transformed into a connector state.}
+% 		\label{subfig:while_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from Blech construct while.}
+% 	\label{fig:blech_while_to_sccharts}
+% \end{figure}
+%
+%
+%
+\subsection{Cobegin}\label{subsec:cobegin}
+
+A \lstinline{cobegin} statement represents concurrency.
+%The statements inside the different branches of a cobegin construct are executed concurrently.
+Concurrent branches can be \emph{weak}, which means they are weakly aborted by other branches that have terminated. For example, an infinite loop in a weak branch can be aborted by a simple \lstinline{await} statement in a concurrent branch. The awaiting branch terminates on a given condition and then aborts the weak branch. When aborted, a weak branch will continue to execute until the current tick ends, for example with an await statement.
+
+The cobegin translation is illustrated in \autoref{fig:blech_cobegin_to_sccharts}.
+As already mentioned in \autoref{sec:sccharts}, weak branches are handled by final regions.
+
+\onlylv{We illustrate a cobegin construct as a complex state. We connect such state with the previous state with an immediate transition. To illustrate the concurrency, \acp{scchart} offer multiple regions in states. Regions are also executed concurrently in \acp{scchart}. Hence, a cobegin construct is illustrated as a state with a region for every branch of the cobegin. Every region, much like an activity as described in \autoref{subsec:activity}, is initialized with an initial state and a final state. From there the bodies of the branches are illustrated in the corresponding region according to the instructions given by this section. The final state is connected, and possibly deleted, according to the same rules that were described in \autoref{subsec:activity}. That means a termination transition is added, if the the cobegin can terminate. If this is the case, the complex state illustrating the inner behavior of the branches leads to a newly added state with an immediate termination transition. This new state serves as the starting point for subsequent statements.
+
+Illustrating weak branches is achieved by making the regions representing the weak branches \emph{final}. Making a region \textsf{final} adds a visual clue to the illustration in form of a second rectangle surrounding the region. This way, the user knows which branches are weak. In \acp{scchart}, final regions mark every state of the region as final. In the current implementation of \acp{scchart}, if all regions are weak, the super state can be exited immediately. Therefore, a small change is required so that any of the weak regions have to terminate first for the super state to be exitable. With this change, multiple weak branches execute until a branch is terminated. 
+
+The Blech code in \autoref{subfig:cobegin_a} shows a a cobegin construct with a weak and a normal branch. \autoref{subfig:cobegin_b} shows the corresponding \ac{scchart}. A transition leads from a previous state denoted as state \textsf{a} to a state with two regions, that represents the cobegin structure with two branches. The regions, as all hierarchical elements before, contain an initial and a final state that are connected to the rest of the bodies of the branches as usual. The first branch is denoted as weak in the code and thus, it is marked as final in the \ac{scchart}. The complex state, as the translation dictates, leads with an immediate termination transition to a new state, denoted as state \textsf{b}.
+}
+
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.475\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.4\linewidth]{graphics/concept/blc/cobegin.blc}
+% 		\captionsetup{skip=10pt}
+% 		\caption{A cobegin construct with a weak and a normal branch in Blech.}
+% 		\label{subfig:cobegin_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.475\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=1\textwidth]{concept/scchart_ex_cobegin}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:cobegin_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from Blech construct cobegin.}
+% 	\label{fig:blech_cobegin_to_sccharts}
+% \end{figure}
+%
+
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.25\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/cobegin.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:cobegin_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.72\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_cobegin}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:cobegin_b}
+	\end{subfigure}
+	\caption{Blech cobegin statement, with a weak and a strong branch, and synthesized \ac{scchart}.
+	The weak branch is translated to a final region, indicated by a double outline.}
+	\label{fig:blech_cobegin_to_sccharts}
+\end{figure}
+
+%
+%
+%
+\subsection{If-else}\label{subsec:ifelse}
+\onlylv{
+If-else is a common construct in many programming languages. It is not different in the Blech language. Depending on the condition, a branch of execution is selected. To translate such construct into \acp{scchart}, we add one state for each case of the if-else construct and a closing state that connects all the different branches back together. For example, an if-else construct with two else-cases would add three states for the branches and one closing state. Overall, four states are added in this example. The previous state that is available in every case as was discussed before is the state we connect the states for each branch to. The previous state serves as the source of the immediate transitions. The respective branch states are the targets. If the previous state is simple, it simply serves as a connection point for transitions and is not really a state. If this is the case, the previous node can be replaced by a connector state, a special state in \acp{scchart} that serves exactly this purpose. The condition of the if or else-if branches are added to their respective immediate transition. The state for each branch is a complex state whose inner behavior is the body of the corresponding branch of the if-else construct. These complex states are synthesized as usual with an initial and final state that are connected to the rest of the body as described before. The complex states then connect with an immediate termination transition to the already described case-closing state. That state serves as the connection point for subsequent statements. The connection to the case-closing state only happens for branches where the complex state contains a final state.
+}
+
+The if-else transformation is rather straightforward and illustrated in \autoref{fig:blech_ifelse_to_sccharts}.
+If there are more else cases, more super states are added accordingly.
+\onlylv{
+The Blech code in \autoref{subfig:ifelse_a} shows a simple if-else construct. This is translated into the \ac{scchart} shown in \autoref{subfig:ifelse_c}, where each branch has a transition leading to it, according to the conditions given by the construct. The always present previous state has been replaced by a connector state. State \textsf{b} is reached via a transition with a condition as was set in the Blech code. State \textsf{c} is the else case. Their inner behavior is shown abstractly. State \textsf{d} is the closing state, reconnecting the branches and serving as a connection point for subsequent transitions.
+}
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.475\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.45\linewidth]{graphics/concept/blc/ifelse.blc}
+% 		\captionsetup{skip=32.5pt}
+% 		\caption{An if-else construct in Blech.}
+% 		\label{subfig:ifelse_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.475\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=\textwidth]{concept/scchart_ex_ifelse}
+% 		\caption{The translated \ac{scchart}. The previous state is transformed into a connector state.}
+% 		\label{subfig:ifelse_c}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from Blech construct if-else.}
+% 	\label{fig:blech_ifelse_to_sccharts}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.2\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/ifelse.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:ifelse_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.75\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_ifelse}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:ifelse_b}
+	\end{subfigure}
+	\caption{Blech if-else statement and synthesized \ac{scchart}.
+	The initial state is transformed into a connector state.}
+	\label{fig:blech_ifelse_to_sccharts}
+\end{figure}
+
+
+
+%
+%
+%
+\subsection{When-abort}\label{subsec:abortwhen}
+
+%The next construct to be discussed is the when-abort construct. 
+\autoref{fig:blech_whenabort_to_sccharts} illustrates the translation of the when-abort statement.
+The inner behavior is aborted when a specific condition is met, but only after the execution in the body was halted for the first time. After that, the condition is checked at the beginning of each reaction.
+
+\onlylv{
+The body of the when-abort is nested inside a complex state, which is as usual initialized with an initial state and final state. The abort condition given by the when-abort construct is added as an abort transition leading from the complex state to a newly added state that closes the abort and regular termination cases. If the body of the when-abort construct terminates by itself (has a final state after synthesizing the body), an immediate terminating transition without a trigger is added leading from the complex to the new state.
+
+This translation is illustrated in \autoref{fig:blech_whenabort_to_sccharts}, where \autoref{subfig:whenabort_a} shows Blech code with a simple when-abort construct. This is translated as described above to the \ac{scchart} shown in \autoref{subfig:whenabort_b}. State \textsf{a} is the previous state that is always available. It leads to state \textsf{b} with an immediate transition. State \textsf{b} is the state that contains the body of the when-abort construct, which is abstractly visualized here. It leads with an abort transition and immediate termination transition to state \textsf{c}, which is the closing state and serves as a conenction point for subsequent statements.
+}
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.45\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.5\linewidth]{graphics/concept/blc/whenabort.blc}
+% 		\caption{A when-abort construct in Blech.}
+% 		\label{subfig:whenabort_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.525\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=\textwidth]{concept/scchart_ex_abortwhen}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:whenabort_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from Blech construct when-abort.}
+% 	\label{fig:blech_whenabort_to_sccharts}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.2\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/whenabort.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:whenabort_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.78\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_abortwhen}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:whenabort_b}
+	\end{subfigure}
+	\caption{Blech when-abort statement and synthesized \ac{scchart}.}
+	\label{fig:blech_whenabort_to_sccharts}
+\end{figure}
+
+
+%
+% \begin{figure}[tp][h]
+% 	\centering
+% 	\begin{subfigure}[b]{0.475\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.5\linewidth]{graphics/concept/blc/whenreset.blc}
+% 		\captionsetup{skip=5pt}
+% 		\caption{A when-reset construct in Blech.}
+% 		\label{subfig:whenreset_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.45\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=\textwidth]{concept/scchart_ex_resetwhen}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:whenreset_b}
+% 	\end{subfigure}
+% 	\caption{\acp{scchart} synthesis from Blech construct when-reset.}
+% 	\label{fig:blech_whenreset_to_sccharts}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.3\linewidth}
+		\centering
+		\lstinputlisting[language=blc]{graphics/concept/blc/whenreset.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:whenreset_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.65\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_resetwhen}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:whenreset_b}
+	\end{subfigure}
+	\caption{Blech when-reset statement and synthesized \ac{scchart}.}
+	\label{fig:blech_whenreset_to_sccharts}
+\end{figure}
+%
+%
+%
+\subsection{When-reset}\label{subsec:resetwhen}
+
+The when-reset is similar to the when-abort, except that the inner behavior is restarted when the condition is met.
+This is illustrated in \autoref{fig:blech_whenreset_to_sccharts}.
+\onlylv{
+Lastly discussed is the when-reset construct. It is very similar to the when-abort introduced in \autoref{subsec:abortwhen}. This construct does not abort and then skip the body when the condition is met, rather it goes back to the beginning of the body and tries to re-execute it.
+
+This difference is used in this translation. The translation is the same as in \autoref{subsec:abortwhen}, except for the abort transition: it targets the complex when-abort state as the abortion reenters the execution of the complex body. This is shown in \autoref{fig:blech_whenreset_to_sccharts}, where the abort transition does not target the following state but rather the same complex state again.
+}
+
+
+%
+%
+%
+\subsection{Running example after the translation step}
+\begin{figure}[tp]
+	\centering 
+	\begin{subfigure}[b]{\linewidth}
+		\lstinputlisting[language=blc, xleftmargin= 5mm]{graphics/concept/blc/runningexample.blc}
+		\caption{Blech code.}
+		\label{fig:runningex_blech}
+	\end{subfigure}
+	\medskip
+
+	\begin{subfigure}[b]{\linewidth}
+		\includegraphics[width=\linewidth]{concept/running_ex_1}
+		\caption{Mode diagram synthesized by Phase 1.}
+		\label{fig:runningex_phase1}
+	\end{subfigure}
+	\caption{Running example to illustrate Phase 1 and, in \autoref{fig:runningex_phase3}, Phase 3.}
+	\label{fig:runningex}
+\end{figure}
+
+The code in \autoref{fig:runningex_blech} will serve as a running example to illustrate the different phases.
+% shows a piece of artificial Blech code. It contains an if-else construct inside a loop. The if branch awaits a boolean input value, whereas the else branch contains a cobegin awaiting a boolean value in each branch.
+%
+% The code serves as a running example to illustrate the different phases as a whole. The code does not contain all of the possible Blech constructs,else it would be a big complicated visualization and not fitting to illustrate the main ideas of the phases. Showing the visualization of the running example after each phase will make the need for each phase clearer.
+%
+\autoref{fig:runningex_phase1} shows the visualization of the running example after the initial translation step. The single statements have been transformed into their set \ac{scchart} counterparts. The bodies of hierarchical constructs are contained inside complex states. The activity name and the parameters were preserved. \lstinline{Await} statements were realized with delayed transitions.
+
+
+
+%
+%
+%
+%
+%
+\section{Phase 2: Label Extraction}\label{sec:labelextraction}
+
+As could be seen in \autoref{fig:runningex_phase1}, the mode diagram synthesis described so far produces states with empty labels (except for activity call states).
+In order to talk about individual states in the figures we had to additionally inscribe labels such as ``a'' or ``b''.
+This shows the necessity to provide the user with a mechanism to specify labels for code locations which are then transferred to the corresponding states in \acp{scchart}.
+In this way visualized states may have meaningful names that can be referred to in a code review or documentation.
+
+%Using only the translations described in \autoref{sec:synthesis}, most states are empty in terms of their label. They do not have any labels further describing them. The labels that are shown in the figures in \autoref{sec:synthesis} are placeholder labels that are placed intentionally for easier descriptions of the illustrations. The goal of this paper, however, is to give the developer of the Blech code an abstract overview, showing the stateful nature of the code and enabling the usage of the illustration for documentation purposes. If the states are supposed to have documentary character, they need to be labeled.
+\onlylv{This reasoning was already discussed in \autoref{chap:intro}. Enabling labeling, the states will have a distinct developer-chosen description through a given name. The developer could enhance the visual representation of the code. This is especially helpful if the visualization is used in documentation contexts. The labels for states can be used to highlight implicit information hidden in the code and enhance the recognition of the developers mental map.
+}
+We propose to use Blech pragmas for the specification of labels.
+Pragmas are distinguished by a double \lstinline{@} prefix.
+Essentially, they act like comments with a special meaning in the source code.
+We adopt a \lstinline{@@[keyword="text"]} syntax wherein various \lstinline{keyword}s denote the various labeling options as explained in the following.
+%To keep consistency with common programming languages, the labels (comments) are specified before the constructs of interest. A prominent comparable example are Javadocs in the Java programming language\footnote{\url{https://docs.oracle.com/javase/8/docs/technotes/guides/language/index.html}}. The specified labels are realized via pragmas in this concept. In Blech, they are realized via a double \emph{@} notation. Altogether the labels are specified as \emph{@@[keyword="placeholder"]}, where keyword describes the element to be labeled and the text \emph{placeholder} in between the quotation mark is a placeholder for the sought label.
+
+We discuss two approaches to labeling the code locations: a state-only and an extended approach.
+\onlylv{
+The \emph{state only labeling} approach focuses solely on actual conceptual states, which are implicitly given by await statements notifying about the state changes. Conceptually, transient states are collapsed so that only the states prior to await transitions remain. These are the states that are to be labeled in the first approach. 
+As illustrated in \autoref{fig:label_await}, the labels for awaits are specified via the annotation \emph{@@[label="text"]}, where \emph{text} is a placeholder for the desired label to be assigned to a state.
+%The way this labeling works is discussed in \autoref{subsec:label_await}.
+
+The \emph{extended labeling} approach is more flexible. After the state-only labeling, only cobegin constructs and their regions remain to be labeled. In the simplified version of the illustration, after the simplification steps of \autoref{sec:optimization} have taken place, only cobegin constructs and referenced \acp{scchart} via run statements in Blech remain as hierarchical elements as all other have been flattened. Complex states originating from run statements are already labeled, as they are given the name of the activity they call/represent. That leaves the states and regions caused by cobegin constructs to be labeled. This second approach is discussed in \autoref{subsec:label_cobegin}.
+}
+%
+%
+%
+\subsection{State-only labeling}\label{subsec:label_await}
+The \lstinline{await} statement is the primary source of states and transitions in our diagrams.
+Often, the code before the \lstinline{await} implements one mode of operation and the code after the \lstinline{await} implements the next mode.
+For instance, in our introductory example code in \autoref{fig:proposal_ex_blech}, the code before line 10 is concerned with the initialization, while the code after line 10 starts a measurement.
+Here we would like to give a meaningful name, such as \emph{init}, to the state the program is in while waiting for a certain condition.
+In \autoref{fig:proposal_ex_blech} a simple comment is used to describe this location.
+To reflect this in the diagram, we propose a \lstinline{@@[label="text"]} pragma which is placed \emph{before} an \lstinline{await} statement to label the state that the awaiting transition emanates from, as illustrated in
+\autoref{fig:label_await}.
+%The \lstinline{await} statement adds a new state and a transition. The transition is labeled with the condition of the await statement. When labeling an await statement, a user may want to describe the state the program is in when the program awaits a certain condition. Therefore, the state that comes before the transition must be the one that is labeled. This is always possible, because there is always a previous state available, either through initialization (initial state) or with the help of the translation rules given by \autoref{sec:synthesis}. All of the translation rules add an empty state that concludes the translation of a statement or construct. Therefore, labeling an empty state without interfering with other labeled states (e.g. run statements) is possible.
+
+%As illustrated in \autoref{fig:label_await}, the labels for awaits are specified via the annotation \emph{@@[label="text"]}, where \emph{text} is a placeholder for the desired label to be assigned to a state.
+
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.475\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.5\linewidth]{graphics/concept/blc/label_await.blc}
+% 		\captionsetup{skip=10pt}
+% 		\caption{Await in Blech with label specifications.}
+% 		\label{subfig:label_await_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.45\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=\textwidth]{concept/label_ex_await}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:label_await_b}
+% 	\end{subfigure}
+% 	\caption{Label extraction from specified labels for an await statement in Blech code.}
+% 	\label{fig:label_await}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.3\linewidth}
+		\centering	\lstinputlisting[language=blc]{graphics/concept/blc/label_await.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:label_await_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.65\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/label_ex_await}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:label_await_b}
+	\end{subfigure}
+	\caption{Blech \lstinline{await} statement with label specification and synthesized \ac{scchart}.}
+	\label{fig:label_await}
+\end{figure}
+
+\onlylv{
+Such proposed label specification and placement is shown in \autoref{fig:label_await}. \autoref{subfig:label_await_a} shows a specified label for an await statement. \autoref{subfig:label_await_b} shows the generated \ac{scchart} with the specified label. The label \emph{aLabel} is placed in the state before the immediate transition as described above.
+
+There are further considerations to be made for this approach. One is the scenario of multiple specified labels for an await statement, e.g. a user labels a set of simple expressions calculating some value and then adds another label before a following await statement. It would be feasible to ignore all duplicate labels and labels that cannot be directly assigned to an await statement and only consider a label if it is specified right before a statement. Alternatively, it is possible to consider all specified labels, merge them if necessary and assign them to their corresponding real state. This paper proposes the latter approach. In the example given at the beginning of this paragraph, the labels would be merged in the state that is the source of the awaiting transition. Keeping everything that the programmer specified and not throwing anything out without giving the programmer a notice maintains the programmer's control of the visualization. This way, everything the programmer does is preserved and there is no need for the programmer to know the exact syntax and semantics of specifying a label. Another point to consider is cases where the program is non-linear, e.g., if-else constructs. A possible scenario to consider would be a specified label right before an if-else construct with both branches only containing an await statement. The issue here is that it is not clear how to assign the label. In the first of the above described two options, the label would simply be discarded, but since this paper proposes the second alternative due to the above mentioned reasons, the label would be duplicated for both if-else branches and assigned for both await constructs. This is feasible, because the two then labeled states are the same logical state.
+}
+%
+%
+%
+\subsection{Extended labeling approach}\label{subsec:label_cobegin} 
+
+The \emph{extended approach} allows for a more fine grained labeling of the elements. 
+As we will see later, after some simplification steps, the only hierarchies that remain in the \ac{scchart} are due to activity calls or \lstinline{cobegin} constructs.
+Since activity calls already have a label given by the activity they are referencing, no extra label is needed.
+Hence we consider the visual elements representing a \lstinline{cobegin} construct.
+The elements to be labeled are different regions, each representing a \lstinline{cobegin} branch, and the complex node containing these regions. 
+For our extended labeling approach, we add the \lstinline{cobegin} and \lstinline{branch} pragma keywords.
+
+As shown in \autoref{fig:label_cbgn}, the labels are assigned using \lstinline{@@[cobegin="text"]} for the complex node and \lstinline{@@[branch="text"]} for a branch. All labels specified in the Blech code for the visualization must be placed before the \lstinline{cobegin} construct.
+% to not cause assignment issues and the need to backtrack from inside a branch-body back to the outside. 
+Consequently, a branch label is needed for each branch, when labeling the different regions, in order to make the labeling unambiguous.
+
+
+%
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.475\textwidth}  
+% 		\centering 
+% 		\lstinputlisting[language=blc, xleftmargin=0.2\linewidth]{graphics/concept/blc/label_cobegin.blc}
+% 		\captionsetup{skip=20pt}
+% 		\caption{Cobegin in Blech with extended label specifications.}
+% 		\label{subfig:label_cbgn_a}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.375\textwidth}   
+% 		\centering 
+% 		\includegraphics[width=\textwidth]{concept/label_ex_cobegin}
+% 		\caption{The translated \ac{scchart}.}
+% 		\label{subfig:label_cbgn_b}
+% 	\end{subfigure}
+% 	\caption{Label extraction from specified labels for cobegin constructs in Blech code.}
+% 	\label{fig:label_cbgn}
+% \end{figure}
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[c]{0.45\linewidth}
+		\centering	\lstinputlisting[language=blc]{graphics/concept/blc/label_cobegin.blc}
+		%\captionsetup{skip=25pt}
+		%\caption{Blech code.}
+		\label{subfig:label_cbgn_a}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[c]{0.5\linewidth}
+		\hfill 
+		\includegraphics[scale=\scchartscale]{concept/label_ex_cobegin}
+		%\caption{The translated \ac{scchart}.}
+		\label{subfig:label_cbgn_b}
+	\end{subfigure}
+	\caption{Region labeling with the advanced labeling approach.}
+	\label{fig:label_cbgn}
+\end{figure}
+
+\onlylv{
+Such extended label specification and placement is shown in \autoref{fig:label_cbgn}. \autoref{subfig:label_cbgn_a} shows the Blech code containing a cobegin construct and the above mentioned label specifications, one for each branch of the cobegin. Their visualization is shown in \autoref{subfig:label_cbgn_b}. The complex state and regions are labeled according to the specified labels and above described label placement.
+}
+%
+%
+%
+%
+%
+\section{Phase 3: Transient State Elimination \& Hierarchy Flattening}\label{sec:optimization}
+
+The translation above produces rather bloated diagrams as can be seen in our running example in \autoref{fig:runningex_phase1}.
+%The structural translation results in correct, but quite bloated mode diagrams.
+%This is also quite apparent for the running example, see again \autoref{fig:runningex_phase1}.
+For instance, the \lstinline{if} and \lstinline{repeat} statements induce unnecessary hierarchies, which only obscure the stateful nature of the code.
+%The hierarchy due to the if-else construct as well as the self-loop, which was caused by the Blech repeat construct, is not necessary for showing the stateful nature of the code. 
+%They fill the visualization with unnecessary elements.
+% Hence, the are to be removed Phase 3. 
+Furthermore, some of the generated states turn out to be superfluous, too.
+In our example, in every super-state there is a final state that is entered and left immediately.
+Such transient states do not convey any information and will be removed as well.
+
+Thus after generating a diagram in Phases 1 and 2, we propose to simplify the result in Phase 3, which is divided into two steps.
+%To improve on this, we propose two simplification steps.
+Step 1 flattens hierarchy levels, as discussed in \autoref{subsec:flatten_hierarchy}.
+In Step 2 we collapse superfluous immediate transitions, as covered in \autoref{subsec:immediate_trans}.
+%\autoref{sec:problemstatement} discussed that a simplistic illustration that helps developers understand the code quickly is the target to be achieved. Complexity may be a hindering factor to that. Hence, we want to reduce the complexity of the illustration by flattening the hierarchy as much as possible. This is discussed in \autoref{subsec:flatten_hierarchy}. Further, it is found that not all hierarchies can be flattened. 
+% Superfluous immediate transitions induce transient states and do not enhance the ability to understand the stateful nature of the code. 
+%Transient states are exited immediately due to the immediate transitions. Hence, transient states are not real states. Therefore, collapsing immediate transitions and transient states is an important simplification step for a better result. 
+Step 2 follows after Step 1 because hierarchy flattening may produce additional immediate transitions that can be collapsed as well.
+% in the second simplification step.
+
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[b]{0.9\linewidth} % {0.525\textwidth}  
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_hier_before}
+		\caption{Before flattening.}
+		\label{subfig:break_hier_before}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.9\linewidth} % {0.425\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_hier_after}
+		\captionsetup{skip=7.5pt}
+		\caption{After flattening.}
+		\label{subfig:break_hier_after}
+	\end{subfigure}
+	\caption{An example of how hierarchy is flattened for the when-abort construct.}
+	\label{fig:break_hier}
+\end{figure}
+%
+
+%
+\subsection{Hierarchy Flattening}\label{subsec:flatten_hierarchy}
+
+Most translation rules in \autoref{sec:synthesis} introduce complex states with inner behavior. 
+%Those states add unnecessary hierarchy to the mode diagram, which further increases the complexity.
+Those states add hierarchy to the mode diagram, which may or may not be desired by the modeler.
+
+\subsubsection{Aborts}
+
+\autoref{subfig:break_hier_before} shows the mode diagram produced by Phase 1 for the following snippet of code.
+\lstinputlisting[language=blc,xleftmargin=40mm]{graphics/concept/blc/abort_example.blc}
+The hierarchical structure of the code is reflected in the hierarchical construction of the diagram.
+Note that the only state with a delayed outgoing transition is state \textsf{b}.
+Thus the only way that the super-state comprising \textsf{b}, \textsf{c} and \textsf{d} can be aborted is if it is waiting in \textsf{b} and \emph{abrtCond} becomes true.
+This insight is explicitly shown in \autoref{subfig:break_hier_after}.
+The hierarchy is removed (or, as we say here, \emph{flattened}), all states are preserved, only their final or initial status is changed to a regular status, and the aborting transition directly links states \textsf{b} and \textsf{e}.
+
+In this example, one may argue that removing the hierarchy has simplified the diagram.
+However, we have also lost some of the structure of the original Blech code.
+Furthermore, if the body that is aborted contains not just one but many states, we would have to add an abort-transition for each of these states, which goes agains the ``write-things-once principle'' that generally motivates hierarchy in Statecharts.
+Hence, we propose to allow the user to configure whether hierarchy for aborts should be eliminated or not.
+As confirmed by the evaluation in \autoref{sec:evaluation}, users do appreciate this flexibility.
+%As an example, the flattening for a when-abort construct is shown in \autoref{fig:break_hier}. %\autoref{subfig:break_hier_before} shows the chart before, \autoref{subfig:break_hier_after} after the flattening step. 
+%\autoref{subfig:break_hier_before} shows a when-abort statement that contains a single await statement. A boolean value \emph{condition} is the condition for abortion. The flattening step causes unnecessary states such as the final state (state \textsf{d} in the example) of complex states to be preserved. In \autoref{subfig:break_hier_after}, all states are preserved, only their final or initial status was changed to a regular status. The initial immediate transition points to the former initial state \textsf{b} of the complex state, and the regular termination transition now is a regular immediate transition and has the former final state \textsf{d} of the complex state as source. The abort transition has its source changed to \textsf{b}, which is the sole awaiting state of the inner behavior, and still points to the case closing state \textsf{e}. Unnecessary states such as \textsf{c} and \textsf{d} will be discarded in the simplification step of collapsing immediate transitions.
+
+%The flattening of hierarchy is the first simplification step. As will be shown, immediate transitions are introduced in this step. Hence, it must come before the elimination of transient states. 
+\onlylv{
+The constructs that add complex state are: run, repeat, while, cobegin, if-else, when-abort, and when-reset. The constructs activity, repeat, while, if-else form a group of similar constructs and are discussed together. They are similar because they have complex states with simple incoming and outgoing transitions. 
+When-abort and when-reset also form a similar group, since they have an abort-transition as was described before and possibly have a second transition for regular termination. Cobegin is a special case because it might contain multiple regions and is therefore generally hard to flatten.
+
+We argue that the flattening of these hierarchies should be configurable. This is especially important on different alternatives are introduced for the flattening of cobegin constructs as will be discussed later.
+}
+
+\onlylv{
+\subsubsection{Run, Repeat, While \& If-else}\label{subsubsec:flatten_regular} 
+
+Flattening the hierarchy for these constructs is straightforward: Throw away the complex state and lift the inner \ac{scchart} one hierarchy level up. Then connect the incoming transitions to the initial state of the inner \ac{scchart}. If the inner behavior has a final state, the complex state has an outgoing transition. Change the source of the outgoing transitions from the complex state to the uplifted final state of the inner behavior. The outgoing transitions are changed from termination to a regular transitions. The final and initial states of the inner graph lose their special status and become regular states. Note that self-looping transitions have both their target and source switched. Furthermore, note that information about the called activity label and in- and output variable names are lost when flattening a run statement caused hierarchy.
+
+The final inner node of the complex state in repeat contexts is special, because it is the origin for two conditional transitions (repeat the loop and stop the loop). As was the case in \autoref{subsec:while} and \autoref{subsec:ifelse}, such state can be transformed into a connector state.
+}
+
+%\textcolor{red}{TODO: we never actually defined what flattening does, below are special cases}
+% rvh: I added the term "flattening" above. Still no description of the algorithmic implementation,
+% but we don't have further space and I hope that at least the basic idea is clear enough.
+
+\subsubsection{Activities}
+A \lstinline{run} statement is represented by a special hierarchical state that \emph{calls} into the respective sub-chart.
+Flattening this call essentially means to inline the mode diagram of the sub-chart in place of the call state.
+If done recursively from the entry point diagram, the result would be a global mode diagram of the entire program.
+However, for non-trivial programs this may become confusing.
+Activities represent self-contained parts of the source code and thus we generally recommend to also inspect their respective mode diagrams separately.
+%Hierarchies resulting from run statements are special in the called activities are their own self-contained pieces of code and the programmer intended to separate them. Breaking hierarchy for complex states that are derived from activities by default is not always desired. As activities represent self-contained parts of the source code, one could rather just inspect the generated chart for said code, activity per activity.
+Sometimes, however, code might be split into sub-activities for some implementation specific reasons but logically they are best understood together.
+For such cases we propose to make the inlining of call hierarchies configurable in the visualization tool.
+%We thus recommend to generally keep the hierarchy caused by run statements, because outsourcing code into activities is separation and thus, intended hierarchy. But sometimes, especially for small repetitive activities, it might be desired to break the hierarchy nonetheless. Therefore, due to the special nature of run statements, we propose to make the flattening of run statement caused hierarchies configurable.
+% rvh: Question on the implementation - is it now configurable or not?
+
+\onlylv{
+\subsubsection{When-abort \& When-reset}\label{subsubsec:flatten_when}
+
+Flattening the hierarchy for this group is also easy but different to the group discussed before due to the abort transitions. The inner behavior of the construct is nested inside the complex state. Flattening the hierarchy has following implications: The super state disappears, the inner state chart is extracted to the higher hierarchy level. The initial state loses initial state status. The transition or transitions coming into the previous complex state have their target changed to the former initial state of the inner behavior. The final state of the complex state becomes a regular state and is now the source of the termination transition that represents the regular termination (if present, compare \autoref{subsec:abortwhen}), as the complex state disappears. Further, the termination transition is transformed to a regular immediate transition. Until now the flattening is equal to the previous flattening presented in \autoref{subsubsec:flatten_regular}. Next, the abort transition is duplicated. It is needed multiple times, depending on the inner behavior of the construct. Next, update the source of the duplicated transitions in such way, that each state that is the source of a delayed transitions originating from an await statement or complex states originating from a run statement are the source of an abort transition. The target of the abort transition is changed to the former initial state for when-reset constructs and the construct closing state as introduced in \autoref{subsec:abortwhen} for when-abort constructs. As a reminder, the case closing state is state \textsf{c} in the translation example of when-abort in \autoref{fig:blech_whenabort_to_sccharts}. The limitation of abort transitions having a source in states that are awaiting states or running states is caused by the semantics of then when-abort/when-reset constructs in Blech. The body will execute until the system is halted for the first time. Then, if the program is resumed, the condition is checked and if it is met, the body is aborted.
+
+Note that this collapse of hierarchy causes complexity in terms of adding multiple transitions. If the when-abort construct were to contain a more complex chart, the number of added transitions would increase. This might further add to the complexity of the illustration rather than simplify it. Being able to configure the flattening step for this construct would be beneficial for the developer using the illustration.
+
+% Copied above
+% The flattening for a when-abort construct is shown in \autoref{fig:break_hier}. \autoref{subfig:break_hier_before} shows the chart before, \autoref{subfig:break_hier_after} after the flattening step. \autoref{subfig:break_hier_before} shows a when-abort statement that contains a single await statement. A boolean value \emph{condition} is the condition for abortion. The flattening step causes unnecessary states such as the final state (state \textsf{d} in the example) of complex states to be preserved. In \autoref{subfig:break_hier_after}, all states are preserved, only their final or initial status was changed to a regular status. The initial immediate transition points to the former initial state \textsf{b} of the complex state, and the regular termination transition now is a regular immediate transition and has the former final state \textsf{d} of the complex state as source. The abort transition has its source changed to \textsf{b}, which is the sole awaiting state of the inner behavior, and still points to the case closing state \textsf{e}. Unnecessary states such as \textsf{c} and \textsf{d} will be discarded in the simplification step of collapsing immediate transitions.
+}
+
+\subsubsection{Cobegin \& Weak-Abort pattern}\label{subsubsec:flatten_cobegin}
+
+%Cobegin hierarchy is similar to an activity because it is not feasible break the hierarchy. 
+Recall that the \lstinline{cobegin} construct represents concurrency, and that the synthesized mode diagram has multiple concurrent regions. 
+In general we cannot flatten these regions without constructing a cross-product of the region's states.
+It would be counter-intuitive to clutter the visualization with this artificial complexity.
+In fact, the very purpose of \lstinline{cobegin} is to disassemble a complex behavior into separate easy-to-grasp behaviors.
+However, we can identify special patterns where a simplified visualization is possible.
+%If we were to break the hierarchy, we would loose the regions and thus any illustration of concurrency. Illustrating the concurrency is important because the final illustration is supposed to help the developers understand the code.
+% as described in \autoref{sec:problemstatement}. 
+%Therefore, removing the visual key about concurrency is not desired. However, as was the case with activities, there are patterns that can be identified and thus, simplified. 
+
+A common pattern is to use \lstinline{cobegin} to model weak preemption, where one branch contains only a single \lstinline{await} statement (the preemption condition) and the other branches are weak and have some stateful behavior inside. The weak branches will be weakly aborted when the branch containing only the \lstinline{await} statement terminates. 
+%Hence, the condition in the branch with the await statement is the condition weak-aborting the other branches.
+% 
+%This pattern, however, requires exactly two branches. The branch containing the await statement can be both, weak or strong and is called the \emph{awaiting-branch} in the following paragraphs. When the condition of the awaiting branch is met, that branch will terminate and thus, terminate the other branch because of its weak property. So the weak branch is terminated, we can say aborted, by the condition that is awaited in the non-weak branch.
+% 
+\lvsv{
+
+Thus, a possible simplification is to achieve an illustration for this pattern similar to the illustration of a hierarchy broken when-abort construct. To show the semantical differences above, an immediate transition is used instead of an abort transition. The abort condition is, as the pattern describes, the condition of the await statement of the non-weak branch. That branch containing only the await statement is erased and interpreted as an abort condition for the remaining branch with an immediate transition as the abort transition. We can then flatten the hierarchy the way when-abort constructs were flattened. What is left is similar to a flattened when-abort construct. There are two key differences, however.
+
+The first key difference is a differentiated consideration of the very first weak-aborting transition. The first time the awaiting branch can abort the other non-awaiting branch is at the end of the first reaction. That is the very first time the non-awaiting branch is halted by a delayed transition or a run-statement caused complex state on every path from initial to final state in the branch. Activities must have stateful behavior in Blech, that is why they are considered to be of halting behavior. If an immediate transition were used for the weak-abortion, the execution in \acp{scchart} would take that path immediately. This is not the desired behavior, so the very first weak-abort transition needs to be a delayed transition. However, this is a semantic problem, as the aborting signal can be present in the reaction in which the awaiting branch terminates and absent in the reaction after. The flattened \ac{scchart} with the initial delayed reaction would semantically expect the aborting condition one reaction too late. Hence, this pattern is not recommended to use when trying to achieve a semantically correct visualization.
+
+The other difference is the transition from the final state of the inner behavior of the non-awaiting branch. The regular connection via immediate transition from final state to the case-closing state is not realized. If the awaiting-branch is strong, the await condition has to be met to terminate the whole cobegin construct. So an immediate transition with the awaiting condition is added that can then exit the behavior of the non-awaiting branch, which complies with the behavior of the Blech code. If the awaiting-branch is weak, it can be aborted by the non-awaiting branch, so the cobegin construct terminates, if the non-awaiting branch finishes. Thus, if the awaiting branch is weak, only a simple regular immediate transition is added from the final state of the inner behavior to the case-closing state.
+
+%
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[b]{0.41\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_before}
+		\caption{Cobegin pattern before flattening. The await branch is strong.}
+		\label{subfig:break_cobegin_strong_before}
+	\end{subfigure}\hspace{2.5mm}
+	\begin{subfigure}[b]{0.485\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_after}
+		\captionsetup{skip=22.5pt}
+		\caption{Cobegin pattern with a strong await branch after flattening.}
+		\label{subfig:break_cobegin_strong_after}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.41\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_2_before}
+		\caption{Cobegin pattern before flattening. The await branch is weak.}
+		\label{subfig:break_cobegin_weak_before}
+	\end{subfigure}\hspace{2.5mm}
+	\begin{subfigure}[b]{0.39\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_2_after}
+		\captionsetup{skip=21.25pt}
+		\caption{Cobegin pattern with a weak await branch after flattening.}
+		\label{subfig:break_cobegin_weak_after}
+	\end{subfigure}
+	\caption[An example of how hierarchy is broken for a cobegin pattern.]{An example of how hierarchy is broken for a cobegin pattern. Note that through the abstraction in \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after}, aborting edges originating inside the black square are left out as well.}
+	\label{fig:break_cobegin}
+\end{figure}
+%
+
+\autoref{fig:break_cobegin} shows such a pattern before flattening. \autoref{subfig:break_cobegin_strong_before} and \autoref{subfig:break_cobegin_weak_before} are the charts before, \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after} after the flattening of the hierarchy. \autoref{subfig:break_cobegin_strong_before} and \autoref{subfig:break_cobegin_weak_before} show the pattern, with an awaiting branch and the other branch being a weak branch. In \autoref{subfig:break_cobegin_strong_before} the await statement is inside a strong branch, whereas \autoref{subfig:break_cobegin_weak_before} shows the await statement in a weak branch. The condition of the await statement becomes the condition for the abort transitions in the flattened versions. The abort transitions are delayed transitions because they are added to the very first awaiting node \textsf{e}. Following aborting transitions would be immediate transitions. The branch not containing the await statement is weak and contains some states that are arbitrary and abstractly illustrated here. The region matching the await-pattern will be discarded completely, the rest is analog as to the simplification of a when-abort construct when considering the await condition to be the abortion condition, which leads to the simplified illustration of \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after}. The difference between the two is the different transition from the former final state to the case closing state. The condition of the await statement has to be met to terminate the whole cobegin construct in \autoref{subfig:break_cobegin_strong_after}, whereas in \autoref{subfig:break_cobegin_weak_after}, an immediate transition without a trigger is used. Note that the abstracted graph inside the black square could, depending on the content, be the origin of immediate transitions with the identified aborting condition connecting to state \textsf{g}.
+
+An alternative simplified visualization of the detected weak-abort pattern is given as follows. This version is independent og the amount of branches present. The pattern only requires one awaiting-branch and that all the other non-awaiting branches are weak branches. This version does not aim to eliminate the hierarchy, but tries to get rid of the awaiting branch. The awaiting branch gives the aborting condition. Once extracted, the whole branch and region can be discarded. The rest of the complex state can remain as well as the outgoing termination transition, if present. The weak-abortion is realized with an immediate transition having the aborting condition as a trigger. Thus, the awaiting branch was simplified to a transition and the complex state was made less complex. This alternative is closer to the semantic equivalence and achieves to simplify the identified pattern.
+
+%
+\begin{figure}[tp]
+	\centering 
+	\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_alt_after}
+	\caption{Alternative weak-abort pattern visualization to \autoref{subfig:break_cobegin_strong_before}.}
+	\label{fig:break_cobegin_alt}
+\end{figure}
+%
+
+\autoref{fig:break_cobegin_alt} shows the alternative visualization, to the non-flattened version given by \autoref{subfig:break_cobegin_strong_before}. The condition given by the awaiting-branch is added as a weak-aborting transition the the complex state. The non-awaiting region in the complex state remains unchanged. If multiple regions were present besides the awaiting branch, they would be unchanged as well.
+
+With the two alternative versions of simplifying the detected weak-abort pattern as well as the option to not simplify the pattern at all, it results in three versions, each with their own advantages. To give the users more flexibility and the opportunity to use the strengths of each version, it is beneficial to freely allow the configuration between these variants as is shown in the evaluation later.
+}{
+\begin{figure}[tp]
+	\centering
+	\begin{subfigure}[b]{0.41\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_before}
+		\caption{Before flattening.}
+		\label{subfig:break_cobegin_strong_before}
+	\end{subfigure}\hspace{2.5mm}
+	\begin{subfigure}[b]{0.485\textwidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_alt_after}
+		\caption{After flattening.}
+		\label{fig:break_cobegin_alt}
+	\end{subfigure}
+	\caption{The weak-abort pattern.}
+	\label{fig:break_cobegin}
+\end{figure}
+%
+\autoref{fig:break_cobegin} illustrates the flattening with the weak-abort pattern, with a strong awaiting branch.
+}
+%
+%
+% \bigskip
+\medskip
+
+Our implementation can also flatten hierarchies introduced by the other Blech statements, such as conditionals, but for brevity we skip their discussion.
+
+Note that flattening hierarchy and removing complex states has implications on the labels described in \autoref{sec:labelextraction}. 
+Labelled complex states are due to either \lstinline{run} statements or \lstinline{cobegin} constructs. 
+Their labels will be discarded when flattening the hierarchy.
+Labels which are attached to simple states, as discussed in \autoref{subsec:label_await}, are not affected by the flattening step.
+%The question is what is labeled. If the programmers label something that they possibly want removed through a specific configuration, it can be expected that removed labeled elements will not be found in the illustration. Labels resulting from await statements will not be affected in this step. Since these labels are always set on simple states as discussed in \autoref{subsec:label_await}, their labels only matter when collapsing immediate transitions, after hierarchy was flattened.
+
+\subsubsection{Running example after flattening of hierarchy}
+\autoref{fig:running_phase3a} shows the running example after the hierarchy flattening step. The hierarchies of the \lstinline{if-then-else} and \lstinline{repeat} statements are flattened. Incoming edges changed their targets to the former initial states, whereas outgoing edges changed their source to the former final states. The hierarchy of the \lstinline{cobegin} construct was not flattened, since it does not match the described weak-abort pattern.
+% 
+%However, the need for further simplifications is obvious. 
+However, there are many transient states, some of them have been introduced by the flattening step.
+This motivates the optimization described next.
+
+%
+\begin{figure}[tp]
+	\centering 
+	\begin{subfigure}[b]{\linewidth}
+		\centering 
+		\includegraphics[scale=.44]{concept/running_ex_2}
+		\caption{Result after hierarchy flattening.}
+		\label{fig:running_phase3a}
+	\end{subfigure}
+	\medskip
+
+	\begin{subfigure}[b]{\linewidth}
+		\centering 
+		\includegraphics[scale=.48]{concept/running_ex_3}
+		\caption{Result after eliminating transient states.}
+		\label{fig:running_phase3b}
+	\end{subfigure}
+	\caption{Effect of Phase 3 on the running example diagram from \autoref{fig:runningex_phase1}}
+	\label{fig:runningex_phase3}
+\end{figure}
+%
+
+
+%
+%
+%
+\subsection{Transient State Elimination}\label{subsec:immediate_trans}
+
+Transient states are states whose outgoing transitions are all immediate.
+These states serve as connection points during the translation and flattening phases, but they do not represent any mode of operation of the program.
+In order to obtain a concise mode diagram we should remove transient states as far as possible.
+Transient states are removed by connecting each predecessor state with each successor state by a direct transition, possibly merging the guards, if there are any.
+
+%Flattening immediate transitions and removing transient states is sought in order to keep only real states as good as possible, especially with the translation steps and hierarchy flattening measures introduced in this paper. To connect states properly, multiple helper states were introduced in the translation steps. Most of these are not to be kept in the final illustration showing the conceptual states as they are transient states. Transient states are states connected with immediate transitions. The immediate transitions cause the states to be exited immediately. Therefore, they are not real conceptual states of a program.
+
+The challenge is to maintain the correct use of immediate termination transitions. They are used for exiting complex states as discussed earlier. Some of them are transformed during the flattening of hierarchies as covered in \autoref{subsec:flatten_hierarchy}, but not all. 
+%Most cobegin constructs will not match the described pattern for flattening and keep their hierarchy. 
+Plus, depending on configuration settings specifying that some degree of flattening is not desired, more termination transitions are present. Their presence has to be considered when proposing the collapse of transitions.
+
+\lvsv{
+Since termination transitions can also be immediate, we can ignore their terminating property and treat them as normal immediate transitions for this simplification step. When reassigning the source of an edge, depending on the new source, the newly connected transitions are simply transformed into terminal or regular transitions, as given.
+
+The general idea is to remove as many immediate transitions as possible. This concept proposes to remove the immediate transitions as follows: If there is only one or many immediate transitions between the source and the target, we first check the source and then the target of the transition. If the source is not a complex state, we simply delete the immediate transitions and the source state. Transitions that originally had the deleted source state as a target then update their target to the target state of the deleted transition. If the source state is a complex state, we check the target state instead and if it is a simple state, we delete it and the corresponding transitions. Analogously, transitions that had the deleted state as a source now update their source to the source of the deleted transition. An exception to this rule is single conditional transitions (with a trigger) as they are important to the control flow of the graph. If there are multiple conditional transitions between source and target, they can be deleted, since this can only result in a simplified if-else case that had no stateful behavior and has already been simplified. Another exception is given by the alternative representation of the weak-abort pattern in cobegin constructs as described in \autoref{subsubsec:flatten_cobegin}. The complex state will have an aborting immediate transition and a terminal transition as outgoing transitions. These will not be deleted, as the important information of weak-aborting the cobegin construct would be lost.
+
+Note that if labeled states are deleted, their label will be appended to the end of label of the source, if a target is deleted, and to the front of the label of the target, if a source is deleted.
+
+Further, if a checked source and target state have one or many (non-terminating) immediate transitions plus an abort transition between them, these transitions will also be deleted, as they will not have impact anyway due to the immediate transitions. This addition is important for simplifying the illustration after hierarchy was broken from when-abort and when-reset constructs as described in \autoref{subsubsec:flatten_when}. The deletions for this rule follow the same principle as in the previous paragraph, a source or target needs to be simple for this to work. If either is simple, the node in question is deleted alongside the transitions in question, and in- or outgoing transitions are assigned accordingly.
+
+Note that transitions that are assigned to a new source change their status to termination if the new source is complex (and has a final node).
+
+The next case to consider are immediate termination transitions that originate in complex states along with abort or delayed transitions or on their own. If these complex states, such as ones caused by run statements, do not have a final node (\ie are non-terminating), the immediate termination transition is removed, as it cannot fire.
+
+There are further exceptions to these rules. First, if the state that is to be deleted is an initial or final state, and has more than one outgoing and incoming transition respectively, the state and transition will also not be deleted. This is because it is difficult to reassign the final and initial state status if there are multiple transitions available and the initial state needs to be distinct in \acp{scchart}. It is possible to do for the final state, but this concept proposes not to, in order to distinctly provide a visual ending point. If the transition is a single transition between source and target, the next state for initial states and the previous states for final states are assigned the respective statuses. Note that it is possible for a node to be both, an initial and final node. A scenario where this can happen is an activity that simply calls another activity. The immediate transitions are collapsed and the final and initial status reassigned to the complex state referencing the called activity.
+
+States that are often affected by this simplification step are the initial and final state of complex states, as well as states that were added after certain constructs to serve as a connection point to subsequent statements. 
+
+An example of immediate transition simplification is given in \autoref{fig:break_imm}. \autoref{subfig:break_imm_before} and \autoref{subfig:break_imm_after} show an illustration of Blech code before and after immediate transition simplification, respectively. Both examples have already been flattened in terms of hierarchy. \autoref{subfig:break_imm_code} shows the corresponding Blech code. The Blech code can be nested inside any hierarchy, such as cobegin-caused regions or inside an activity. Note that in this example, the content of the complex state has been hidden to focus on the collapse of immediate transitions. Further, note that this is a purely artificial code example.
+
+%
+\begin{figure*}[tp]
+	\centering
+	\begin{subfigure}{.15\linewidth}   
+		\centering 
+%		\lstinputlisting[language=blc,xleftmargin=40mm]{graphics/concept/blc/break_imm.blc}
+		\lstinputlisting[language=blc]{graphics/concept/blc/break_imm.blc}
+		\caption{Blech code.}
+		\label{subfig:break_imm_code}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{.8\linewidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_imm_before}
+		\caption{Immediate transitions before simplification.}
+		\label{subfig:break_imm_before}
+	\end{subfigure}
+	\begin{subfigure}{\linewidth}   
+		\centering 
+		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_imm_after}
+		\caption{Immediate transitions after simplification.}
+		\label{subfig:break_imm_after}
+	\end{subfigure}
+	\caption{An example of how immediate transitions are simplified.
+	The example code can be nested inside an activity or a cobegin region.}
+	\label{fig:break_imm}
+\end{figure*}
+%
+
+\autoref{subfig:break_imm_before} shows the illustration of Blech code that contains a cobegin without weak branches and with unknown content, followed by an if-else construct containing an await statement each. States \textsf{a} and \textsf{g} are the states that are initially added through the activity hierarchy the code is placed in. State \textsf{b} and \textsf{c} are caused by the cobegin, where state \textsf{b} contains the branches and their content, and state \textsf{c} is the case closing state and connection point for subsequent statements as described in \autoref{subsec:cobegin}. From state \textsf{c} the branches of an if-else construct exit into two branches gated by a boolean condition \emph{condition}. The states \textsf{d.a}, \textsf{d.b}, \textsf{d.c}, \textsf{e.a}, \textsf{e.b} and \textsf{e.c} are the flattened bodies of if-else construct. Both bodies contain a simple await statetment with the trigger \emph{condition2}. The control flow is closed again by state \textsf{f} as was described in \autoref{subsec:ifelse}. According to \autoref{subsec:activity}, state \textsf{f} then connects to the final state \textsf{g}.
+
+\autoref{subfig:break_imm_after} shows the simplified version of \autoref{subfig:break_imm_before}. The states \textsf{a}, \textsf{c}, \textsf{d.b}, \textsf{d.c}, \textsf{e.b}, \textsf{e.c} and \textsf{f} have been discarded due to the simplification. The transition between states \textsf{a} and \textsf{b} was deleted because the source \textsf{a} is a simple state. Hence, \textsf{a} was discarded as well. Through this deletion, state \textsf{b} is transformed to an initial state. The state \textsf{c} and the transition between \textsf{b} and \textsf{c} is deleted because state \textsf{c} is a simple state. Consequentially, the transitions between \textsf{c} the contents of the if-else bodies change their source from \textsf{c} to \textsf{b}. Since \textsf{b} is a complex state, the transitions are transformed to terminal transitions. The conditional and delayed transitions are not deleted, as was explained in this section. The rest of the immediate transitions are simply discarded, since they are all immediate transitions without any triggers. This causes the delayed transitions originating in \textsf{d.a} and \textsf{e.a} to sequentially update their target from \textsf{d.b}/\textsf{e.b} to \textsf{d.c}/\textsf{e.c}, then to \textsf{f} and then to \textsf{g}.
+
+%
+%
+%
+\subsubsection{Running example after eliminating transient states}
+
+\autoref{fig:running_phase3b} shows the final mode diagram for the running example after eliminating transient states. The transient states were eliminated. This includes the immediate transition connecting the (transient) case closing node to the node deciding the control flow according the if-else conditions of the Blech code. In terms of the stateful nature of the code and minding the necessary control flow elements, a minimal visualization of the given Blech code was achieved.
+}{
+	\autoref{fig:running_phase3b} shows the final mode diagram for the running example after eliminating transient states.
+	This is now quite compact and we argue that its structure is probably close to how a human programmer would think about the Blech code.
+\onlynonan{For technical details on how this translation is achieved, under consideration of preserving labels as well as possible, we refer to~\cite{lucas20}}
+%\onlyan{\cite{Anonymous}}.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Evaluation}
+\label{sec:evaluation}
+
+To validate the approach proposed here, we have implemented a prototype for extracting mode diagrams from Blech code and have asked four Blech developers from industry to evaluate it.
+%A group of five industrial Blech developers was asked to evaluate given visualizations of given Blech code. 
+The developers were given visualizations of real Blech code examples as well as artificial examples that illustrate the different layout options as described earlier. 
+The experts were asked to validate the given visualizations for correctness, to assess whether the visualization is helpful to understand the given code, and to give their opinion on the representation. %what they like or do not like.
+For those examples with several visualization options, they were asked to chose the one they liked most and explain their choice.
+
+%General findings are that the visualization is helpful to understand the stateful nature of the code, that generally hierarchical illustration for elements of hierarchical nature such as abort, run or cobegin statements are preferred and that an \emph{out-of-the-box} use of the visualization is challenging, due to the need to know the semantics of \acp{scchart}.
+
+The general feedback was that the visualizations are helpful, especially if the code base is unknown or things are discussed with people who are not familiar with the code base. 
+According to their overall assessment, the generated mode diagrams offer good insights, but still leave room for further improvement.
+%Besides, the validation by a large group of users still remains to be done. 
+%Single points of debate are discussed in the following paragraphs.
+
+%The first point to be discussed is the issue of pre-compiled elements of the Blech code. These include expressions with constants or when-reset constructs. The main issue here is that the Blech compiler pre-evaluates these statements, so at the point of latching the translation tool to the compiler, the orignal elements are non-existent and there is no way to reproduce them or determine them in any way. Changes to the compiler would have to be made, which is an unclear amount of effort currently. Another possible solution would be to try to attach the translation tool into the compiler chain at another point. Currently the translation tool is placed in such manner, that the typed abstract syntax tree is given as input. This way all statements are given sequentially and recursively, just as is expected for the concept. Choosing another point requires in-depth knowledge of the Blech compiler and estimating the required effort to alter data in such form that is can be used for the translation tool is difficult too.
+
+One finding was that it is hierarchy flattening is desirable in most but not all cases.
+Generally, hierarchies induced by \lstinline{run} and \lstinline{abort} statements should be preserved.
+%It was also found that the opportunity to be able to flatten these hierarchies for certain use cases is useful as well. 
+Therefore, having flattening configurable is desired and will be kept. 
+%Configuration is needed for other debatable options, too. Sure enough, offering multiple options increases the workload for maintenance and development, but the advantages are clear.
+
+The feedback to the proposed concept and suggestions by the experts revealed that labeling is a difficult topic, where experts have very individual preferences. 
+Generally, there are multiple options to realize labels in terms of their declaration, place and handling (merging, discarding, etc.). 
+%Each expert expressed their own preferences and made their own suggestions. In conclusion, labeling is a complex issue, where different people have different preferences and consider very different variations to be better. 
+A quantitative validation of different variations with a broad group of developers should help to determine the best solution for default settings.
+
+\onlylv{
+Another discussable point regards the optimization of immediate transitions into final states. This paper proposes not to optimize multiple immediate transitions coming into a final state and thus, maintaining a single distinct final state for any inner behavior. This decision was made under assumptions and would need further validation and might just be a matter of preference again.
+}
+
+One observation was that the indication of weak branches of \lstinline{cobegin} constructs is too subtle. This is plausible, as the added rectangle for final regions in \acp{scchart} is a light grey color on a white background. 
+A straightforward approach to remedy this would be to simply use a stronger color to indicate final regions
+\lvsv{. Alternatives to highlight a weak branch visually could be an added state with a label specifying the weakness or an added comment to the region.}{
+or including the ``weak'' keyword in the label.}
+However, both solutions may be rather confusing and are not a distinct visual clue. 
+%However, the design and visual options of the \acp{scchart} language are out of scope of this paper.
+
+\onlylv{
+Some other expert suggestions regarding the extra highlighting of important Blech elements, such as external variables or singleton functions, are an interesting points too. However, this would stretch the bounds of \acp{scchart}. There are limited options to highlight these things, with unclear benefits to be realized. A concept to highlight them, maybe even new visual elements, as well corresponding validations are needed for this to be realized.
+}
+Finally, it became clear that knowledge of \acp{scchart} is required to fully understand the visualization. Some form of learning or guide for users should be available for the tool to do its job without requiring the user to do research on their own.
+\onlylv{
+One option would be to implement a guide into the visualization (once it is integrated in an IDE) like a map legend.
+} 
+The need to understand \acp{scchart} semantics raises the question of course, whether such details are needed or if a basic state chart with the most basic transitions would suffice, as further discussed in the conclusions in the last section.
+
+\onlylv{
+It is generally a trade-off, of course, between using the most basic elements and using more sophisticated elements. The previous option makes for a basic, probably easy to understand visualization. However, it is not possible to express complicated semantics this way. If a single type of transition were to be used, for example, it would not be possible to express different sorts of transition from state to state, such as aborts, immediate or delayed transitions. The latter option uses more complicated visual elements, such as different sorts of transitions. The concept does use abstraction to not visualize all of the code already, such as simple expressions. Hierarchies of constructs such as if-else or repeats are simplified. Different transitions between states are kept, because the stateful nature of the Blech code was the focus of this paper. Hence, it was decided that it is beneficial to illustrate the different transitions. To help the user understand the visual elements, a legend for the visual representation would be an important next step. Other helpful instruments such as a tutorial could be possible as well.
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Related Work}
+\label{sec:related-work}
+
+% Reviews:
+% Many related papers about synchronous languages and statecharts and the translations between them are missing. Instead, many translations between other languages are discussed in the related work section; I am not sure whether this makes sense. There are translations between textual and graphical versions of synchronous languages that are neither mentioned nor compared with the suggested translation. Also the other direction of translation has been discussed in related work that is not mentioned (see below). Finally, the semantics of languages like Esterel are defined by SOS rules that directly describe a translation to state transition systems. According to https://es.cs.uni-kl.de/tools/teaching/Quartz.html, it seems that Quartz programs can be even translated to extended finite state machines. While this lacks of hierarchy, it may be discussed here also since the latter seems to be directly derived from the semantics.
+% Here is a list of papers that came into my mind: It is certainly not complete, there are many further related papers in the area of statecharts. Charles André also considered the translation between SyncCharts and Esterel, which is exactly the problem here.
+%- F. Maraninchi, 1991: The Argos Language: Graphical Representation of Automata and Description of Reactive Systems Visual Languages
+%- F. Maraninchi and Y. Rémond and Y. Raoul, 2000: MATOU: An Implementation of Mode-Automata Compiler Construction (CC)
+%- F. Maraninchi and Y. Rémond: 2001; Argos: An Automaton-Based Synchronous Language Computer Languages
+%- F. Maraninchi and N. Halbwachs; 1995: Compiling ARGOS into boolean equations Formal Techniques in Real-Time and Fault-Tolerant Systems (FTRTFT)
+%- S. Prochnow and C. Traulsen and R. von Hanxleden 2006: Synthesizing safe state machines from Esterel Languages, Compilers, and Tools for Embedded Systems (LCTES)
+%- I. Radojevic and Z. Salcic and P.S. Roop; 2006: Modeling Embedded Systems: From SystemC and Esterel to DFCharts; IEEE Design and Test of Computers
+%- K. Schneider; 2002: Proving the Equivalence of Microstep and Macrostep Semantics
+% Theorem Proving in Higher Order Logics (TPHOL)
+%- S.A. Seshia and R.K. Shyamasundar and A.K. Bhattacharjee and S.D. Dhodapkar: 1999; A Translation of Statecharts to Esterel; Formal Methods (FM)
+%
+% The related work should also take a look on Meta Programming based Approaches (as provide in the MPS framework https://www.jetbrains.com/). This allow to switch natively between code/text and graphics representation allowing a full round-trip engineering. A nice example for this is the graphical extension in the mbedder (http://mbeddr.com/) framework. A look on the presented state machine integration could be interesting.
+
+For synchronous languages, there has been previous work to transform imperative programs into statechart representations.
+For example, Prochnow et al.\ proposed to synthesize SyncCharts~\cite{ProchnowTvH06} from Esterel.
+% , or DFCharts with SystemC~\cite{RadojevicSR06}.
+While our approach follows the same principle of structural statement-by-statement translation,\onlylv{ as present for most of them~\cite{Rueegg11},} the general goal differs.
+Previous approaches focused on full semantic equivalence between the programming languages and the graphical modeling notation.
+% As they show that this is generally feasible, 
+We here aim to provide automatically generated documentation with a higher level of abstraction.
+Hence, we focus on control-flow structures that expose the implicit stateful nature of the underlying program, and explicitly leave out most data-related execution aspects.
+% This makes the SCCharts notation interchangeable with any other statechart dialects that provide the necessary constructs.
+
+% This section introduces some work related to this paper, either solving similar problems or serving as foundations for this paper. This section covers not only work about model extraction but also about code visualization and documentation.
+
+\onlylv{The concept of extracting and visualizing stateful models from imperative code has also been applied in other contexts.}
+
+%
+% Extraction
+%
+% \subsection{Model Extraction}
+% This section considers some works on extraction of models of any form from code.
+
+% \subsubsection{Model Extraction from C}
+% Model extraction from source code is covered in a master paper from Andersen~\cite{Andersen20}. Abstract models are extracted from C and C++ code in order to serve as documentation of legacy code. Legacy code is often not trustworthily documented, if it is even documented at all. This work proposes a conversion from the extracted model to \acp{scchart}, which are visualized by the~\ac{kieler} tool chain. Two models are extracted in this paper. One is for dataflow, highlighting in- and output and changes made to these variables. The second model is a representation of a state-machine for the code with defined states, input events and transitions. These models are the main difference to the work presented in~\autoref{subsec:c-model-2}.
+
+% The presented paper differs from this paper in multiple ways. Obviously, the work extracts its models from C and C++ code, which are different from Blech code. Blech code compiles to C code, however, which might offer ways to benefit from the presented paper. The C code resulting from the compiler is generated code, however, and it most likely does not resemble the given Blech code intuitively. Another difference is the extracted model. The goal of this paper is not to extract a state-machine with all transitions and states or a dataflow model, but an abstraction of the code aiding to document and understand the code and representing the stateful nature of the code. The generated state machine given by Andersen's work produces a fully functional state machine.
+
+% \subsubsection{Another Model Extraction from C}\label{subsec:c-model-2}
+% Lenga et. al~\cite{SmythLvH16} also propose an extraction from C code to \acp{scchart}. They extract an abstract syntax tree from the code and translated the elements of C to corresponding \acp{scchart} structures. They then use existing compilation tools from \ac{kieler} to compile the extracted \acp{scchart} back to C and compared the results. Their approach is limited to ANSI C. 
+
+% Again, this work differs in source code and target model. Yet, similarities to this work's topic are present. This approach differs to the previously presented approach by doing a literal translation of C code to \acp{scchart} without having code comprehension in mind.
+
+\onlysv{Outside the context of synchronous languages,}
+\onlylv{Kung~\etal~\cite{KungSG+94} and }Sen and Mall~\cite{SenM16} present ways to extract state machines from object-oriented languages.
+They analyze the behavior of classes and infer state machines describing the class behavior.
+Approaches by Giomi~\cite{Giomi95} and Said~\etal~\cite{SaidQK18} describe state machine extractions based on control flow to represent the program's state space.
+Giomi processes hardware description languages and creates states based on wait statements in the control-flow graph.
+Said~\etal propose a similar approach for C code but apply special state variable mining to detect relevant states.
+Compared to these approaches, we do not aim to visualize the implicit state space of a Blech program but its inherent operation modes, explicitly expressed in \lstinline{await} statements.
+
+To recover implicit state machine structures in imperative code, Som\'e and Lethbridge~\cite{SomeL02} \onlylv{and van~den~Brand~\etal~\cite{vanDenBrandSvZ08}} use a pattern-based approach.
+They detect special nested choice patterns and switch statements and interpret and visualize these as state machines.
+This procedure is not necessary for a synchronous language such as Blech, since the \lstinline{await} already explicitly separates states.
+\onlylv{
+Another paper in this category by Knor~\etal~\cite{KnorTW98} transforms state machines
+based on patterns from C/C++ code.
+Their approach focuses on finding if/switch patterns and replacing them with more generic C++ state machine components for better readable code.
+They do not provide any visualization for further code comprehension.
+}
+
+Another direction in this context, especially when working with legacy C code, is to generate a graphical representation for the program to compensate missing documentation and improve understandability.
+Smyth \etal~\cite{SmythLvH16} transform control structures and statements of a C programs into equivalent SCCharts.
+\onlylv{There are also alternative approaches based on SCCharts that focus on the flow of data in a call graph.
+Beck and Pingali~\cite{BeckP89} and G\`evay \etal~\cite{GevayRBMT+18} present methods to execute imperative control flow on dataflow machines.
+They provide graphical representations but with a clear focus on the execution on parallel dataflow machines rather than code comprehension.}
+The EHANDBOOK\footnote{\url{http:/www.etas.com/ehandbook}} allows to extract graphical models from C code.
+It applies a more dataflow-oriented approach based on a flat program dependence graphs.
+In contrast to these approaches, we here focus on a more abstract view of the underlying program and its modes of operation, rather than a fully functional graphical replacement.
+
+% \subsubsection{Interactive Transformations for Visual Models}\label{subsubsec:urubt}
+% Rüegg proposes a concept of a step-wise transformation of Esterel to SyncCharts in his Bachelor paper~\cite{Rueegg11}. The focus lies on step-wise transformation because most transformations in the \ac{modeldrivenengineering} domain are exectued in a black-box. A user does not get to comprehend the distinct transformation steps that can be quite complex. The paper implements a step-wise visualisation. With the step-wise transformation it is also easier to detect errors in the transformation. SyncCharts and Esterel are graphical and textual programming languages, respectively. In the work it is argued that implementing such automatic transformation enables the the usage of the advantages of textual and graphical languages, respectively. The presented advantages are improved comprehensibility for graphical languages and faster editing for textual languages. The stepwise transformation is implemented in the context of \ac{kieler}.
+
+% The work of Rüegg differs from this paper' work. Firstly, this paper does not primarly aim at a stepwise execution, though having a step-wise execution might be a beneficial feature to implement in the future. Secondly, this paper does not aim to propose a concept that provides a semantically equivalent model transformation but rather a visual abstraction of the source code. Lastly, the source and target languages differ.
+
+% \subsection{Software Visualization}
+
+% This section considers tools and approaches for code comprehension and software visualization.
+
+% \subsubsection{Software Visualization in General}
+% Gra{\v{c}}anin et al.~\cite{gravcanin05} wrote an article on \ac{sv}. They described what \ac{sv} is. It is described as a field that uses visual images to provide insight and understanding and reduction of complexity of existing software (systems). The goal is always better a understanding of given software artifacts. They further describe different research in the field of \ac{sv} and recommend further readings for different questions regarding \ac{sv}. Many research questions come down to the questions of what can and should be visualized and how, and what benefits does the visualization bring to the developer. Overall, \ac{sv} is a broad field with many specific research questions.
+
+Aside from language-specific solutions, there is also the general field of software visualization~\cite{gravcanin05}.
+The goal is to improve the understanding of given software artifacts by using various different graphical representations.
+% 
+% \subsubsection{Code Visualization with ExplorViz}
+% The Software Engineering research group at Kiel University has developed the tool ExplorViz\footnote{\url{https://www.explorviz.net/}} \cite{FittkauWWH13}. It takes a whole software system as input and creates a so-called 3D city model to display the communications between the different parts of the system. The model itself is interactive so the user can open the boxes representing software components to show its contents. Inside these boxes are either further packages, again displayed as boxes, or classes, which are displayed as blue cylinders.
+% 
+% In addition to the display of the system structure, the tool also displays the communication between
+% different parts of the system. For each time a class calls a function of another class, a yellow line is
+% drawn between the corresponding blue cylinders of the two classes. Hence, components that communicate more regularly are indicated more intensely.
+% 
+One example in this area is the ExplorViz~\cite{FittkauWWH13} tool.
+It takes an entire software system as input and creates an interactive ``3D city'' model to display the communications between the different components, packages, and classes.
+Rentz \etal~\cite{RentzDvH20} present an interactive graphical approach for exploring bundles, their dependencies, and services in OSGi software projects.
+Our Blech mode diagrams likewise emphasize a more high-level view on the software but may also be used during development to have an on-the-fly graphical representation of a specific activity.
+\lvsv{
+
+Current tools for SCCharts follow the concept of \emph{transient views} to provide such abstracted or specialized graphical views.
+We use SCCharts for exactly this purpose in Blech.
+Another tool following a similar principle, is mbedder\footnote{\url{http://mbeddr.com/}}.
+Using MPS\footnote{\url{https://www.jetbrains.com/mps/}}, it provides a fluent and interchangeable editing support between a textual and graphical representations for various aspects in embedded systems modeling.
+}{
+This concept of \emph{transient views} is similar to tools like mbedder\footnote{\url{http://mbeddr.com/}} that feature fluent and interchangeable editing of a textual and graphical representations.
+}
+
+\section{Conclusions and Outlook}
+\label{sec:conclusions-outlook}
+
+We have presented an approach to automatically extract mode diagrams from the so far purely textual Blech language.
+The stateful nature of Blech allowed for a natural mapping from Blech code to modes/states and transitions.
+We postulate that such a translation would also be natural for other textual languages for developing reactive systems.
+
+The mode diagrams are effectively a slightly extended and abstracted variant of \acp{scchart}. This choice made it simple to capture precisely the semantics of the state-relevant part of the Blech language, which is not surprising given that Blech was inspired by the sequentially-constructive model of computation realized in \acp{scchart}~\cite{GretzG18}.
+Furthermore, we could harness the existing open-source infrastructure for \acp{scchart} to create the mode diagrams, crucially including the ability to automatically compute a layout for them.
+
+The preliminary feedback from industrial users was encouraging, but also pointed to a number of still open questions and issues.
+The users also confirmed that preferences on mode diagrams are quite individual.
+Thus, flexibility and configurability for the mode diagram synthesis seems key.
+This may also include, as part of possible future work, the ability to choose how much ``semantic accuracy'' the mode diagrams should provide.
+Our focus so far was to provide a diagram synthesis that abstracted from run-time behavior in particular concerning data handling, but that still precisely captured possible state traces in reactions.
+That goal implied the need to differentiate, \eg, between immediate and delayed transitions and between different types of abort.
+However, at least for some users that was still too much detail, and made the mode diagrams less obvious to understand than a plain state diagram with just one type of transition would have been.
+
+Another possible improvement, also according to the feedback from the industrial users, would be the merge of awaiting transitions followed by a decision point (\ie if-else, repeat-until). That merge is not trivial regarding the triggers on the transitions. If one would simply merge the triggers from the delayed transition with the branches of the if-else, the label of the \lstinline{await} would be duplicated. It is doubtful that this is an optimal and compact solution. Further problems arise if variables are used in the if-else conditions and the \lstinline{await} statement. Complicated conditions might emerge this way. Boolean optimizations and smart simplifications have to be made here to make the merge viable.
+
+On a practical implementation side, a full integration into Visual Studio Code would allow for example to link the elements in the code with their visual representation, as is already the case in \ac{kieler} when working with textual \acp{scchart} and their visualization.
+Clicking in the visualization could highlight the corresponding parts in the code and vice versa, a feature that several industrial users had asked for. 
+
+\onlylv{
+This section gives a brief summary of the research question at hand, revisits the work and evaluation done, discusses the findings of this paper, and lastly proposes work to be done in the future.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Summary}\label{sec:summary}
+The research done in this paper tries to realize an automatically generated visual representation abstractly showing the implicitly contained states and transitions of any given Blech code. The visual representation is meant as a support tool for Blech developers, giving them a visual clue about their code and serving as a documentation feature. For the visual representation of the code, \acp{scchart} are chosen. \acp{scchart} are a visual programming language, with all the tools for converting a textual to visual representation in place with editors such as \ac{kieler}\footnote{\url{https://rtsys.informatik.uni-kiel.de/confluence/display/KIELER/Quick+Start+Guide}} or KEITH\footnote{\url{https://rtsys.informatik.uni-kiel.de/confluence/display/KIELER/KEITH}}. Furthermore, both programming languages reside in the same domain of embedded real-time systems and are synchronous languages. The requirements for the programming languages are similar, so the choice of \acp{scchart} was obvious, as its graphical elements are suited for the specific requirements given by the previously mentioned domain. To achieve a semantically equivalent translation is future work. 
+
+With this paper, I propose an abstract translation from Blech to \acp{scchart}. Statements in Blech are translated into \acp{scchart} constructs recursively. The resulting \ac{scchart} is altered in two simplification steps in terms of hierarchy and unnecessary immediate transitions that are introduced during the synthesis. In some cases, alternatives of visual representation of certain Blech statements are presented. One such is given by an identified weak-abort pattern, where the Blech cobegin construct to model an implicit weak-abort. Three different options are presented in this case.
+
+Next, the proposed concept for abstractly visualizing Blech code with \acp{scchart} is implemented. The existing architectures given by Blech and the \ac{kieler} research projects are used. A tool is added to the Blech compiler chain, taking the compiled typed abstract syntax tree of the given Blech code and transforming it via the mentioned steps above into a textual \ac{scchart} (.sctx). In the realized workflow, the textual \ac{scchart} is to be imported into an \ac{scchart}-compatible editor, such as the options mentioned above. Then, in the editor, the visual representation of the Blech code can be viewed, examined and explored. The tool is enhanced by configuration options.
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{Discussion}\label{sec:discussion}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Future Work}\label{sec:futurework}
+
+This section presents suggestions for future work done on the technical implementation and the research topic in general.
+
+\paragraph{General}
+
+In future work, it is necessary to implement a test framework to make sure the results stay the same when changes to the code base are made. Due to the enhanced features that are recommended later, changes are to be expected.
+
+Optimizations regarding the tool chain and configuration in the compiler context are to be validated and checked as well.
+
+Next, the generated textual \ac{scchart}, which is the output of the translation tool, is not optimized to be used other than to visualize the code with a compatible editor. The textual \ac{scchart} is not formatted to be good looking and matching common programming conventions. Therefore, it would be hard to use as a programmer for alterations. If a user desired to make changes to the textual \ac{scchart} in order to change the visualization to match the user's needs, it would be hard to do, since the code is not formatted to be used by real people. A possible help to format the produced code is already in place in the compiler through the \emph{Blech.Frontend.PrettyPrint} module, which takes care of formatting the C code that is produced when compiling Blech code.
+
+Implementing the proposed labeling, which allows cobegin-caused complex states and their regions to be labeled, is another proposed future work. Currently, only the basic labeling allowing awaiting states to be labeled is implemented. Implementing the extended feature is found to be beneficial in the evaluation.
+
+Furthermore, the evaluation also finds that implementing the discussed merge of delayed transitions with conditional immediate transitions is beneficial. Decisions on the concept of the merge have to be made as merging the conditions leaves some questions as discussed earlier. 
+
+The next implementation detail that was found to be desired to be improved regards pre-evaluated statements in the Blech compiler. Some of these are unwanted by some users, for example when evaluating expressions with constants or the when-reset construct. They prefer their visualization to be closer to the code base. Of course, being able to configure the amount of abstraction and pre-evaluation done by the compiler evaluations would be optimal.
+
+\paragraph{Extending the Concept}
+
+For further work, this paper proposes to develop a concept regarding the highlighting of external variables. As it is a rather crucial information for Blech programs, it would be helpful to highlight such variables in the visualization.
+
+Another important point that the evaluation shows is that the highlighting of weak branches of cobegin-constructs as final regions in \acp{scchart} is too subtle. Proposing a concept for different highlighting, such as giving the whole region a different color, should then be followed by implementing the proposed concept.
+
+Further validations from a broad group of developers is needed to further validate the results of this paper. The validation done here was realized with only a small group of four experts. Having a broader group of developers assess the findings would results in a stronger evaluation.
+
+To take the next step, it would be possible to enhance the work done to a full semantically equivalent translation. The current translations have to be confirmed and missing Blech pieces such as simple expressions have to be added. The expressions can be added as an action to transitions or complex states. Current translation rules have to be checked since they did not have the semantic equality in mind.
+
+\paragraph{IDE Integration}
+
+\autoref{chap:intro} introduces the vision of using the visualization while developing Blech code. Since the Blech tools are linked to Visual Studio Code, the idea is to have the visualization included in Visual Studio Code. This way, the user does not have to use multiple tools to access the visualization. The compiler of Blech has the ability to produce textual \acp{scchart}. The future work needs to find a way to include the visualization tools of \acp{scchart} in Visual Studio Code. Then, the textual \ac{scchart} resulting from the Blech compiler via the Blech tools can be visualized by the \acp{scchart} visualization tools in Visual Studio Code. In this context, it is needed to determine the default \ac{kieler} layout settings. Also, a configuration panel for configuring the visualization is needed. If different layers of abstraction are identified, which handle situations closer to the code or more abstract and vice versa, they could be configured with a slider. This way, the user would be able to determine the preferred the abstraction level from very basic to the semantic equivalent version.
+
+In such a Visual Studio Code integration, the possibility should also be given to link the elements in the code with their visual representation. Clicking in the visualization should highlight the corresponding parts in the code and vice versa. For example, this is already the case in \ac{kieler} when working with textual \acp{scchart} and their visualization. An idea to connect the visual elements to the code without having a IDE integration would be to note that line numbers of the code to specific visual elements.
+
+The related work of this paper showed a work done on translating the language Esterel to SyncCharts while maintaining the ability to view the translation steps as a user. This way, transformations can be understood and comprehended. Such feature of being able to view the abstract translation of this paper step by step is a nice idea to ensure that the user comprehends the visualization and its relation to the code. This could also be part of the IDE integration.
+
+\paragraph{Going beyond \acp{scchart}}
+
+Lastly, it would be possible to use other forms of visualization for abstractly showing Blech code. The tool synthesizes an abstract graph structure to produce the textual \acp{scchart}. This way any visual representation can be generated from this abstract graph. Using different state chart dialects or even proposing new Blech specific visualization elements would be options to consider.
+}
+
+\bibliographystyle{plain}
+\bibliography{bib/cau-rt,bib/pub-rts,bib/rts-arbeiten,dalu-thesis}
+
+
+\end{document}
