@@ -3,7 +3,7 @@
 
 \begin{document}
 
-\title{Building a Next-Generation Remote Operation Platform: Architecture Design, Real-Time Data Transport, and Implementation Tools}
+\title{Remote Control Platform with QUIC and WebTransport: Architecture Design and Implementation Tools}
 
 \author{%
   \onlyan{Anonymous Authors\\[1.3cm]}% Keep space for actual author list
@@ -15,8 +15,7 @@
       Reinhard von Hanxleden\IEEEauthorrefmark{2}
     }
     \IEEEauthorblockA{
-      \textit{{Department} of Computer Science, Kiel University}\\
-      Kiel, Germany\\
+      \textit{{Department} of Computer Science, Kiel University}
     }
   }
 }
@@ -287,25 +286,25 @@ Now that the translation of activities has been established, we consider the sta
 
 %
 \lstset{numbers=none}
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.45\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/activity.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:activity_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.5\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_activity}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:activity_b}
-	\end{subfigure}
-	\caption{Blech activity and synthesized \ac{scchart}.}
-	\label{fig:blech_activity_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.45\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/activity.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:activity_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.5\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_activity}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:activity_b}
+% 	\end{subfigure}
+% 	\caption{Blech activity and synthesized \ac{scchart}.}
+% 	\label{fig:blech_activity_to_sccharts}
+% \end{figure}
 %
 
 %
@@ -358,25 +357,25 @@ Remember that adding the empty state after the referenced \ac{scchart} is necess
 % 	\label{fig:blech_run_to_sccharts}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.3\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/run.blc}
-		\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:run_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.65\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_run}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:run_b}
-	\end{subfigure}
-	\caption{Blech run statement and synthesized \ac{scchart}.}
-	\label{fig:blech_run_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.3\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/run.blc}
+% 		\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:run_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.65\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_run}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:run_b}
+% 	\end{subfigure}
+% 	\caption{Blech run statement and synthesized \ac{scchart}.}
+% 	\label{fig:blech_run_to_sccharts}
+% \end{figure}
 
 %The relevant Blech statements are to be translated as follows.
 
@@ -402,25 +401,25 @@ Remember that adding the empty state after the referenced \ac{scchart} is necess
 % 	\label{fig:blech_await_to_sccharts}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.45\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/await.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:await_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.5\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_await}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:await_b}
-	\end{subfigure}
-	\caption{Blech await statement and synthesized \ac{scchart}.}
-	\label{fig:blech_await_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.45\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/await.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:await_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.5\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_await}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:await_b}
+% 	\end{subfigure}
+% 	\caption{Blech await statement and synthesized \ac{scchart}.}
+% 	\label{fig:blech_await_to_sccharts}
+% \end{figure}
 
 %
 %
@@ -462,47 +461,47 @@ The Blech code given in \autoref{subfig:await_a} shows an await statement. The s
 % 	\label{fig:blech_repeat_to_sccharts}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.23\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/repeat.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:repeat_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.75\linewidth}
-		%\hfill 
-%		\includegraphics[scale=\scchartscale]{concept/scchart_ex_repeat}
-		\includegraphics[width=\linewidth]{concept/scchart_ex_repeat}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:repeat_b}
-	\end{subfigure}
-	\caption{Blech repeat statement and synthesized \ac{scchart}.}
-	\label{fig:blech_repeat_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.23\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/repeat.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:repeat_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.75\linewidth}
+% 		%\hfill 
+% %		\includegraphics[scale=\scchartscale]{concept/scchart_ex_repeat}
+% 		\includegraphics[width=\linewidth]{concept/scchart_ex_repeat}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:repeat_b}
+% 	\end{subfigure}
+% 	\caption{Blech repeat statement and synthesized \ac{scchart}.}
+% 	\label{fig:blech_repeat_to_sccharts}
+% \end{figure}
 
 
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.3\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/while.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:while_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.65\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_while}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:while_b}
-	\end{subfigure}
-	\caption{Blech while statement and synthesized \ac{scchart}.}
-	\label{fig:blech_while_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.3\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/while.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:while_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.65\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_while}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:while_b}
+% 	\end{subfigure}
+% 	\caption{Blech while statement and synthesized \ac{scchart}.}
+% 	\label{fig:blech_while_to_sccharts}
+% \end{figure}
 
 
 \subsection{Repeat}\label{subsec:repeat}
@@ -590,26 +589,26 @@ The Blech code in \autoref{subfig:cobegin_a} shows a a cobegin construct with a 
 % \end{figure}
 %
 
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.25\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/cobegin.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:cobegin_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.72\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_cobegin}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:cobegin_b}
-	\end{subfigure}
-	\caption{Blech cobegin statement, with a weak and a strong branch, and synthesized \ac{scchart}.
-	The weak branch is translated to a final region, indicated by a double outline.}
-	\label{fig:blech_cobegin_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.25\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/cobegin.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:cobegin_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.72\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_cobegin}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:cobegin_b}
+% 	\end{subfigure}
+% 	\caption{Blech cobegin statement, with a weak and a strong branch, and synthesized \ac{scchart}.
+% 	The weak branch is translated to a final region, indicated by a double outline.}
+% 	\label{fig:blech_cobegin_to_sccharts}
+% \end{figure}
 
 %
 %
@@ -644,26 +643,26 @@ The Blech code in \autoref{subfig:ifelse_a} shows a simple if-else construct. Th
 % 	\label{fig:blech_ifelse_to_sccharts}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.2\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/ifelse.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:ifelse_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.75\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_ifelse}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:ifelse_b}
-	\end{subfigure}
-	\caption{Blech if-else statement and synthesized \ac{scchart}.
-	The initial state is transformed into a connector state.}
-	\label{fig:blech_ifelse_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.2\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/ifelse.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:ifelse_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.75\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_ifelse}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:ifelse_b}
+% 	\end{subfigure}
+% 	\caption{Blech if-else statement and synthesized \ac{scchart}.
+% 	The initial state is transformed into a connector state.}
+% 	\label{fig:blech_ifelse_to_sccharts}
+% \end{figure}
 
 
 
@@ -700,25 +699,25 @@ This translation is illustrated in \autoref{fig:blech_whenabort_to_sccharts}, wh
 % 	\label{fig:blech_whenabort_to_sccharts}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.2\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/whenabort.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:whenabort_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.78\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_abortwhen}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:whenabort_b}
-	\end{subfigure}
-	\caption{Blech when-abort statement and synthesized \ac{scchart}.}
-	\label{fig:blech_whenabort_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.2\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/whenabort.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:whenabort_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.78\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_abortwhen}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:whenabort_b}
+% 	\end{subfigure}
+% 	\caption{Blech when-abort statement and synthesized \ac{scchart}.}
+% 	\label{fig:blech_whenabort_to_sccharts}
+% \end{figure}
 
 
 %
@@ -741,25 +740,25 @@ This translation is illustrated in \autoref{fig:blech_whenabort_to_sccharts}, wh
 % 	\label{fig:blech_whenreset_to_sccharts}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.3\linewidth}
-		\centering
-		\lstinputlisting[language=blc]{graphics/concept/blc/whenreset.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:whenreset_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.65\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_resetwhen}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:whenreset_b}
-	\end{subfigure}
-	\caption{Blech when-reset statement and synthesized \ac{scchart}.}
-	\label{fig:blech_whenreset_to_sccharts}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.3\linewidth}
+% 		\centering
+% 		\lstinputlisting[language=blc]{graphics/concept/blc/whenreset.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:whenreset_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.65\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_resetwhen}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:whenreset_b}
+% 	\end{subfigure}
+% 	\caption{Blech when-reset statement and synthesized \ac{scchart}.}
+% 	\label{fig:blech_whenreset_to_sccharts}
+% \end{figure}
 %
 %
 %
@@ -778,23 +777,23 @@ This difference is used in this translation. The translation is the same as in \
 %
 %
 \subsection{Running example after the translation step}
-\begin{figure}[tp]
-	\centering 
-	\begin{subfigure}[b]{\linewidth}
-		\lstinputlisting[language=blc, xleftmargin= 5mm]{graphics/concept/blc/runningexample.blc}
-		\caption{Blech code.}
-		\label{fig:runningex_blech}
-	\end{subfigure}
-	\medskip
+% \begin{figure}[tp]
+% 	\centering 
+% 	\begin{subfigure}[b]{\linewidth}
+% 		\lstinputlisting[language=blc, xleftmargin= 5mm]{graphics/concept/blc/runningexample.blc}
+% 		\caption{Blech code.}
+% 		\label{fig:runningex_blech}
+% 	\end{subfigure}
+% 	\medskip
 
-	\begin{subfigure}[b]{\linewidth}
-		\includegraphics[width=\linewidth]{concept/running_ex_1}
-		\caption{Mode diagram synthesized by Phase 1.}
-		\label{fig:runningex_phase1}
-	\end{subfigure}
-	\caption{Running example to illustrate Phase 1 and, in \autoref{fig:runningex_phase3}, Phase 3.}
-	\label{fig:runningex}
-\end{figure}
+% 	\begin{subfigure}[b]{\linewidth}
+% 		\includegraphics[width=\linewidth]{concept/running_ex_1}
+% 		\caption{Mode diagram synthesized by Phase 1.}
+% 		\label{fig:runningex_phase1}
+% 	\end{subfigure}
+% 	\caption{Running example to illustrate Phase 1 and, in \autoref{fig:runningex_phase3}, Phase 3.}
+% 	\label{fig:runningex}
+% \end{figure}
 
 The code in \autoref{fig:runningex_blech} will serve as a running example to illustrate the different phases.
 % shows a piece of artificial Blech code. It contains an if-else construct inside a loop. The if branch awaits a boolean input value, whereas the else branch contains a cobegin awaiting a boolean value in each branch.
@@ -837,14 +836,6 @@ The \emph{extended labeling} approach is more flexible. After the state-only lab
 %
 %
 %
-\subsection{State-only labeling}\label{subsec:label_await}
-The \lstinline{await} statement is the primary source of states and transitions in our diagrams.
-Often, the code before the \lstinline{await} implements one mode of operation and the code after the \lstinline{await} implements the next mode.
-For instance, in our introductory example code in \autoref{fig:proposal_ex_blech}, the code before line 10 is concerned with the initialization, while the code after line 10 starts a measurement.
-Here we would like to give a meaningful name, such as \emph{init}, to the state the program is in while waiting for a certain condition.
-In \autoref{fig:proposal_ex_blech} a simple comment is used to describe this location.
-To reflect this in the diagram, we propose a \lstinline{@@[label="text"]} pragma which is placed \emph{before} an \lstinline{await} statement to label the state that the awaiting transition emanates from, as illustrated in
-\autoref{fig:label_await}.
 %The \lstinline{await} statement adds a new state and a transition. The transition is labeled with the condition of the await statement. When labeling an await statement, a user may want to describe the state the program is in when the program awaits a certain condition. Therefore, the state that comes before the transition must be the one that is labeled. This is always possible, because there is always a previous state available, either through initialization (initial state) or with the help of the translation rules given by \autoref{sec:synthesis}. All of the translation rules add an empty state that concludes the translation of a statement or construct. Therefore, labeling an empty state without interfering with other labeled states (e.g. run statements) is possible.
 
 %As illustrated in \autoref{fig:label_await}, the labels for awaits are specified via the annotation \emph{@@[label="text"]}, where \emph{text} is a placeholder for the desired label to be assigned to a state.
@@ -869,24 +860,24 @@ To reflect this in the diagram, we propose a \lstinline{@@[label="text"]} pragma
 % 	\label{fig:label_await}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.3\linewidth}
-		\centering	\lstinputlisting[language=blc]{graphics/concept/blc/label_await.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:label_await_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.65\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/label_ex_await}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:label_await_b}
-	\end{subfigure}
-	\caption{Blech \lstinline{await} statement with label specification and synthesized \ac{scchart}.}
-	\label{fig:label_await}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.3\linewidth}
+% 		\centering	\lstinputlisting[language=blc]{graphics/concept/blc/label_await.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:label_await_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.65\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/label_ex_await}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:label_await_b}
+% 	\end{subfigure}
+% 	\caption{Blech \lstinline{await} statement with label specification and synthesized \ac{scchart}.}
+% 	\label{fig:label_await}
+% \end{figure}
 
 \onlylv{
 Such proposed label specification and placement is shown in \autoref{fig:label_await}. \autoref{subfig:label_await_a} shows a specified label for an await statement. \autoref{subfig:label_await_b} shows the generated \ac{scchart} with the specified label. The label \emph{aLabel} is placed in the state before the immediate transition as described above.
@@ -930,24 +921,24 @@ Consequently, a branch label is needed for each branch, when labeling the differ
 % 	\label{fig:label_cbgn}
 % \end{figure}
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[c]{0.45\linewidth}
-		\centering	\lstinputlisting[language=blc]{graphics/concept/blc/label_cobegin.blc}
-		%\captionsetup{skip=25pt}
-		%\caption{Blech code.}
-		\label{subfig:label_cbgn_a}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[c]{0.5\linewidth}
-		\hfill 
-		\includegraphics[scale=\scchartscale]{concept/label_ex_cobegin}
-		%\caption{The translated \ac{scchart}.}
-		\label{subfig:label_cbgn_b}
-	\end{subfigure}
-	\caption{Region labeling with the advanced labeling approach.}
-	\label{fig:label_cbgn}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[c]{0.45\linewidth}
+% 		\centering	\lstinputlisting[language=blc]{graphics/concept/blc/label_cobegin.blc}
+% 		%\captionsetup{skip=25pt}
+% 		%\caption{Blech code.}
+% 		\label{subfig:label_cbgn_a}
+% 	\end{subfigure}
+% 	\hfill
+% 	\begin{subfigure}[c]{0.5\linewidth}
+% 		\hfill 
+% 		\includegraphics[scale=\scchartscale]{concept/label_ex_cobegin}
+% 		%\caption{The translated \ac{scchart}.}
+% 		\label{subfig:label_cbgn_b}
+% 	\end{subfigure}
+% 	\caption{Region labeling with the advanced labeling approach.}
+% 	\label{fig:label_cbgn}
+% \end{figure}
 
 \onlylv{
 Such extended label specification and placement is shown in \autoref{fig:label_cbgn}. \autoref{subfig:label_cbgn_a} shows the Blech code containing a cobegin construct and the above mentioned label specifications, one for each branch of the cobegin. Their visualization is shown in \autoref{subfig:label_cbgn_b}. The complex state and regions are labeled according to the specified labels and above described label placement.
@@ -981,24 +972,24 @@ Step 2 follows after Step 1 because hierarchy flattening may produce additional 
 % in the second simplification step.
 
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[b]{0.9\linewidth} % {0.525\textwidth}  
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_hier_before}
-		\caption{Before flattening.}
-		\label{subfig:break_hier_before}
-	\end{subfigure}
-	\begin{subfigure}[b]{0.9\linewidth} % {0.425\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_hier_after}
-		\captionsetup{skip=7.5pt}
-		\caption{After flattening.}
-		\label{subfig:break_hier_after}
-	\end{subfigure}
-	\caption{An example of how hierarchy is flattened for the when-abort construct.}
-	\label{fig:break_hier}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.9\linewidth} % {0.525\textwidth}  
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_hier_before}
+% 		\caption{Before flattening.}
+% 		\label{subfig:break_hier_before}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.9\linewidth} % {0.425\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_hier_after}
+% 		\captionsetup{skip=7.5pt}
+% 		\caption{After flattening.}
+% 		\label{subfig:break_hier_after}
+% 	\end{subfigure}
+% 	\caption{An example of how hierarchy is flattened for the when-abort construct.}
+% 	\label{fig:break_hier}
+% \end{figure}
 %
 
 %
@@ -1009,24 +1000,6 @@ Most translation rules in \autoref{sec:synthesis} introduce complex states with 
 Those states add hierarchy to the mode diagram, which may or may not be desired by the modeler.
 
 \subsubsection{Aborts}
-
-\autoref{subfig:break_hier_before} shows the mode diagram produced by Phase 1 for the following snippet of code.
-\lstinputlisting[language=blc,xleftmargin=40mm]{graphics/concept/blc/abort_example.blc}
-The hierarchical structure of the code is reflected in the hierarchical construction of the diagram.
-Note that the only state with a delayed outgoing transition is state \textsf{b}.
-Thus the only way that the super-state comprising \textsf{b}, \textsf{c} and \textsf{d} can be aborted is if it is waiting in \textsf{b} and \emph{abrtCond} becomes true.
-This insight is explicitly shown in \autoref{subfig:break_hier_after}.
-The hierarchy is removed (or, as we say here, \emph{flattened}), all states are preserved, only their final or initial status is changed to a regular status, and the aborting transition directly links states \textsf{b} and \textsf{e}.
-
-In this example, one may argue that removing the hierarchy has simplified the diagram.
-However, we have also lost some of the structure of the original Blech code.
-Furthermore, if the body that is aborted contains not just one but many states, we would have to add an abort-transition for each of these states, which goes agains the ``write-things-once principle'' that generally motivates hierarchy in Statecharts.
-Hence, we propose to allow the user to configure whether hierarchy for aborts should be eliminated or not.
-As confirmed by the evaluation in \autoref{sec:evaluation}, users do appreciate this flexibility.
-%As an example, the flattening for a when-abort construct is shown in \autoref{fig:break_hier}. %\autoref{subfig:break_hier_before} shows the chart before, \autoref{subfig:break_hier_after} after the flattening step. 
-%\autoref{subfig:break_hier_before} shows a when-abort statement that contains a single await statement. A boolean value \emph{condition} is the condition for abortion. The flattening step causes unnecessary states such as the final state (state \textsf{d} in the example) of complex states to be preserved. In \autoref{subfig:break_hier_after}, all states are preserved, only their final or initial status was changed to a regular status. The initial immediate transition points to the former initial state \textsf{b} of the complex state, and the regular termination transition now is a regular immediate transition and has the former final state \textsf{d} of the complex state as source. The abort transition has its source changed to \textsf{b}, which is the sole awaiting state of the inner behavior, and still points to the case closing state \textsf{e}. Unnecessary states such as \textsf{c} and \textsf{d} will be discarded in the simplification step of collapsing immediate transitions.
-
-%The flattening of hierarchy is the first simplification step. As will be shown, immediate transitions are introduced in this step. Hence, it must come before the elimination of transient states. 
 \onlylv{
 The constructs that add complex state are: run, repeat, while, cobegin, if-else, when-abort, and when-reset. The constructs activity, repeat, while, if-else form a group of similar constructs and are discussed together. They are similar because they have complex states with simple incoming and outgoing transitions. 
 When-abort and when-reset also form a similar group, since they have an abort-transition as was described before and possibly have a second transition for regular termination. Cobegin is a special case because it might contain multiple regions and is therefore generally hard to flatten.
@@ -1095,37 +1068,37 @@ The first key difference is a differentiated consideration of the very first wea
 The other difference is the transition from the final state of the inner behavior of the non-awaiting branch. The regular connection via immediate transition from final state to the case-closing state is not realized. If the awaiting-branch is strong, the await condition has to be met to terminate the whole cobegin construct. So an immediate transition with the awaiting condition is added that can then exit the behavior of the non-awaiting branch, which complies with the behavior of the Blech code. If the awaiting-branch is weak, it can be aborted by the non-awaiting branch, so the cobegin construct terminates, if the non-awaiting branch finishes. Thus, if the awaiting branch is weak, only a simple regular immediate transition is added from the final state of the inner behavior to the case-closing state.
 
 %
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[b]{0.41\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_before}
-		\caption{Cobegin pattern before flattening. The await branch is strong.}
-		\label{subfig:break_cobegin_strong_before}
-	\end{subfigure}\hspace{2.5mm}
-	\begin{subfigure}[b]{0.485\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_after}
-		\captionsetup{skip=22.5pt}
-		\caption{Cobegin pattern with a strong await branch after flattening.}
-		\label{subfig:break_cobegin_strong_after}
-	\end{subfigure}
-	\begin{subfigure}[b]{0.41\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_2_before}
-		\caption{Cobegin pattern before flattening. The await branch is weak.}
-		\label{subfig:break_cobegin_weak_before}
-	\end{subfigure}\hspace{2.5mm}
-	\begin{subfigure}[b]{0.39\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_2_after}
-		\captionsetup{skip=21.25pt}
-		\caption{Cobegin pattern with a weak await branch after flattening.}
-		\label{subfig:break_cobegin_weak_after}
-	\end{subfigure}
-	\caption[An example of how hierarchy is broken for a cobegin pattern.]{An example of how hierarchy is broken for a cobegin pattern. Note that through the abstraction in \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after}, aborting edges originating inside the black square are left out as well.}
-	\label{fig:break_cobegin}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.41\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_before}
+% 		\caption{Cobegin pattern before flattening. The await branch is strong.}
+% 		\label{subfig:break_cobegin_strong_before}
+% 	\end{subfigure}\hspace{2.5mm}
+% 	\begin{subfigure}[b]{0.485\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_after}
+% 		\captionsetup{skip=22.5pt}
+% 		\caption{Cobegin pattern with a strong await branch after flattening.}
+% 		\label{subfig:break_cobegin_strong_after}
+% 	\end{subfigure}
+% 	\begin{subfigure}[b]{0.41\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_2_before}
+% 		\caption{Cobegin pattern before flattening. The await branch is weak.}
+% 		\label{subfig:break_cobegin_weak_before}
+% 	\end{subfigure}\hspace{2.5mm}
+% 	\begin{subfigure}[b]{0.39\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_2_after}
+% 		\captionsetup{skip=21.25pt}
+% 		\caption{Cobegin pattern with a weak await branch after flattening.}
+% 		\label{subfig:break_cobegin_weak_after}
+% 	\end{subfigure}
+% 	\caption[An example of how hierarchy is broken for a cobegin pattern.]{An example of how hierarchy is broken for a cobegin pattern. Note that through the abstraction in \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after}, aborting edges originating inside the black square are left out as well.}
+% 	\label{fig:break_cobegin}
+% \end{figure}
 %
 
 \autoref{fig:break_cobegin} shows such a pattern before flattening. \autoref{subfig:break_cobegin_strong_before} and \autoref{subfig:break_cobegin_weak_before} are the charts before, \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after} after the flattening of the hierarchy. \autoref{subfig:break_cobegin_strong_before} and \autoref{subfig:break_cobegin_weak_before} show the pattern, with an awaiting branch and the other branch being a weak branch. In \autoref{subfig:break_cobegin_strong_before} the await statement is inside a strong branch, whereas \autoref{subfig:break_cobegin_weak_before} shows the await statement in a weak branch. The condition of the await statement becomes the condition for the abort transitions in the flattened versions. The abort transitions are delayed transitions because they are added to the very first awaiting node \textsf{e}. Following aborting transitions would be immediate transitions. The branch not containing the await statement is weak and contains some states that are arbitrary and abstractly illustrated here. The region matching the await-pattern will be discarded completely, the rest is analog as to the simplification of a when-abort construct when considering the await condition to be the abortion condition, which leads to the simplified illustration of \autoref{subfig:break_cobegin_strong_after} and \autoref{subfig:break_cobegin_weak_after}. The difference between the two is the different transition from the former final state to the case closing state. The condition of the await statement has to be met to terminate the whole cobegin construct in \autoref{subfig:break_cobegin_strong_after}, whereas in \autoref{subfig:break_cobegin_weak_after}, an immediate transition without a trigger is used. Note that the abstracted graph inside the black square could, depending on the content, be the origin of immediate transitions with the identified aborting condition connecting to state \textsf{g}.
@@ -1133,35 +1106,35 @@ The other difference is the transition from the final state of the inner behavio
 An alternative simplified visualization of the detected weak-abort pattern is given as follows. This version is independent og the amount of branches present. The pattern only requires one awaiting-branch and that all the other non-awaiting branches are weak branches. This version does not aim to eliminate the hierarchy, but tries to get rid of the awaiting branch. The awaiting branch gives the aborting condition. Once extracted, the whole branch and region can be discarded. The rest of the complex state can remain as well as the outgoing termination transition, if present. The weak-abortion is realized with an immediate transition having the aborting condition as a trigger. Thus, the awaiting branch was simplified to a transition and the complex state was made less complex. This alternative is closer to the semantic equivalence and achieves to simplify the identified pattern.
 
 %
-\begin{figure}[tp]
-	\centering 
-	\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_alt_after}
-	\caption{Alternative weak-abort pattern visualization to \autoref{subfig:break_cobegin_strong_before}.}
-	\label{fig:break_cobegin_alt}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering 
+% 	\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_alt_after}
+% 	\caption{Alternative weak-abort pattern visualization to \autoref{subfig:break_cobegin_strong_before}.}
+% 	\label{fig:break_cobegin_alt}
+% \end{figure}
 %
 
 \autoref{fig:break_cobegin_alt} shows the alternative visualization, to the non-flattened version given by \autoref{subfig:break_cobegin_strong_before}. The condition given by the awaiting-branch is added as a weak-aborting transition the the complex state. The non-awaiting region in the complex state remains unchanged. If multiple regions were present besides the awaiting branch, they would be unchanged as well.
 
 With the two alternative versions of simplifying the detected weak-abort pattern as well as the option to not simplify the pattern at all, it results in three versions, each with their own advantages. To give the users more flexibility and the opportunity to use the strengths of each version, it is beneficial to freely allow the configuration between these variants as is shown in the evaluation later.
 }{
-\begin{figure}[tp]
-	\centering
-	\begin{subfigure}[b]{0.41\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_before}
-		\caption{Before flattening.}
-		\label{subfig:break_cobegin_strong_before}
-	\end{subfigure}\hspace{2.5mm}
-	\begin{subfigure}[b]{0.485\textwidth}   
-		\centering 
-		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_alt_after}
-		\caption{After flattening.}
-		\label{fig:break_cobegin_alt}
-	\end{subfigure}
-	\caption{The weak-abort pattern.}
-	\label{fig:break_cobegin}
-\end{figure}
+% \begin{figure}[tp]
+% 	\centering
+% 	\begin{subfigure}[b]{0.41\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_1_before}
+% 		\caption{Before flattening.}
+% 		\label{subfig:break_cobegin_strong_before}
+% 	\end{subfigure}\hspace{2.5mm}
+% 	\begin{subfigure}[b]{0.485\textwidth}   
+% 		\centering 
+% 		\includegraphics[scale=\scchartscale]{concept/scchart_ex_break_cobegin_alt_after}
+% 		\caption{After flattening.}
+% 		\label{fig:break_cobegin_alt}
+% 	\end{subfigure}
+% 	\caption{The weak-abort pattern.}
+% 	\label{fig:break_cobegin}
+% \end{figure}
 %
 \autoref{fig:break_cobegin} illustrates the flattening with the weak-abort pattern, with a strong awaiting branch.
 }
@@ -1186,25 +1159,25 @@ However, there are many transient states, some of them have been introduced by t
 This motivates the optimization described next.
 
 %
-\begin{figure}[tp]
-	\centering 
-	\begin{subfigure}[b]{\linewidth}
-		\centering 
-		\includegraphics[scale=.44]{concept/running_ex_2}
-		\caption{Result after hierarchy flattening.}
-		\label{fig:running_phase3a}
-	\end{subfigure}
-	\medskip
+% \begin{figure}[tp]
+% 	\centering 
+% 	\begin{subfigure}[b]{\linewidth}
+% 		\centering 
+% 		\includegraphics[scale=.44]{concept/running_ex_2}
+% 		\caption{Result after hierarchy flattening.}
+% 		\label{fig:running_phase3a}
+% 	\end{subfigure}
+% 	\medskip
 
-	\begin{subfigure}[b]{\linewidth}
-		\centering 
-		\includegraphics[scale=.48]{concept/running_ex_3}
-		\caption{Result after eliminating transient states.}
-		\label{fig:running_phase3b}
-	\end{subfigure}
-	\caption{Effect of Phase 3 on the running example diagram from \autoref{fig:runningex_phase1}}
-	\label{fig:runningex_phase3}
-\end{figure}
+% 	\begin{subfigure}[b]{\linewidth}
+% 		\centering 
+% 		\includegraphics[scale=.48]{concept/running_ex_3}
+% 		\caption{Result after eliminating transient states.}
+% 		\label{fig:running_phase3b}
+% 	\end{subfigure}
+% 	\caption{Effect of Phase 3 on the running example diagram from \autoref{fig:runningex_phase1}}
+% 	\label{fig:runningex_phase3}
+% \end{figure}
 %
 
 
