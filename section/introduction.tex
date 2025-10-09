@@ -1,0 +1,144 @@
+\section{Introduction}
+\label{sec:intro}
+
+Software development is more than the process of writing source code. It begins by recording the requirements for the desired software and continues with planning of the software architecture, its components, and its environment. Only then, actual source code is written. The process then includes the generation of documentation. It can be generated with visualization tools and languages such as UML. Creating such models can be a tedious task that takes a lot of effort and time. The purpose of documentation is to offer an overview of the software (components) and providing a help for understanding the code base in different abstraction levels. Documentation is beneficial to use for experienced developers as well as developers that just started out working on a given project. 
+
+Code, however, is not static. Code improvements, refactoring, new features, customer requests or updated technology are all reasons to change existing code. 
+%Documentation that was manually created when the code was firstly written is outdated after the code changes. Hence, the documentation also has to be updated manually. This is a tedious task that has to be remembered to be done. As soon as this task is not executed, code and documentation are out of sync and all types of issues arise. 
+Therefore, automatic generation of up-to-date code documentation could enhance the software development process. 
+
+\onlylv{
+Apart from interface documentations, documentation of software is often of visual nature. Generating visual representations of code is generally called Software Visualization and is a broad field of diverse issues~\cite{gravcanin05}. Most of the time, graph structures are used to visualize source code. With the help of directed edges, the control flow of a program can be visualized intuitively. Therefore, automatically extracting models from source code and visualizing them is a set task when trying to automatically visualize software. 
+%
+Visualized software serves more purpose than documentation. Visualized software can enhance collaboration in projects with multiple members or can make it easier to find possible improvements in the code structure~\cite{gravcanin05}.
+
+Software can be visualized using many different levels of abstraction. The most abstract way software can be viewed is by its requirements. The software itself is a black-box, where only the in- and outputs are known. 
+%This is a very high level of abstraction. 
+The lowest level of abstraction is given by the complete code including all operations, as no information on the implementation is missing. Abstraction is a spectrum and any point in between these two extremes is an abstraction level that can possibly be desired to be visualized. Possible abstractions may discard simple calculations and only show the control flow in the program or consider the software components to be black-boxes and only visualize their interactions. The sought level of abstraction depends on the intention behind the visualization. For example, if the interaction between software components is of interest, an abstraction will be chosen that hides the inner behavior of the software components and highlights their interactions only.
+}
+
+%
+% % For Blech code with annotations, see graphics/intro/proposal_ex_BIG.blc
+% \addtolength{\textfloatsep}{-1mm}
+% \begin{figure}[tp]
+% 	\centering 
+% 	\begin{subfigure}[b]{\linewidth}
+% 		%\lstinputlisting[language=blc, xleftmargin= 0.2\textwidth, numbers=left, numbersep=10pt]{graphics/intro/proposal_ex.blc}
+% 		\lstinputlisting[language=blc, xleftmargin= 5mm, numbers=left, numbersep=10pt]{graphics/intro/proposal_ex.blc}
+% 		\caption{Original Blech code.}
+% 		\label{fig:proposal_ex_blech}
+% 	\end{subfigure}
+% 	\medskip
+
+% 	\begin{subfigure}[b]{\linewidth}
+% 		\centering
+% 		% \includegraphics[width=.55\linewidth]{graphics/eval/proposal_result_compact}
+%     \includegraphics[width=\linewidth]{graphics/eval/proposal_result_compact_lr}
+% 		\caption{The corresponding mode diagram, automatically extracted with the approach presented here.}
+% 		\label{fig:proposal_ex_result}
+% 	\end{subfigure}
+% 	\caption{The \textsf{StopWatchController} example.}
+% 	\label{fig:proposal_ex}
+% \end{figure}
+
+
+In this paper, we investigate how to harness software visualization~\cite{gravcanin05} for the Blech programming language~\cite{GretzG18}.
+%A relatively young programming language that does not have many tools available for automatically visualizing its source code is Blech\footnote{\url{https://www.blech-lang.org/docs/user-manual/}}. \autoref{fig:proposal_ex_blech} shows an example of Blech code that was used for the announcement of this paper. 
+Blech is an imperative synchronous programming language for embedded, reactive, real-time, safety-critical systems.
+% that allows to write reactive subprograms, which are combined sequentially and concurrently~\cite{GretzG18}. Blech can be compiled to C and thus, be integrated in existing projects or simulation frameworks. The language differs from its competitors Esterel~\cite{Berry00}, Quartz~\cite{Schneider09}, Lustre~\cite{CaspiPHP87} or Céu~\cite{santanna2015} in terms of targeting application-level software development with a flat learning curve in industrial contexts, easy project integration and its notion of causality. Unlike older languages with broad applications and many users such as C or Java, it does not have a broad variety of supporting tools available. Apart from the compiler, an extension for Visual Studio Code with a language server for syntax checking and highlighting is available. To use Blech in large-scale software projects, a tool for automatically generating documentation and visualizations for collaborative work could improve its usefulness.
+%
+It is a \emph{synchronous} language~\cite{BenvenisteCEH+03}, and is inspired by languages like Esterel~\cite{Berry00}, Céu~\cite{SantAnnaIRRB17} or \acp{scchart}~\cite{vonHanxledenDM+14} that are used to implement stateful behavior.
+To illustrate that stateful nature, consider the \textsf{StopWatchController} example in \autoref{fig:proposal_ex}.
+In the initial \emph{tick} we perform some initializations and then pause at the \lstinline{await} statement in line 10, which we can consider as the initial \emph{state} of the program.
+We remain in that state until, in some future reaction, the Boolean flag \textsf{startStop} is \textsf{true} and we enter a repeat loop.
+In that loop, the program concurrently does two things (over several reaction steps): it waits for another occurrence of \textsf{startStop}, while also executing the \textsf{Measurement} sub-activity.
+After that, we wait for the \textsf{startStop} or \textsf{resetLap} flags; if the latter occurs, we loop back to the initial state.
+
+While the underlying state machine is explicitly laid down in the program, extracting it requires some fairly careful reading of the source code.
+In real life, the code quickly becomes more complex than this simple example and keeping track of the stateful behavior may become a challenging task.
+This is where software visualization and the work presented here come into play.
+
+\onlylv{
+To determine the value of such illustrations, existing visualization tools could be used. This way, not all parts of such project regarding the graphical elements and their layout have to to be developed. A research project about the graphical model-based design of complex-system is the \ac{kieler}. Its pragmatics part aims to improve comprehensibility of diagrams, improve development and maintenance time and improve the analysis of dynamic behavior. Automatic layout is applied to graphical components of models. A visual language illustrated by \ac{kieler} is \acfp{scchart}, designed for modeling safety-critical reactive systems. \acp{scchart} are based on a statechart notation~\cite{vonHanxledenDM+14a}. \acp{scchart} are further described in \autoref{subsec:sccharts} and an example is given in \autoref{fig:scchartexample}.
+}
+
+\subsection*{Contributions and Outline}
+%\autoref{chap:concept} presents
+We here investigate the automatic synthesis of mode diagrams, such as \autoref{fig:proposal_ex_result}, from Blech code.
+We first present in \autoref{sec:synthesis} a \emph{structural translation} (``Phase 1''), which takes care of directly translating Blech code into \acp{scchart} statement by statement.
+This results in an \ac{scchart} that reflects the modes in the given Blech code.
+However, the states will not be labelled, which limits their usefulness, and the diagram will typically be quite bloated.
+This motivates ``Phase 2,'' presented in \autoref{sec:labelextraction}, where we propose different approaches to label mode diagrams based on Blech source code annotations, and ``Phase 3,'' covered in \autoref{sec:optimization}, where we present optimization approaches to generate more concise mode diagrams.
+\autoref{sec:evaluation} presents evaluation results based on feedback from industrial Blech users.
+We wrap up with a discussion of further related work in \autoref{sec:related-work} and conclusions in \autoref{sec:conclusions-outlook}.
+
+For space considerations, we will focus here on the concepts underlying our approach.
+For full technical detail, we refer to the thesis of the first author%
+\onlynonan{\cite{lucas20}}
+\onlyan{\cite{Anonymous}}.
+
+\subsection{Background on SCCharts}
+\label{sec:sccharts}
+
+Our mode diagrams are finite state machines with hierarchy and concurrency.
+It is not our goal to find an accurate representation of a low-level control flow graph.
+The term \emph{mode} emphasizes the objective to represent somewhat higher-level modes of operation of a program.
+A mode may persist over several reactions and comprise an arbitrary amount of \emph{program states} (evaluations of program counters and variables).
+We borrow syntax and semantics from \acp{scchart}~\cite{vonHanxledenDM+14}.
+However, we only use a subset of SCCharts that visualizes the high-level behavior, omitting transition effects, variable declarations, etc.
+
+To get full value from the mode diagrams, we now summarize the key syntactical \ac{scchart} elements used here.
+States with a thick border, as state \textsf{init} in \autoref{fig:proposal_ex_result}, are \emph{initial states}, through which a \emph{super state}, such as \textsf{StopWatchController}, is entered.
+States with a double border are \emph{final states}, which denote termination of the enclosing super state.
+Super states consist of one or more \emph{regions} that execute concurrently, see for example \autoref{fig:blech_cobegin_to_sccharts}.
+
+%Beyond these standard features of FSMs and Statecharts, 
+\acp{scchart} also adopt the distinction introduced by SyncCharts~\cite{Andre03} between \emph{delayed} transitions, drawn with a solid line, and \emph{immediate} transitions, drawn with a dashed line.
+Roughly speaking, delayed transitions denote tick/reaction boundaries, whereas immediate transitions denote control flow within a reaction.
+When a state is entered in a reaction, the state can be left within the same reaction only through immediate transition.
+\Eg, in the \textsf{StopWatchController}, the \textsf{stop} state is entered when we are in the \textsf{Measurement} state at the beginning of the tick and the \textsf{startStop} \emph{event} is \emph{present}.
+Since \textsf{stop} does not have any outgoing immediate transitions, we end the reaction in that state.
+To leave the state we require another event \textsf{startStop} in a subsequent reaction, or an event \textsf{resetLap}.
+\emph{Connectors}, drawn as a small black disk, are states that are guaranteed to be left again in the tick they are entered.
+Transitions leaving connectors must be immediate, and there must be a \emph{default transtion} that is taken unconditionally.
+If a state or connector has multiple outgoing transtions, these are checked in order of their \emph{priority}, where 1 is the highest priority.
+Coming back to the \textsf{StopWatchController} in \autoref{fig:proposal_ex}, we observe that if we are in \textsf{stop} at the beginning of the tick, we advance to \textsf{init} if \textsf{resetLap} is present, and we transition to \textsf{Measurement} (via the default transition from the connector) if \textsf{resetLap} is present.
+
+Finally, \acp{scchart} also offers different types for transitions that leave super states.
+\emph{Termination transitions}, indicated with a green triangle, are taken when all regions in a super state have reached a final state.
+\emph{Strong abort transtions}, indicated with a red circle, suppress execution of the inner behavior of the super state when they are taken.
+Transitions out of a super state without any adornments are \emph{weak abort transtions}, which permit inner behavior (a ``last wish'') of the left super state.
+Strong aborts and termination transitions are used for example to translate the when-abort statement, as shown in \autoref{fig:blech_whenabort_to_sccharts}.
+
+In addition to these pre-existing \acp{scchart} language features, our mode diagrams also include \emph{final regions}, indicated by a double outline, as illustrated in \autoref{fig:blech_cobegin_to_sccharts}.
+Final regions effectively make each of their states final, which allows to capture weak branches of the Blech cobegin statement, see also \autoref{subsec:cobegin}.
+
+
+\onlylv{
+%\subsection{Extracting and Generating \acp{scchart} from Blech}\label{chap:concept}
+\subsection{Overview of the mode diagram synthesis from Blech}\label{chap:concept}
+
+The main goal of this paper is to generate abstract \acp{scchart} from Blech code. The focus lies on the abstraction of Blech code with special interest in visualizing the implicitly contained states inside the code. The intended purpose of the visualization lies in supporting the development process of software.
+\onlylv{As explained in the introduction, the currently available visualization of the program graph that visualizes all statements was found to be too confusing and big, as it contained many states that are unnecessary to understand the control flow in the program. Further, that visualization does not focus on the important implicitly contained states of the Blech code. This is an important point to be made, since Blech is a language for reactive, embedded systems.}
+Hence, this paper does not intend to generate semantically identical \acp{scchart}. Rather we synthesize \acp{scchart} that represent the Blech code in a more abstract matter with focus on the stateful nature of the code. 
+%This was discussed in \autoref{sec:problemstatement}. 
+The development into semantically identical \acp{scchart} is recommended for future work, as explained in detail in \autoref{sec:futurework}.
+
+The first step to take is to determine the desired \acp{scchart} equivalent to individual Blech statements.
+However, translating the statements one by one introduces unneeded hierarchies and transient states through translating non-stateful inner behavior of Blech constructs or inlining activity calls. Hence, to generate the described abstract \acp{scchart}, multiple phases are needed.
+
+The extraction of mode diagrams based on \acp{scchart} from Blech code is divided into three phases.
+Phase 1 takes care of directly translating Blech code into \acp{scchart} statement by statement. Each statement is translated into an \acp{scchart} element. Blech statements that are not relevant to the stateful nature of the code, such as simple assignments, are neglected in this step.
+%Only elements that are important to the statefulness or corresponding control flow are taken care of. 
+This step is called the \emph{structural translation} and is covered in \autoref{sec:synthesis}.
+After this step, we will have an \ac{scchart} that reflects the modes in the given Blech code.
+However, the states will not be labelled, which limits their usefulness, and the diagram will typically be quite bloated.
+These issues are taken care of by the remaining phases.
+
+In Phase 2, information is added to the states via labels defined by the user in Blech. This way, for documentation purposes, users might add more information to the graph or they might be able to debug their program better if they understand the context surrounding their defined label by examining the visualization. The extraction of labels is discussed in \autoref{sec:labelextraction}. 
+
+In Phase 3, simplification steps are taken to improve the generated \acp{scchart} for a more intuitive and simple illustration of the source code. 
+\onlylv{As discussed in the motivation, we want to eliminate transient states that are not relevant to the stateful behavior or necessary control flow. 
+Further, we aim for a visualization that is as simple as possible. The simplification steps take care of flattening added hierarchies in the generated \acp{scchart}. Due to the statement by statement translation in the first phase, multiple hierarchies are added, such as a hierarchy for the body of a loop. This is necessary as no information is known about the inner behavior of hierarchical elements such as a repeat statements, when encountering the statement. Such hierarchies are to be flattened in the simplification. Further, this phase simplifies the generated \ac{scchart} in terms of their immediate transitions. If a state in the \ac{scchart} can be exited immediately via an immediate transition, it is not a conceptual real state. Hence, there must be a way to collapse immediate transitions and omit transient states without losing information about real conceptual states.}
+The simplification phase is discussed in \autoref{sec:optimization} and is divided into flattening of hierarchies and collapsing immedediate transitions and is discussed in detail in \autoref{subsec:flatten_hierarchy} and \autoref{subsec:immediate_trans}, respectively.
+}

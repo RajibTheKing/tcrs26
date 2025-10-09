@@ -1,0 +1,110 @@
+\section{Related Work}
+\label{sec:related-work}
+
+% Reviews:
+% Many related papers about synchronous languages and statecharts and the translations between them are missing. Instead, many translations between other languages are discussed in the related work section; I am not sure whether this makes sense. There are translations between textual and graphical versions of synchronous languages that are neither mentioned nor compared with the suggested translation. Also the other direction of translation has been discussed in related work that is not mentioned (see below). Finally, the semantics of languages like Esterel are defined by SOS rules that directly describe a translation to state transition systems. According to https://es.cs.uni-kl.de/tools/teaching/Quartz.html, it seems that Quartz programs can be even translated to extended finite state machines. While this lacks of hierarchy, it may be discussed here also since the latter seems to be directly derived from the semantics.
+% Here is a list of papers that came into my mind: It is certainly not complete, there are many further related papers in the area of statecharts. Charles André also considered the translation between SyncCharts and Esterel, which is exactly the problem here.
+%- F. Maraninchi, 1991: The Argos Language: Graphical Representation of Automata and Description of Reactive Systems Visual Languages
+%- F. Maraninchi and Y. Rémond and Y. Raoul, 2000: MATOU: An Implementation of Mode-Automata Compiler Construction (CC)
+%- F. Maraninchi and Y. Rémond: 2001; Argos: An Automaton-Based Synchronous Language Computer Languages
+%- F. Maraninchi and N. Halbwachs; 1995: Compiling ARGOS into boolean equations Formal Techniques in Real-Time and Fault-Tolerant Systems (FTRTFT)
+%- S. Prochnow and C. Traulsen and R. von Hanxleden 2006: Synthesizing safe state machines from Esterel Languages, Compilers, and Tools for Embedded Systems (LCTES)
+%- I. Radojevic and Z. Salcic and P.S. Roop; 2006: Modeling Embedded Systems: From SystemC and Esterel to DFCharts; IEEE Design and Test of Computers
+%- K. Schneider; 2002: Proving the Equivalence of Microstep and Macrostep Semantics
+% Theorem Proving in Higher Order Logics (TPHOL)
+%- S.A. Seshia and R.K. Shyamasundar and A.K. Bhattacharjee and S.D. Dhodapkar: 1999; A Translation of Statecharts to Esterel; Formal Methods (FM)
+%
+% The related work should also take a look on Meta Programming based Approaches (as provide in the MPS framework https://www.jetbrains.com/). This allow to switch natively between code/text and graphics representation allowing a full round-trip engineering. A nice example for this is the graphical extension in the mbedder (http://mbeddr.com/) framework. A look on the presented state machine integration could be interesting.
+
+For synchronous languages, there has been previous work to transform imperative programs into statechart representations.
+For example, Prochnow et al.\ proposed to synthesize SyncCharts~\cite{ProchnowTvH06} from Esterel.
+% , or DFCharts with SystemC~\cite{RadojevicSR06}.
+While our approach follows the same principle of structural statement-by-statement translation,\onlylv{ as present for most of them~\cite{Rueegg11},} the general goal differs.
+Previous approaches focused on full semantic equivalence between the programming languages and the graphical modeling notation.
+% As they show that this is generally feasible, 
+We here aim to provide automatically generated documentation with a higher level of abstraction.
+Hence, we focus on control-flow structures that expose the implicit stateful nature of the underlying program, and explicitly leave out most data-related execution aspects.
+% This makes the SCCharts notation interchangeable with any other statechart dialects that provide the necessary constructs.
+
+% This section introduces some work related to this paper, either solving similar problems or serving as foundations for this paper. This section covers not only work about model extraction but also about code visualization and documentation.
+
+\onlylv{The concept of extracting and visualizing stateful models from imperative code has also been applied in other contexts.}
+
+%
+% Extraction
+%
+% \subsection{Model Extraction}
+% This section considers some works on extraction of models of any form from code.
+
+% \subsubsection{Model Extraction from C}
+% Model extraction from source code is covered in a master paper from Andersen~\cite{Andersen20}. Abstract models are extracted from C and C++ code in order to serve as documentation of legacy code. Legacy code is often not trustworthily documented, if it is even documented at all. This work proposes a conversion from the extracted model to \acp{scchart}, which are visualized by the~\ac{kieler} tool chain. Two models are extracted in this paper. One is for dataflow, highlighting in- and output and changes made to these variables. The second model is a representation of a state-machine for the code with defined states, input events and transitions. These models are the main difference to the work presented in~\autoref{subsec:c-model-2}.
+
+% The presented paper differs from this paper in multiple ways. Obviously, the work extracts its models from C and C++ code, which are different from Blech code. Blech code compiles to C code, however, which might offer ways to benefit from the presented paper. The C code resulting from the compiler is generated code, however, and it most likely does not resemble the given Blech code intuitively. Another difference is the extracted model. The goal of this paper is not to extract a state-machine with all transitions and states or a dataflow model, but an abstraction of the code aiding to document and understand the code and representing the stateful nature of the code. The generated state machine given by Andersen's work produces a fully functional state machine.
+
+% \subsubsection{Another Model Extraction from C}\label{subsec:c-model-2}
+% Lenga et. al~\cite{SmythLvH16} also propose an extraction from C code to \acp{scchart}. They extract an abstract syntax tree from the code and translated the elements of C to corresponding \acp{scchart} structures. They then use existing compilation tools from \ac{kieler} to compile the extracted \acp{scchart} back to C and compared the results. Their approach is limited to ANSI C. 
+
+% Again, this work differs in source code and target model. Yet, similarities to this work's topic are present. This approach differs to the previously presented approach by doing a literal translation of C code to \acp{scchart} without having code comprehension in mind.
+
+\onlysv{Outside the context of synchronous languages,}
+\onlylv{Kung~\etal~\cite{KungSG+94} and }Sen and Mall~\cite{SenM16} present ways to extract state machines from object-oriented languages.
+They analyze the behavior of classes and infer state machines describing the class behavior.
+Approaches by Giomi~\cite{Giomi95} and Said~\etal~\cite{SaidQK18} describe state machine extractions based on control flow to represent the program's state space.
+Giomi processes hardware description languages and creates states based on wait statements in the control-flow graph.
+Said~\etal propose a similar approach for C code but apply special state variable mining to detect relevant states.
+Compared to these approaches, we do not aim to visualize the implicit state space of a Blech program but its inherent operation modes, explicitly expressed in \lstinline{await} statements.
+
+To recover implicit state machine structures in imperative code, Som\'e and Lethbridge~\cite{SomeL02} \onlylv{and van~den~Brand~\etal~\cite{vanDenBrandSvZ08}} use a pattern-based approach.
+They detect special nested choice patterns and switch statements and interpret and visualize these as state machines.
+This procedure is not necessary for a synchronous language such as Blech, since the \lstinline{await} already explicitly separates states.
+\onlylv{
+Another paper in this category by Knor~\etal~\cite{KnorTW98} transforms state machines
+based on patterns from C/C++ code.
+Their approach focuses on finding if/switch patterns and replacing them with more generic C++ state machine components for better readable code.
+They do not provide any visualization for further code comprehension.
+}
+
+Another direction in this context, especially when working with legacy C code, is to generate a graphical representation for the program to compensate missing documentation and improve understandability.
+Smyth \etal~\cite{SmythLvH16} transform control structures and statements of a C programs into equivalent SCCharts.
+\onlylv{There are also alternative approaches based on SCCharts that focus on the flow of data in a call graph.
+Beck and Pingali~\cite{BeckP89} and G\`evay \etal~\cite{GevayRBMT+18} present methods to execute imperative control flow on dataflow machines.
+They provide graphical representations but with a clear focus on the execution on parallel dataflow machines rather than code comprehension.}
+The EHANDBOOK\footnote{\url{http:/www.etas.com/ehandbook}} allows to extract graphical models from C code.
+It applies a more dataflow-oriented approach based on a flat program dependence graphs.
+In contrast to these approaches, we here focus on a more abstract view of the underlying program and its modes of operation, rather than a fully functional graphical replacement.
+
+% \subsubsection{Interactive Transformations for Visual Models}\label{subsubsec:urubt}
+% Rüegg proposes a concept of a step-wise transformation of Esterel to SyncCharts in his Bachelor paper~\cite{Rueegg11}. The focus lies on step-wise transformation because most transformations in the \ac{modeldrivenengineering} domain are exectued in a black-box. A user does not get to comprehend the distinct transformation steps that can be quite complex. The paper implements a step-wise visualisation. With the step-wise transformation it is also easier to detect errors in the transformation. SyncCharts and Esterel are graphical and textual programming languages, respectively. In the work it is argued that implementing such automatic transformation enables the the usage of the advantages of textual and graphical languages, respectively. The presented advantages are improved comprehensibility for graphical languages and faster editing for textual languages. The stepwise transformation is implemented in the context of \ac{kieler}.
+
+% The work of Rüegg differs from this paper' work. Firstly, this paper does not primarly aim at a stepwise execution, though having a step-wise execution might be a beneficial feature to implement in the future. Secondly, this paper does not aim to propose a concept that provides a semantically equivalent model transformation but rather a visual abstraction of the source code. Lastly, the source and target languages differ.
+
+% \subsection{Software Visualization}
+
+% This section considers tools and approaches for code comprehension and software visualization.
+
+% \subsubsection{Software Visualization in General}
+% Gra{\v{c}}anin et al.~\cite{gravcanin05} wrote an article on \ac{sv}. They described what \ac{sv} is. It is described as a field that uses visual images to provide insight and understanding and reduction of complexity of existing software (systems). The goal is always better a understanding of given software artifacts. They further describe different research in the field of \ac{sv} and recommend further readings for different questions regarding \ac{sv}. Many research questions come down to the questions of what can and should be visualized and how, and what benefits does the visualization bring to the developer. Overall, \ac{sv} is a broad field with many specific research questions.
+
+Aside from language-specific solutions, there is also the general field of software visualization~\cite{gravcanin05}.
+The goal is to improve the understanding of given software artifacts by using various different graphical representations.
+% 
+% \subsubsection{Code Visualization with ExplorViz}
+% The Software Engineering research group at Kiel University has developed the tool ExplorViz\footnote{\url{https://www.explorviz.net/}} \cite{FittkauWWH13}. It takes a whole software system as input and creates a so-called 3D city model to display the communications between the different parts of the system. The model itself is interactive so the user can open the boxes representing software components to show its contents. Inside these boxes are either further packages, again displayed as boxes, or classes, which are displayed as blue cylinders.
+% 
+% In addition to the display of the system structure, the tool also displays the communication between
+% different parts of the system. For each time a class calls a function of another class, a yellow line is
+% drawn between the corresponding blue cylinders of the two classes. Hence, components that communicate more regularly are indicated more intensely.
+% 
+One example in this area is the ExplorViz~\cite{FittkauWWH13} tool.
+It takes an entire software system as input and creates an interactive ``3D city'' model to display the communications between the different components, packages, and classes.
+Rentz \etal~\cite{RentzDvH20} present an interactive graphical approach for exploring bundles, their dependencies, and services in OSGi software projects.
+Our Blech mode diagrams likewise emphasize a more high-level view on the software but may also be used during development to have an on-the-fly graphical representation of a specific activity.
+\lvsv{
+
+Current tools for SCCharts follow the concept of \emph{transient views} to provide such abstracted or specialized graphical views.
+We use SCCharts for exactly this purpose in Blech.
+Another tool following a similar principle, is mbedder\footnote{\url{http://mbeddr.com/}}.
+Using MPS\footnote{\url{https://www.jetbrains.com/mps/}}, it provides a fluent and interchangeable editing support between a textual and graphical representations for various aspects in embedded systems modeling.
+}{
+This concept of \emph{transient views} is similar to tools like mbedder\footnote{\url{http://mbeddr.com/}} that feature fluent and interchangeable editing of a textual and graphical representations.
+}

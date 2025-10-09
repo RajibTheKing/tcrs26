@@ -1,0 +1,22 @@
+\section{Conclusions and Outlook}
+\label{sec:conclusions-outlook}
+
+We have presented an approach to automatically extract mode diagrams from the so far purely textual Blech language.
+The stateful nature of Blech allowed for a natural mapping from Blech code to modes/states and transitions.
+We postulate that such a translation would also be natural for other textual languages for developing reactive systems.
+
+The mode diagrams are effectively a slightly extended and abstracted variant of \acp{scchart}. This choice made it simple to capture precisely the semantics of the state-relevant part of the Blech language, which is not surprising given that Blech was inspired by the sequentially-constructive model of computation realized in \acp{scchart}~\cite{GretzG18}.
+Furthermore, we could harness the existing open-source infrastructure for \acp{scchart} to create the mode diagrams, crucially including the ability to automatically compute a layout for them.
+
+The preliminary feedback from industrial users was encouraging, but also pointed to a number of still open questions and issues.
+The users also confirmed that preferences on mode diagrams are quite individual.
+Thus, flexibility and configurability for the mode diagram synthesis seems key.
+This may also include, as part of possible future work, the ability to choose how much ``semantic accuracy'' the mode diagrams should provide.
+Our focus so far was to provide a diagram synthesis that abstracted from run-time behavior in particular concerning data handling, but that still precisely captured possible state traces in reactions.
+That goal implied the need to differentiate, \eg, between immediate and delayed transitions and between different types of abort.
+However, at least for some users that was still too much detail, and made the mode diagrams less obvious to understand than a plain state diagram with just one type of transition would have been.
+
+Another possible improvement, also according to the feedback from the industrial users, would be the merge of awaiting transitions followed by a decision point (\ie if-else, repeat-until). That merge is not trivial regarding the triggers on the transitions. If one would simply merge the triggers from the delayed transition with the branches of the if-else, the label of the \lstinline{await} would be duplicated. It is doubtful that this is an optimal and compact solution. Further problems arise if variables are used in the if-else conditions and the \lstinline{await} statement. Complicated conditions might emerge this way. Boolean optimizations and smart simplifications have to be made here to make the merge viable.
+
+On a practical implementation side, a full integration into Visual Studio Code would allow for example to link the elements in the code with their visual representation, as is already the case in \ac{kieler} when working with textual \acp{scchart} and their visualization.
+Clicking in the visualization could highlight the corresponding parts in the code and vice versa, a feature that several industrial users had asked for.
