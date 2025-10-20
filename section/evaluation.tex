@@ -1,30 +1,4 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-To validate the approach proposed here, we have implemented a prototype for extracting mode diagrams from Blech code and have asked four Blech developers from industry to evaluate it.
-%A group of five industrial Blech developers was asked to evaluate given visualizations of given Blech code. 
-The developers were given visualizations of real Blech code examples as well as artificial examples that illustrate the different layout options as described earlier. 
-The experts were asked to validate the given visualizations for correctness, to assess whether the visualization is helpful to understand the given code, and to give their opinion on the representation. %what they like or do not like.
-For those examples with several visualization options, they were asked to chose the one they liked most and explain their choice.
-
-%General findings are that the visualization is helpful to understand the stateful nature of the code, that generally hierarchical illustration for elements of hierarchical nature such as abort, run or cobegin statements are preferred and that an \emph{out-of-the-box} use of the visualization is challenging, due to the need to know the semantics of \acp{scchart}.
-
-The general feedback was that the visualizations are helpful, especially if the code base is unknown or things are discussed with people who are not familiar with the code base. 
-According to their overall assessment, the generated mode diagrams offer good insights, but still leave room for further improvement.
-%Besides, the validation by a large group of users still remains to be done. 
-%Single points of debate are discussed in the following paragraphs.
-
-%The first point to be discussed is the issue of pre-compiled elements of the Blech code. These include expressions with constants or when-reset constructs. The main issue here is that the Blech compiler pre-evaluates these statements, so at the point of latching the translation tool to the compiler, the orignal elements are non-existent and there is no way to reproduce them or determine them in any way. Changes to the compiler would have to be made, which is an unclear amount of effort currently. Another possible solution would be to try to attach the translation tool into the compiler chain at another point. Currently the translation tool is placed in such manner, that the typed abstract syntax tree is given as input. This way all statements are given sequentially and recursively, just as is expected for the concept. Choosing another point requires in-depth knowledge of the Blech compiler and estimating the required effort to alter data in such form that is can be used for the translation tool is difficult too.
-
-One finding was that it is hierarchy flattening is desirable in most but not all cases.
-Generally, hierarchies induced by \lstinline{run} and \lstinline{abort} statements should be preserved.
-%It was also found that the opportunity to be able to flatten these hierarchies for certain use cases is useful as well. 
-Therefore, having flattening configurable is desired and will be kept. 
-%Configuration is needed for other debatable options, too. Sure enough, offering multiple options increases the workload for maintenance and development, but the advantages are clear.
-
-The feedback to the proposed concept and suggestions by the experts revealed that labeling is a difficult topic, where experts have very individual preferences. 
-Generally, there are multiple options to realize labels in terms of their declaration, place and handling (merging, discarding, etc.). 
-%Each expert expressed their own preferences and made their own suggestions. In conclusion, labeling is a complex issue, where different people have different preferences and consider very different variations to be better. 
-A quantitative validation of different variations with a broad group of developers should help to determine the best solution for default settings.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%
+TODO: write the evaluation section.
