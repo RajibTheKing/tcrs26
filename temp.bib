@@ -10,3 +10,38 @@
   keywords     = {automated train operation, ATO, GoA 4, ERTMS, mainline rail, driverless metros, interoperability},
   abstract     = {Shift2Rail is advancing automated train operations (ATO) to Grade of Automation 4 (GoA 4) for mainline railways based on the European Rail Traffic Management System (ERTMS). While driverless metros are already operational in urban settings, the complexity of national infrastructures and external interfaces pose significant challenges to extending full automation to mainline and freight operations. First GoA 4 pilot demonstrations are planned for 2022.}
 }
+
+@article{CoganMilius2023,
+  author = {Cogan, Benjamin and Milius, Britta},
+  title = {Remote control concept for automated trains as a fallback system: needs and preferences of future operators},
+  journal = {Smart and Resilient Transportation},
+  volume = {5},
+  number = {1},
+  pages = {50--69},
+  year = {2023},
+  doi = {10.1108/SRT-11-2022-0018},
+  publisher = {Emerald Publishing Limited},
+  issn = {2751-1678},
+  url = {https://www.emerald.com/insight/content/doi/10.1108/SRT-11-2022-0018/full/html},
+  abstract = {Purpose: Increasing demand on rail transport speeds up the introduction of new technical systems to optimize the rail traffic and increase competitiveness. Remote control of trains is seen as a potential layer of resilience in railway operations. It allows for operating and controlling automated trains and communicating and coordinating with other stakeholders of the railway system. This paper aims to present the first results of a multi-phased simulator study on the development and optimization of remote train driving concepts from the operators' point of view. Design/methodology/approach: The presented concept was developed by benchmarking good practices. Two phases of iterative user tests were conducted to evaluate the user experience and preferences of the developed human-machine-interface concept. Basic training requirements were identified and evaluated. Findings: Results indicate positive feedback on the overall system as a fallback solution. HMI elicited positive emotions regarding pleasure and dominance, but low arousal levels. Train drivers had more conservative views on the system compared to signalers and students. The training activities achieved increased awareness and understanding of the system for future operators. Inclusion of potential users in the development of future systems has the potential to improve user acceptance. The iterative user experiments were useful in obtaining some of the needs and preferences of different user groups. Originality/value: Multi-phase user tests were conducted to identify and to evaluate the requirements and preferences of remote operators using a simplified HMI. Training analysis provides important aspects to consider for the training of future users.},
+  keywords = {automated trains, remote control, fallback system, human-machine interface, user preferences, simulator study}
+}
+
+@inproceedings{10.1145/3696355.3699698,
+  author = {Amet, Matthieu and Thomas, Ludovic and Song, Ye-Qiong},
+  title = {A Performance Evaluation of QUIC in Real-Time Networks},
+  year = {2025},
+  isbn = {9798400717246},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3696355.3699698},
+  doi = {10.1145/3696355.3699698},
+  abstract = {QUIC is a UDP-based transport protocol, standardized in RFC9000 (2021). It enhances privacy by encrypting entire packets and offers improvements over TCP, such as native multiplexing and connection migration. Despite these advantages, QUIC, like TCP, suffers from head-of-line blocking and variable latency, making it unsuitable for critical real-time systems.RFC9221 addresses this by introducing an extension that allows QUIC to transmit datagrams without retransmission, improving its suitability for real-time applications. However, real-time networks require a thorough evaluation of QUIC’s performance. The potential delays caused by its cryptographic operations and the complex traffic patterns it generates could impact time-sensitive traffic.We conduct experiments using Mininet across a range of scenarios, including software updates in bandwidth-constrained environments and in the presence of malicious nodes. Additionally, we assess implementations in both Go and C. The performance of QUIC, along with its datagram extension, is compared against UDP and DTLS. Finally, the results are validated through testing on a physical network testbed.Our results show that, despite its cryptographic overhead, QUIC performs similarly to UDP and DTLS in most cases. However, it may interact poorly with lower-layer mechanisms like token-bucket filters. Overall, QUIC shows potential to replace older transport protocols in real-time systems.},
+  booktitle = {Proceedings of the 32nd International Conference on Real-Time Networks and Systems},
+  pages = {255–265},
+  numpages = {11},
+  keywords = {QUIC, Network, Performance, Latency, Real-time, Reliability, Evaluation},
+  location = {
+  },
+  series = {RTNS '24}
+}
