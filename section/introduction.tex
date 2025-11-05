@@ -11,7 +11,7 @@ The significance of developing robust remote control systems extends beyond tech
 
 In this paper, we present the design and implementation of a comprehensive remote control system for real-time train operations based on WebTransport. Our approach leverages the protocol's inherent advantages to create a platform capable of handling concurrent control of multiple trains while maintaining the safety standards and operational resilience required for modern railway systems. Our results demonstrate that WebTransport-based remote control systems can significantly enhance railway operational efficiency and safety by reducing communication latency, improving system responsiveness, and providing robust foundations for both normal operations and emergency fallback scenarios. The system successfully manages multiple concurrent train operations while maintaining the safety and reliability standards required for critical railway infrastructure, particularly in contexts where remote intervention serves as a crucial layer of operational resilience.
 
-    \subsection{Contributions}
+    \subsection{Contributions and outlines}
     This paper makes the following contributions:
     \begin{itemize}
         \item We present an open-source prototype for a WebTransport-based remote control system for real-time train operations.
@@ -19,5 +19,5 @@ In this paper, we present the design and implementation of a comprehensive remot
         \item We designed the remote console interface which enables the operator to get a live view of the vehicle camera from the train and send control commands in real-time.
         \item We conduct a performance evaluation of WebTransport's characteristics in the context of railway operations, including video streaming and commands.
     \end{itemize}
-    \subsection{Paper Structure}
+
     The remainder of this paper is structured as follows: Section \ref{sec:related-work} reviews related work in the field of remote control systems and several widely used network protocols. Section \ref{sec:system-architecture} presents the system architecture of our WebTransport-based solution. Section \ref{sec:evaluation} details the evaluation methodology and results. Finally, Section \ref{sec:conclusion} concludes the paper and outlines future work.
