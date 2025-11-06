@@ -1,18 +1,14 @@
-\newpage
 \section{Experiment and Evaluation}
 \label{sec:evaluation}
 
-\subsection{Experiment Environments}
-The onboard processor of the model train (REAKT-Tiny) is one of the core units of the whole system, which needs to have enough capabilities to encode and process real-time video streaming data and respond to control commands from the remote console. The remote control console and the model train communicate through a central server deployed on cloud instance. The remote control console is a web application that can be accessed through any browser supporting WebTransport. In the test, we use the following hardware and software environments:
-\begin{itemize}
-    \item \textbf{Model Train:} REAKT-Tiny, equipped with a Raspberry Pi 5 as the onboard processor, a Pi Camera Module v2 for video capture, and a motor driver HAT for controlling the train's movement.
-    \item \textbf{Central Server:} A cloud instance with CPU 2.0 GHz, 1GB RAM, 25GB SSD running Ubuntu 24.10 LTS, hosting the WebTransport server.
-    \item \textbf{Remote Control:} A laptop with 13th Gen Intel(R) Core(TM) i7-1370P, 16GB RAM, running Ubuntu 24.04 LTS and Google Chrome browser (Version 140.0.7339.80 (Official Build) (64-bit)).
-\end{itemize}
+    \subsection{Experiment Environments}
+    The onboard processor of the model train (REAKT-Tiny) is one of the core units of the whole system, which needs to have enough capabilities to encode and process real-time video streaming data and respond to control commands from the remote console. The remote control console and the model train communicate through a central server deployed on cloud instance. The remote control console is a web application that can be accessed through any browser supporting WebTransport. In the test, we use the following hardware and software environments:
+    \begin{itemize}
+        \item \textbf{Model Train:} REAKT-Tiny, equipped with a Raspberry Pi 5 as the onboard processor, a Pi Camera Module v2 for video capture, and a motor driver HAT for controlling the train's movement.
+        \item \textbf{Central Server:} A cloud instance with CPU 2.0 GHz, 1GB RAM, 25GB SSD running Ubuntu 24.10 LTS, hosting the WebTransport server.
+        \item \textbf{Remote Control:} A laptop with 13th Gen Intel(R) Core(TM) i7-1370P, 16GB RAM, running Ubuntu 24.04 LTS and Google Chrome browser (Version 140.0.7339.80 (Official Build) (64-bit)).
+    \end{itemize}
 
-\subsection{Language and Frameworks}
-The system is primarily developed using Python for the backend services, leveraging frameworks FAST API for the central server and OpenCV for video processing tasks. The frontend is built using Vuejs, providing a responsive user interface for the remote control console.
-
-\subsection{Result and Analysis}
-    \subsubsection{Latency Analysis}
-    \subsubsection{Packet Loss Analysis}
+    \subsection{Result and Analysis}
+        \subsubsection{Latency Analysis}
+        \subsubsection{Packet Loss Analysis}
