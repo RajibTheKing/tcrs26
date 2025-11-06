@@ -1,14 +1,14 @@
 \section{System Architecture}
 \label{sec:system-architecture}
 
-  \subsection{System Overview}
-    This subsection presents an overview of the system architecture, emphasizing its core components and the interactions among them. Figure~\ref{fig:system-overview} depicts the high-level structure of the system, illustrating the main modules and their interconnections. The architecture is designed to support multiple trains, each of which connects to a centralized server hosted on a cloud platform via a network connection. Every train is equipped with a set of onboard sensors and communication devices that enable continuous data acquisition and seamless transmission to the central server. On the other side, multiple remote control interfaces—accessible through any standard web browser—can establish connections with the central server for monitoring and control purposes. Through these interfaces, an operator can select any train currently connected to the server, observe its real-time operational data, and issue control commands. This setup facilitates efficient, scalable, and real-time management of train operations across distributed environments.
+  \subsection{Overview}
+    This subsection presents an overview of the system architecture, emphasizing its core components and the interactions among them. Figure~\ref{fig:system-overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. The architecture is designed to support multiple trains, each of which connects to a centralized server deployed on a cloud platform through a network connection. Both the trains and other system components can utilize various communication technologies such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Each train, equipped with an array of sensors and communication devices that enable continuous data acquisition and reliable transmission to the central server. Similarly, multiple remote control interfaces—accessible through any standard web browser—can connect to the cloud-based server over the flexible networking options. Through these interfaces, an operator can select any train currently connected with the central server, monitor its real-time operational data, and issue control commands. This design ensures robust connectivity, scalability, and real-time management of train operations across distributed environments, independent of specific network infrastructure.
 
     \begin{figure}[t]
       \centering
       \includegraphics[width=\columnwidth]{images/System_Overview.png}
-      \caption{System Overview}
-      \label{fig:system-overview}
+      \caption{Overview of the connected components in the system}
+      \label{fig:overview}
     \end{figure}
 
   \subsection{Architecture}
@@ -20,3 +20,12 @@
       \caption{System Architecture}
       \label{fig:system-architecture}
     \end{figure*}
+  
+  \subsection{Real-Time Video Streaming}
+    \subsubsection{Capturing Video and Encoding Step}
+    \subsubsection{Relaying Video Step}
+    \subsubsection{Decoding and Displaying Video Step}
+
+  \subsection{Control Commands}
+      \subsubsection{Command Structure}
+      \subsubsection{Command Sending Flow}
