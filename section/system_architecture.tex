@@ -38,7 +38,7 @@
 			\label{fig:connection-establishment}
 		\end{figure*}
 	\subsection{Telemetry Data}
-		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and we are not going much technical details regarding telemetry data. However, just to mention briefly, after successful connection establishment with the MQTT broker the telemetry data is published by the train client to specific MQTT topics:
+		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and not going too much on technical details regarding telemetry data. However, just to mention briefly, after successful connection establishment with the MQTT broker the telemetry data is published by the train client to specific MQTT topics:
 
 		\begin{lstlisting}
 			paho.mqtt.publish(
