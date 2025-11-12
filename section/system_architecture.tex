@@ -38,22 +38,22 @@
 			\label{fig:connection-establishment}
 		\end{figure*}
 	\subsection{Telemetry Data}
-		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and we are not going much technical details regarding telemetry data. However, just to mention briefly, the telemetry data is published by the train client to specific MQTT topics:
-		\begin{small}
-			\begin{verbatim}
-				paho.mqtt.publish(
-  					topic = "train/<train_id>/telemetry",
-  					payload = <json_data>,
-					qos = 1)
-			\end{verbatim}
-		\end{small}
+		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and we are not going much technical details regarding telemetry data. However, just to mention briefly, after successful connection establishment with the MQTT broker the telemetry data is published by the train client to specific MQTT topics:
+
+		\begin{lstlisting}
+			paho.mqtt.publish(
+				topic = "train/<train_id>/telemetry",
+				payload = <json_data>,
+				qos = 1
+			)
+		\end{lstlisting}
 		and the remote control client subscribes to these topics to receive real-time updates.
-		\begin{small}
-			\begin{verbatim}
-				paho.mqtt.subscribe(
-					topic = "train/<train_id>/telemetry")
-			\end{verbatim}
-		\end{small}
+
+		\begin{lstlisting}
+			paho.mqtt.subscribe(
+				topic = "train/<train_id>/telemetry")
+		\end{lstlisting}
+
   	\subsection{Real-Time Video Data}
     	\subsubsection{Capturing Video and Encoding Step}
     	\subsubsection{Relaying Video Step}

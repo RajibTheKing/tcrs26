@@ -249,3 +249,16 @@
 % remember to use [htp] or [htpb] for placement
 
 
+% Listings settings for code snippets - Visual Studio Light Theme
+\lstset{
+	numbers=none,         % disables line numbers
+	language=Python,      % set language for syntax highlighting
+	basicstyle=\ttfamily\small\color{black},
+	keywordstyle=\color{blue},  % keywords in blue (like def, class, if, etc.)
+	stringstyle=\color{red!70!black},  % strings in dark red/brown
+	commentstyle=\color{green!50!black}\itshape,  % comments in green
+	showstringspaces=false,
+	identifierstyle=\color{black},  % regular identifiers in black
+	emphstyle=\color{teal},  % methods/functions in teal
+	emph={paho,mqtt,publish,subscribe},  % emphasized words
+}
