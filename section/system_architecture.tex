@@ -30,7 +30,7 @@
 			The Remote Control module is a web-based client tht allows operator to monitor and control trains in real-time using any standard web browser without requiring any additional software installation. The web client is developed using Vue.js 3 leverages modern web standards for optimal performance. Vue Router handles client-side routing for single-page application (SPA) navigation, enabling seamless transitions between different views. Pinia provides state management capabilities. Axios serves as the HTTP client for REST API communication with the central Server. The paho-mqtt library, in its browser-compatible form, enables MQTT client funtionality over WebSockets. Modern web APIs are extensively utilized throughout the application: the WebCodecs API provides hardware-accelerated H.264 video decoding, and the WebTransport API, a QUIC-based bidirectional streaming for real-time video and command transmission. The assembler component, reconstructs H.264 frames from fragmented packets recieved over WebTransport. This component buffers incoming packets in memory, reassembles them into complete frames, and forwards them to the decoder for rendering.
 
 	\subsection{Connection Establishment}
-		This subsection describes the connection establishment process among different modules in the system. Train client connects to the central server by a WebSocket connection along with a unique identifier for signaling purposes. Parallelly, train-client establish QUIC/HTTP3 connection with the central server for video streaming. To publish telemetry data, train client connects to the MQTT broker hosted on the central server. On the other hand, remote control client connects to the central server through WebSocket connection for signaling and WebTransport connection for video streaming and command transmission. Additionally, remote control client also connects to the same MQTT broker for telemetry data reception. The connection establishment is illustrated in Figure~\ref{fig:connection-establishment}.
+		This subsection describes the connection establishment process among different modules in the system. Train client connects to the central server by a WebSocket connection along with a unique identifier for signaling purposes. Parallelly, train-client establish QUIC/HTTP3 connection with the central server for video streaming. To publish telemetry data, train client connects to the MQTT broker hosted on the central server. On the other hand, remote control client connects to the central server through WebSocket connection for signaling and WebTransport connection for video streaming and command transmission. Additionally, remote control client also connects to the same MQTT broker for telemetry data reception. The connection establishment methods are illustrated in Figure~\ref{fig:connection-establishment}.
 		\begin{figure*}[t]
 			\centering
 			\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{images/connection_establishment.png}
@@ -38,6 +38,22 @@
 			\label{fig:connection-establishment}
 		\end{figure*}
 	\subsection{Telemetry Data}
+		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and we are not going much technical details regarding telemetry data. However, just to mention briefly, the telemetry data is published by the train client to specific MQTT topics:
+		\begin{small}
+			\begin{verbatim}
+				paho.mqtt.publish(
+  					topic = "train/<train_id>/telemetry",
+  					payload = <json_data>,
+					qos = 1)
+			\end{verbatim}
+		\end{small}
+		and the remote control client subscribes to these topics to receive real-time updates.
+		\begin{small}
+			\begin{verbatim}
+				paho.mqtt.subscribe(
+					topic = "train/<train_id>/telemetry")
+			\end{verbatim}
+		\end{small}
   	\subsection{Real-Time Video Data}
     	\subsubsection{Capturing Video and Encoding Step}
     	\subsubsection{Relaying Video Step}
