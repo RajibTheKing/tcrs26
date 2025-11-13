@@ -7,7 +7,7 @@
 
 		\begin{figure}[t]
 			\centering
-			\includegraphics[width=\columnwidth]{images/System_Overview.png}
+			\includegraphics[width=\columnwidth]{images/System_Overview.pdf}
 			\caption{Overview of the connected modules in the system: Train Clients, Central Server, and Remote Control Consoles}
 			\label{fig:overview}
 		\end{figure}
@@ -33,7 +33,7 @@
 		This subsection describes the connection establishment process among different modules in the system. Train client connects to the central server by a WebSocket connection along with a unique identifier for signaling purposes. Parallelly, train-client establish QUIC/HTTP3 connection with the central server for video streaming. To publish telemetry data, train client connects to the MQTT broker hosted on the central server. On the other hand, remote control client connects to the central server through WebSocket connection for signaling and WebTransport connection for video streaming and command transmission. Additionally, remote control client also connects to the same MQTT broker for telemetry data reception. The connection establishment methods are illustrated in Figure~\ref{fig:connection-establishment}.
 		\begin{figure*}[t]
 			\centering
-			\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{images/connection_establishment.png}
+			\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{images/Connection_Establishment.pdf}
 			\caption{Connection Establishment among different modules in the system}
 			\label{fig:connection-establishment}
 		\end{figure*}
