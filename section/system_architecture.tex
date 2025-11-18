@@ -102,3 +102,4 @@ paho.mqtt.subscribe(
 			}
 			\end{lstlisting}
       	\subsubsection{Command Sending Flow}
+			The command sending process is initiated on the remote control client when an operator issues a control command through the web interface. The command is serialized into JSON format and transmitted to the central server via WebTransport's reliable stream feature. Upon receiving the command, the central server parses the JSON message to extract the train identifier. It then forwards the command to the corresponding train client over the established QUIC connection. The train client receives the command, interpretes the instruction, and executes the appropriate action through its actuator component.
