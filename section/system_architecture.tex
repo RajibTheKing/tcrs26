@@ -3,7 +3,6 @@
 
   	\subsection{Overview}
 		This subsection presents an overview of the system architecture, emphasizing its core components and the interactions among them. Figure~\ref{fig:overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. The architecture is designed to support multiple trains, each of which connects to a centralized server deployed on a cloud platform through a network connection. Both the trains and other system components can utilize various communication technologies such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Each train, can be equipped with an array of sensors and communication devices that enable continuous data acquisition and reliable transmission to the central server. Similarly, multiple remote control interfaces—accessible through any standard web browser—can connect to the cloud-based server over the flexible networking options. Through these interfaces, an operator can select any train currently connected with the central server, monitor its real-time operational data, and issue control commands. This design ensures robust connectivity, scalability, and real-time management of train operations across distributed environments, independent of specific network infrastructure.
-		+
 
 		\begin{figure}[t]
 			\centering
@@ -40,18 +39,18 @@
 	\subsection{Telemetry Data}
 		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and not going too much on technical details regarding telemetry data. However, just to mention briefly, after successful connection establishment with the MQTT broker the telemetry data is published by the train client to specific MQTT topics:
 
-		\begin{lstlisting}
-			paho.mqtt.publish(
-				topic = "train/<train_id>/telemetry",
-				payload = <json_data>,
-				qos = 1
-			)
+		\begin{lstlisting}[style=codeStyle]
+paho.mqtt.publish(
+    topic = "train/<train_id>/telemetry",
+    payload = <json_data>,
+    qos = 1
+)
 		\end{lstlisting}
 		and the remote control client subscribes to these topics to receive real-time updates.
 
-		\begin{lstlisting}
-			paho.mqtt.subscribe(
-				topic = "train/<train_id>/telemetry")
+		\begin{lstlisting}[style=codeStyle]
+paho.mqtt.subscribe(
+    topic = "train/<train_id>/telemetry")
 		\end{lstlisting}
 
   	\subsection{Real-Time Video Data}
@@ -82,5 +81,24 @@
 			\end{figure}
 
   	\subsection{Control Command Data}
+		Control command data is transmitted from the remote control client to central server using WebTransport's reliable stream feature, and then forwarded to the respective train client via established QUIC connection. The control commands include instructions such as starting the vehicle, speed adjustments, emergency stops, and changing direction. This subsection describes the command structure and the flow of command sending in detail.
       	\subsubsection{Command Structure}
+			The control commands are represented using a JSON-based structure, enabling reliable parsing and interpretation by both the train-side client and the remote control interface. Each command specifies an instruction type along with the identifier of the target train. For example, an emergency-stop request is issued as sending a command message structured as follows:
+
+			\begin{lstlisting}[style=codeStyle]
+			command = {
+				instruction: "EMERGENCY_STOP",
+				train_id: "e30657fc9fe2"
+			}
+			\end{lstlisting}
+
+			Similarly, commands that require additional parameters—such as setting a new target speed—extend the same structure with the necessary fields:
+
+			\begin{lstlisting}[style=codeStyle]
+			command = {
+				instruction: "CHANGE_TARGET_SPEED",
+				train_id: "e30657fc9fe2",
+				target_speed: 30
+			}
+			\end{lstlisting}
       	\subsubsection{Command Sending Flow}
