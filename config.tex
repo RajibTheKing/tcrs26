@@ -249,16 +249,53 @@
 % remember to use [htp] or [htpb] for placement
 
 
-% Listings settings for code snippets - Visual Studio Light Theme
-\lstset{
-	numbers=none,         % disables line numbers
-	language=Python,      % set language for syntax highlighting
-	basicstyle=\ttfamily\small\color{black},
-	keywordstyle=\color{blue},  % keywords in blue (like def, class, if, etc.)
-	stringstyle=\color{red!70!black},  % strings in dark red/brown
-	commentstyle=\color{green!50!black}\itshape,  % comments in green
-	showstringspaces=false,
-	identifierstyle=\color{black},  % regular identifiers in black
-	emphstyle=\color{teal},  % methods/functions in teal
-	emph={paho,mqtt,publish,subscribe},  % emphasized words
+% Listings settings for code snippets
+% Define colors
+\definecolor{jsonString}{rgb}{0.627,0.126,0.941}
+\definecolor{jsonNumber}{rgb}{0.5,0.5,0}
+\definecolor{jsonBoolean}{rgb}{0,0,1}
+\definecolor{jsonNull}{rgb}{0.5,0,0}
+\definecolor{jsonBrace}{rgb}{0,0,0}
+\definecolor{jsonBracket}{rgb}{0.25,0.5,0.5}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+
+% Define style
+\lstdefinestyle{codeStyle}{
+    basicstyle=\ttfamily\scriptsize,
+    numbers=none,
+    showstringspaces=false,
+    breaklines=true,
+    frame=none,
+    xleftmargin=10pt,
+    backgroundcolor={},
+    columns=flexible,
+    string=[s]{"}{"},
+    stringstyle=\color{jsonString},
+    keywordstyle=\color{jsonBoolean},
+    keywordstyle=[2]\color{jsonNull},
+    keywords={true,false},
+    keywords=[2]{null},
+    literate=
+     *{0}{{{\color{jsonNumber}0}}}{1}
+      {1}{{{\color{jsonNumber}1}}}{1}
+      {2}{{{\color{jsonNumber}2}}}{1}
+      {3}{{{\color{jsonNumber}3}}}{1}
+      {4}{{{\color{jsonNumber}4}}}{1}
+      {5}{{{\color{jsonNumber}5}}}{1}
+      {6}{{{\color{jsonNumber}6}}}{1}
+      {7}{{{\color{jsonNumber}7}}}{1}
+      {8}{{{\color{jsonNumber}8}}}{1}
+      {9}{{{\color{jsonNumber}9}}}{1}
+      {:}{{{\color{black}{:}}}}{1}
+      {,}{{{\color{black}{,}}}}{1}
+      {\{}{{{\color{black}{\{}}}}{1}
+      {\}}{{{\color{black}{\}}}}}{1}
+      {[}{{{\color{black}{[}}}}{1}
+      {]}{{{\color{black}{]}}}}{1},
 }
+
