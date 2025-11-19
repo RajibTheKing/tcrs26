@@ -10,7 +10,7 @@
         \end{itemize}
 
     \subsection{Result and Analysis}
-        In this subsection, we present the results of our experiments and analyze the performance of the WebTransport over QUIC protocol in our remote control system. We focus on two main aspects: latency and data missing rate on video data transmission. This experiment was conducted where both train and remote control console are connected to the central server via a 5g network.
+        In this subsection, we present the results of our experiments and analyze the performance of the WebTransport over QUIC protocol in our remote control system. We focus on two main aspects: latency and data missing rate on video data transmission. This experiment was conducted where both train and remote control console are connected to the central server via a 5G network.
         \subsubsection{Latency Analysis}
             Latency is a critical factor in real-time remote control systems, as it directly affects the responsiveness of the system. We measured the latency of each video frame sent from the model train to the remote control console. The latency was calculated as the time difference between when a video frame was captured by the Pi Camera Module and when it was displayed on the remote control console. The results showed that the average Latency was approximately 86.26 ms, with a maximum latency of 563 ms and a minimum latency of 49 ms. The latency distribution is illustrated in Figure~\ref{fig:latency_distribution}, which shows that the majority of video frames experienced latency below 100 ms, indicating that the WebTransport over QUIC protocol provides low-latency communication suitable for real-time applications.
             \begin{figure}[htbp]
@@ -19,4 +19,9 @@
                 \label{fig:latency_distribution}
             \end{figure}
         \subsubsection{Data missing Analysis}
-            
+            Data reliability is another important aspect of communication protocols in real-time systems. We evaluated the data missing rate by comparing the number of video frames sent from the model train with the number of video frames received and displayed on the remote control console. During the experiment, a total of 7060 video frames were sent, out of which 7016 frames were successfully received and displayed. This results in a data missing rate of 0.62\%. The low data missing rate indicates that the WebTransport over QUIC protocol provides reliable data transmission even in 5G network, which is essential for maintaining a smooth and continuous video stream in real-time remote control applications. The data missing rate analysis is illustrated in Figure~\ref{fig:data_missing_analysis}.
+            \begin{figure}[htbp]
+                \centerline{\includegraphics[width=0.45\textwidth]{experiments/missing_frame_graph.png}}
+                \caption{Data Missing Rate Analysis}
+                \label{fig:data_missing_analysis}
+            \end{figure}
