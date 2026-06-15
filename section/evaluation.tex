@@ -1,38 +1,39 @@
 \section{Experiment and Evaluation}
 \label{sec:evaluation}
-    In this section, we present the experiment and evaluation of our proposed remote control system for real-time model train operation. We focus on assessing the performance of the communication protocols used in our system, specifically WebTransport over QUIC, in terms of latency and reliability.
-    \subsection{Experiment Environments}
-        The onboard processor of the model train (REAKT-Tiny) is one of the core units of the whole system, which needs to have enough capabilities to encode and process real-time video streaming data and respond to control commands from the remote console. The remote control console and the model train communicate through a central server deployed on cloud instance. The remote control console is a web application that can be accessed through any browser supporting WebTransport. In the test, we use the following hardware and software environments:
-        \subsubsection{Test Environment 1}
-            \begin{itemize}
-                \item \textbf{Train Client:} A laptop with 13th Gen Intel(R) Core(TM) i7-1370P, 16GB RAM, running Ubuntu 24.04 LTS
-                \item \textbf{Central Server:} A cloud instance with CPU 2.0 GHz, 1GB RAM, 25GB SSD running Ubuntu 24.10 LTS, hosting the Central server and MQTT broker.
-                \item \textbf{Remote Control Client:} A Android smartphone (Samsung Galaxy S23 Ultra) running Android 13 and Google Chrome browser (Version 140.0.7339.91).
-            \end{itemize}
-        \subsubsection{Test Environment 2}
-            \begin{itemize}
-                \item \textbf{Train Client:} REAKT-Tiny, equipped with a Raspberry Pi 5 as the onboard processor, a Pi Camera Module v2 for video capture.
-                \item \textbf{Central Server:} A cloud instance with CPU 2.0 GHz, 1GB RAM, 25GB SSD running Ubuntu 24.10 LTS, hosting the Central server and MQTT broker.
-                \item \textbf{Remote Control Client:} A laptop with 13th Gen Intel(R) Core(TM) i7-1370P, 16GB RAM, running Ubuntu 24.04 LTS and Google Chrome browser (Version 140.0.7339.80 (Official Build) (64-bit)).
-            \end{itemize}
+    TODO: Evaluation needs to be added.
+    % In this section, we present the experiment and evaluation of our proposed remote control system for real-time model train operation. We focus on assessing the performance of the communication protocols used in our system, specifically WebTransport over QUIC, in terms of latency and reliability.
+    % \subsection{Experiment Environments}
+    %     The onboard processor of the model train (REAKT-Tiny) is one of the core units of the whole system, which needs to have enough capabilities to encode and process real-time video streaming data and respond to control commands from the remote console. The remote control console and the model train communicate through a central server deployed on cloud instance. The remote control console is a web application that can be accessed through any browser supporting WebTransport. In the test, we use the following hardware and software environments:
+    %     \subsubsection{Test Environment 1}
+    %         \begin{itemize}
+    %             \item \textbf{Train Client:} A laptop with 13th Gen Intel(R) Core(TM) i7-1370P, 16GB RAM, running Ubuntu 24.04 LTS
+    %             \item \textbf{Central Server:} A cloud instance with CPU 2.0 GHz, 1GB RAM, 25GB SSD running Ubuntu 24.10 LTS, hosting the Central server and MQTT broker.
+    %             \item \textbf{Remote Control Client:} A Android smartphone (Samsung Galaxy S23 Ultra) running Android 13 and Google Chrome browser (Version 140.0.7339.91).
+    %         \end{itemize}
+    %     \subsubsection{Test Environment 2}
+    %         \begin{itemize}
+    %             \item \textbf{Train Client:} REAKT-Tiny, equipped with a Raspberry Pi 5 as the onboard processor, a Pi Camera Module v2 for video capture.
+    %             \item \textbf{Central Server:} A cloud instance with CPU 2.0 GHz, 1GB RAM, 25GB SSD running Ubuntu 24.10 LTS, hosting the Central server and MQTT broker.
+    %             \item \textbf{Remote Control Client:} A laptop with 13th Gen Intel(R) Core(TM) i7-1370P, 16GB RAM, running Ubuntu 24.04 LTS and Google Chrome browser (Version 140.0.7339.80 (Official Build) (64-bit)).
+    %         \end{itemize}
 
-    \subsection{Result and Analysis}
-        In this subsection, we present the results of our experiments and analyze the performance of the WebTransport over QUIC protocol in our remote control system. We focus on two main aspects: latency and data missing rate on video data transmission. This experiment was conducted where both train and remote control console are connected to the central server via a 5G network.
-        \subsubsection{Latency Analysis}
-            Latency is a critical factor in real-time remote control systems, as it directly affects the responsiveness of the system. We measured the latency of each video frame sent from the model train to the remote control console. The latency was calculated as the time difference between when a video frame was captured by the Pi Camera Module and when it was displayed on the remote control console. The results showed that the average Latency was approximately 86.26 ms, with a maximum latency of 563 ms and a minimum latency of 49 ms. The latency distribution is illustrated in Figure~\ref{fig:latency_distribution}, which shows that the majority of video frames experienced latency below 100 ms, indicating that the WebTransport over QUIC protocol provides low-latency communication suitable for real-time applications.
-            \begin{figure}[htbp]
-                \centerline{\includegraphics[width=0.45\textwidth]{experiments/Latency_graph.png}}
-                \caption{Latency Distribution of Video Frames (Test Environment 1)}
-                \label{fig:latency_distribution}
-            \end{figure}
+    % \subsection{Result and Analysis}
+    %     In this subsection, we present the results of our experiments and analyze the performance of the WebTransport over QUIC protocol in our remote control system. We focus on two main aspects: latency and data missing rate on video data transmission. This experiment was conducted where both train and remote control console are connected to the central server via a 5G network.
+    %     \subsubsection{Latency Analysis}
+    %         Latency is a critical factor in real-time remote control systems, as it directly affects the responsiveness of the system. We measured the latency of each video frame sent from the model train to the remote control console. The latency was calculated as the time difference between when a video frame was captured by the Pi Camera Module and when it was displayed on the remote control console. The results showed that the average Latency was approximately 86.26 ms, with a maximum latency of 563 ms and a minimum latency of 49 ms. The latency distribution is illustrated in Figure~\ref{fig:latency_distribution}, which shows that the majority of video frames experienced latency below 100 ms, indicating that the WebTransport over QUIC protocol provides low-latency communication suitable for real-time applications.
+    %         \begin{figure}[htbp]
+    %             \centerline{\includegraphics[width=0.45\textwidth]{experiments/Latency_graph.png}}
+    %             \caption{Latency Distribution of Video Frames (Test Environment 1)}
+    %             \label{fig:latency_distribution}
+    %         \end{figure}
 
-            \textcolor{red}{\textbf{TODO: Add latency analysis for Test Environment 2.}}
-        \subsubsection{Reliability Analysis}
-            Data reliability is another important aspect of communication protocols in real-time systems. We evaluated the data missing rate by comparing the number of video frames sent from the model train with the number of video frames received and displayed on the remote control console. During the experiment, a total of 7060 video frames were sent, out of which 7016 frames were successfully received and displayed. This results in a data missing rate of 0.62\%. The low data missing rate indicates that the WebTransport over QUIC protocol provides reliable data transmission even in 5G network, which is essential for maintaining a smooth and continuous video stream in real-time remote control applications. The data missing rate analysis is illustrated in Figure~\ref{fig:data_missing_analysis}.
-            \begin{figure}[htbp]
-                \centerline{\includegraphics[width=0.45\textwidth]{experiments/missing_frame_graph.png}}
-                \caption{Data Missing Rate Analysis (Test Environment 1)}
-                \label{fig:data_missing_analysis}
-            \end{figure}
-            \newpage
-            \textcolor{red}{\textbf{TODO: Add reliability analysis for Test Environment 2.}}
+    %         \textcolor{red}{\textbf{TODO: Add latency analysis for Test Environment 2.}}
+    %     \subsubsection{Reliability Analysis}
+    %         Data reliability is another important aspect of communication protocols in real-time systems. We evaluated the data missing rate by comparing the number of video frames sent from the model train with the number of video frames received and displayed on the remote control console. During the experiment, a total of 7060 video frames were sent, out of which 7016 frames were successfully received and displayed. This results in a data missing rate of 0.62\%. The low data missing rate indicates that the WebTransport over QUIC protocol provides reliable data transmission even in 5G network, which is essential for maintaining a smooth and continuous video stream in real-time remote control applications. The data missing rate analysis is illustrated in Figure~\ref{fig:data_missing_analysis}.
+    %         \begin{figure}[htbp]
+    %             \centerline{\includegraphics[width=0.45\textwidth]{experiments/missing_frame_graph.png}}
+    %             \caption{Data Missing Rate Analysis (Test Environment 1)}
+    %             \label{fig:data_missing_analysis}
+    %         \end{figure}
+    %         \newpage
+    %         \textcolor{red}{\textbf{TODO: Add reliability analysis for Test Environment 2.}}

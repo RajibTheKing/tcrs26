@@ -1,105 +1,103 @@
 \section{System Architecture}
 \label{sec:system-architecture}
-
-  	\subsection{Overview}
-		This subsection presents an overview of the system architecture, emphasizing its core components and the interactions among them. Figure~\ref{fig:overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. The architecture is designed to support multiple trains, each of which connects to a centralized server deployed on a cloud platform through a network connection. Both the trains and other system components can utilize various communication technologies such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Each train, can be equipped with an array of sensors and communication devices that enable continuous data acquisition and reliable transmission to the central server. Similarly, multiple remote control interfaces—accessible through any standard web browser—can connect to the cloud-based server over the flexible networking options. Through these interfaces, an operator can select any train currently connected with the central server, monitor its real-time operational data, and issue control commands. This design ensures robust connectivity, scalability, and real-time management of train operations across distributed environments, independent of specific network infrastructure.
+	This section presents an overview of the system architecture, emphasizing its core components and the interactions among them. Figure~\ref{fig:overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. Both the trains and other system components can utilize various communication media such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Central server is responsible to relay the information between the train and remote control client, deployed on a cloud instance, which can be accessed by both through the internet. 
 
 		\begin{figure}[t]
 			\centering
-			\includegraphics[width=\columnwidth]{images/System_Overview.pdf}
-			\caption{Overview of the connected modules in the system: Train Clients, Central Server, and Remote Control Consoles}
+			\includegraphics[width=\columnwidth]{images/System_Architecture_Overview.pdf}
+			\caption{High level overview of the system}
 			\label{fig:overview}
 		\end{figure}
 
-  	\subsection{Architecture}
-    	This section presents the detail architecture of our system, illustrating the key components and their interactions. Figure~\ref{fig:system-architecture} provides a comprehensive overview of the system design, highlighting the main modules, data flow, and communication protocols for various data between different layers. The architecture is designed to be modular and scalable, enabling efficient processing and seamless integration of various functional components to achieve safe and reliable real-time Train operations. The primary components of the architecture include:
+%   	\subsection{Architecture}
+%     	This section presents the detail architecture of our system, illustrating the key components and their interactions. Figure~\ref{fig:system-architecture} provides a comprehensive overview of the system design, highlighting the main modules, data flow, and communication protocols for various data between different layers. The architecture is designed to be modular and scalable, enabling efficient processing and seamless integration of various functional components to achieve safe and reliable real-time Train operations. The primary components of the architecture include:
 
-		\begin{figure*}[t]
-			\centering
-			\includegraphics[width=\textwidth]{images/System_Architecture.pdf}
-			\caption{System Architecture showing communication among different modules}
-			\label{fig:system-architecture}
-		\end{figure*}
-		\subsubsection{Train Client}
-			The Train Client module serves as the on-board system can be deployed on any train, responsible for capturing data from camera, preparing telemetry data from sensors, encoding video frames and transmitting this data to the central server while reacts on control commands from remote operators. The Train Client is implemented in Python. The module incorporates several key libraries to achieve its functionality.The system utilizes picamera2 for real-time video capture, OpenCV for frame processing, and PyAV for hardware-accelerated H.264 encoding to enable efficient compression.The aioquic library to integrate the QUIC protocol for low-latency transport, the paho-mqtt client facilitates communication with the MQTT broker, and loguru handles structured logging and diagnostics throughout the application. The encoder component perform real-time H.264 video encoding with dynamic bitrate adaptation capbilities. Train clients only communicate with the central-server. This module integrates three parallel network transport mechanisms. First, a websocket connection is established for any signaling related communication. Second, a QUIC/HTTP3 connection is established for low-latency video streaming.Third, an MQTT connection is established for telemetry data transmission, enabling efficient publish-subscribe messaging between the train and the server. The sensor component is responsible for integrating various sensors on the train to collect data such as speed, location, direction, temperature, and other relevant telemetry information. This component is designed to be modular, allowing for easy addition or removal of sensors as needed. The actuator component handles the execution of control commands received from the remote control consoles via the central server. It interprets commands such as speed adjustments, direction changes, and emergency stops, and translates them into actions performed by the train's control systems. The base class orchestrates the interaction between video capture, encoding, network event handling to ensure smooth operation and data flow within the train client module.
+% 		\begin{figure*}[t]
+% 			\centering
+% 			\includegraphics[width=\textwidth]{images/System_Architecture.pdf}
+% 			\caption{System Architecture showing communication among different modules}
+% 			\label{fig:system-architecture}
+% 		\end{figure*}
+% 		\subsubsection{Train Client}
+% 			The Train Client module serves as the on-board system can be deployed on any train, responsible for capturing data from camera, preparing telemetry data from sensors, encoding video frames and transmitting this data to the central server while reacts on control commands from remote operators. The Train Client is implemented in Python. The module incorporates several key libraries to achieve its functionality.The system utilizes picamera2 for real-time video capture, OpenCV for frame processing, and PyAV for hardware-accelerated H.264 encoding to enable efficient compression.The aioquic library to integrate the QUIC protocol for low-latency transport, the paho-mqtt client facilitates communication with the MQTT broker, and loguru handles structured logging and diagnostics throughout the application. The encoder component perform real-time H.264 video encoding with dynamic bitrate adaptation capbilities. Train clients only communicate with the central-server. This module integrates three parallel network transport mechanisms. First, a websocket connection is established for any signaling related communication. Second, a QUIC/HTTP3 connection is established for low-latency video streaming.Third, an MQTT connection is established for telemetry data transmission, enabling efficient publish-subscribe messaging between the train and the server. The sensor component is responsible for integrating various sensors on the train to collect data such as speed, location, direction, temperature, and other relevant telemetry information. This component is designed to be modular, allowing for easy addition or removal of sensors as needed. The actuator component handles the execution of control commands received from the remote control consoles via the central server. It interprets commands such as speed adjustments, direction changes, and emergency stops, and translates them into actions performed by the train's control systems. The base class orchestrates the interaction between video capture, encoding, network event handling to ensure smooth operation and data flow within the train client module.
 
-		\subsubsection{Central Server}
-			The Central Server acts as the core relay and orchestration hub, facilitating communication between Train Clients and Remote Control Clients. It handles signaling, protocol translation, connection management, video stream distribution, telemetry processing, and command routing. Developed in Python, the system leverages modern asynchronous frameworks to support efficient concurrent operations. FastAPI serves as the high-performance asynchronous web framework for REST API and WebSocket endpoints. The aioquic library provides QUIC connectivity for Train Clients and WebTransport support for Remote Control Clients. For telemetry data processing, the Central Server interfaced with  a robust and widely adopted MQTT broker EMQX using the paho-mqtt library. Logging across all server components is centralized and managed through Loguru.
-		\subsubsection{Remote Control}
-			The Remote Control module is a web-based client tht allows operator to monitor and control trains in real-time using any standard web browser without requiring any additional software installation. The web client is developed using Vue.js 3 leverages modern web standards for optimal performance. Vue Router handles client-side routing for single-page application (SPA) navigation, enabling seamless transitions between different views. Pinia provides state management capabilities. Axios serves as the HTTP client for REST API communication with the central Server. The paho-mqtt library, in its browser-compatible form, enables MQTT client funtionality over WebSockets. Modern web APIs are extensively utilized throughout the application: the WebCodecs API provides hardware-accelerated H.264 video decoding, and the WebTransport API, a QUIC-based bidirectional streaming for real-time video and command transmission. The assembler component, reconstructs H.264 frames from fragmented packets recieved over WebTransport. This component buffers incoming packets in memory, reassembles them into complete frames, and forwards them to the decoder for rendering.
+% 		\subsubsection{Central Server}
+% 			The Central Server acts as the core relay and orchestration hub, facilitating communication between Train Clients and Remote Control Clients. It handles signaling, protocol translation, connection management, video stream distribution, telemetry processing, and command routing. Developed in Python, the system leverages modern asynchronous frameworks to support efficient concurrent operations. FastAPI serves as the high-performance asynchronous web framework for REST API and WebSocket endpoints. The aioquic library provides QUIC connectivity for Train Clients and WebTransport support for Remote Control Clients. For telemetry data processing, the Central Server interfaced with  a robust and widely adopted MQTT broker EMQX using the paho-mqtt library. Logging across all server components is centralized and managed through Loguru.
+% 		\subsubsection{Remote Control}
+% 			The Remote Control module is a web-based client tht allows operator to monitor and control trains in real-time using any standard web browser without requiring any additional software installation. The web client is developed using Vue.js 3 leverages modern web standards for optimal performance. Vue Router handles client-side routing for single-page application (SPA) navigation, enabling seamless transitions between different views. Pinia provides state management capabilities. Axios serves as the HTTP client for REST API communication with the central Server. The paho-mqtt library, in its browser-compatible form, enables MQTT client funtionality over WebSockets. Modern web APIs are extensively utilized throughout the application: the WebCodecs API provides hardware-accelerated H.264 video decoding, and the WebTransport API, a QUIC-based bidirectional streaming for real-time video and command transmission. The assembler component, reconstructs H.264 frames from fragmented packets recieved over WebTransport. This component buffers incoming packets in memory, reassembles them into complete frames, and forwards them to the decoder for rendering.
 
-	\subsection{Connection Establishment}
-		This subsection describes the connection establishment process among different modules in the system. Train client connects to the central server by a WebSocket connection along with a unique identifier for signaling purposes. Parallelly, train-client establish QUIC/HTTP3 connection with the central server for video streaming. To publish telemetry data, train client connects to the MQTT broker hosted on the central server. On the other hand, remote control client connects to the central server through WebSocket connection for signaling and WebTransport connection for video streaming and command transmission. Additionally, remote control client also connects to the same MQTT broker for telemetry data reception. The connection establishment methods are illustrated in Figure~\ref{fig:connection-establishment}.
-		\begin{figure*}[t]
-			\centering
-			\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{images/Connection_Establishment.pdf}
-			\caption{Connection Establishment among different modules in the system}
-			\label{fig:connection-establishment}
-		\end{figure*}
-	\subsection{Telemetry Data}
-		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and not going too much on technical details regarding telemetry data. However, just to mention briefly, after successful connection establishment with the MQTT broker the telemetry data is published by the train client to specific MQTT topics:
+% 	\subsection{Connection Establishment}
+% 		This subsection describes the connection establishment process among different modules in the system. Train client connects to the central server by a WebSocket connection along with a unique identifier for signaling purposes. Parallelly, train-client establish QUIC/HTTP3 connection with the central server for video streaming. To publish telemetry data, train client connects to the MQTT broker hosted on the central server. On the other hand, remote control client connects to the central server through WebSocket connection for signaling and WebTransport connection for video streaming and command transmission. Additionally, remote control client also connects to the same MQTT broker for telemetry data reception. The connection establishment methods are illustrated in Figure~\ref{fig:connection-establishment}.
+% 		\begin{figure*}[t]
+% 			\centering
+% 			\includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{images/Connection_Establishment.pdf}
+% 			\caption{Connection Establishment among different modules in the system}
+% 			\label{fig:connection-establishment}
+% 		\end{figure*}
+% 	\subsection{Telemetry Data}
+% 		The Telemetry Data suppose to be transmitted from the train client to the remote control client through a MQTT broker hosted on the central server. The telemetry data includes various sensor reading such as speed, location, direction, temperature, and other relevant information.The telemetry data is structured in JSON format for easy parsing and interpretation. This paper is not focusing much on telemetry data transmission and not going too much on technical details regarding telemetry data. However, just to mention briefly, after successful connection establishment with the MQTT broker the telemetry data is published by the train client to specific MQTT topics:
 
-		\begin{lstlisting}[style=codeStyle]
-paho.mqtt.publish(
-    topic = "train/<train_id>/telemetry",
-    payload = <json_data>,
-    qos = 1
-)
-		\end{lstlisting}
-		and the remote control client subscribes to these topics to receive real-time updates.
+% 		\begin{lstlisting}[style=codeStyle]
+% paho.mqtt.publish(
+%     topic = "train/<train_id>/telemetry",
+%     payload = <json_data>,
+%     qos = 1
+% )
+% 		\end{lstlisting}
+% 		and the remote control client subscribes to these topics to receive real-time updates.
 
-		\begin{lstlisting}[style=codeStyle]
-paho.mqtt.subscribe(
-    topic = "train/<train_id>/telemetry")
-		\end{lstlisting}
+% 		\begin{lstlisting}[style=codeStyle]
+% paho.mqtt.subscribe(
+%     topic = "train/<train_id>/telemetry")
+% 		\end{lstlisting}
 
-  	\subsection{Real-Time Video Data}
-		Real-time video data transmission presents significant challenges, particularly in applications involving remote monitoring and control of moving vehicles such as trains. The transmission pipeline must be optimized for low latency while ensuring smooth and reliable video playback to support remote-driving operations. To minimize delay, no component within the pipeline should impose unnecessary blocking behavior. Consequently, a robust video transmission architecture is required—one capable of adapting to dynamic network conditions while maintaining both low latency and high video quality. In this subsection, we present our real-time video transmission workflow, which transfers video data from the train client to the remote-control client via a central server using WebTransport over the QUIC/HTTP3 protocol. The end-to-end pipeline comprises video capture, encoding, relaying, decoding, and display. The following subsections describe each stage of this process in detail.
-    	\subsubsection{Capturing Video and Encoding Step}
-			The video capturing and encoding pipeline is executed on the train client. The client employs the picamera2 library to capture real-time video frames from the onboard camera. Each frame is then processed by the PyAV library, which uses hardware-accelerated H.264 encoding to efficiently compress the video stream. The encoded frames are placed into a queue, from which a dedicated sending thread retrieves them and fragments them into smaller packets suitable for QUIC/HTTP3 transmission. These packets are subsequently delivered to the central server via the established QUIC/HTTP3 connection using its unreliable datagram transport feature, enabling low-latency video delivery. The whole process is shown in Figure~\ref{fig:videoflow-trainclient}.
-			\begin{figure}[t]
-				\centering
-				\includegraphics[width=\columnwidth]{images/VideoDataFlow_TrainClient.pdf}
-				\caption{Video Capturing, Encoding, Packetizing, sending on Train Client}
-				\label{fig:videoflow-trainclient}
-			\end{figure}
-    	\subsubsection{Relaying Video Step}
-			The relaying video step occurs on the central server. Upon receiving the packets from different train clients via the QUIC/HTTP3 connection, the central server relays these packets to the connected remote control clients. The server utilizes seperate WebTransport connection channel with different remote control clients. The video packets are then forwarded to the appropriate remote control client based on the selected train identifier, ensuring that each operator receives the correct video stream. The relaying process is illustrated in Figure~\ref{fig:videoflow-centralserver}.
-			\begin{figure}[t]
-				\centering
-				\includegraphics[width=\columnwidth]{images/VideoDataFlow_CentralServer.pdf}
-				\caption{Video Relaying on Central Server}
-				\label{fig:videoflow-centralserver}
-			\end{figure}
-    	\subsubsection{Decoding and Displaying Video Step}
-			The remote control client receives encoded video packets from the central server through a WebTransport connection, using its datagram readers. An assembler module parses these packets and stores them in a buffer. Due to the dynamic nature of network, packets may arrive out of order, the assembler is responsible for reordering them correctly. A frame is considered complete only when all packets associated with that frame have been received; at this point, the assembler updates a state variable, frameRef, to reference the newly assembled frame. A watcher registered in the Vue.js event system monitors changes to frameRef. When a new frame becomes available, it is pushed into a queue, from which the VideoPanel component retrieves frames for decoding using the standard WebCodec APIs supported by most modern browsers. After decoding, the resulting image data is rendered onto a 2D canvas, providing the remote train driver or operator with a real-time visual feed. To maintain low latency, the assembler retains only the most recent 30 frames, discarding older ones. This strategy ensures that the displayed video remains as close to real time as possible, offering an accurate and timely representation of the train’s environment. The overall process is illustrated in Figure~\ref{fig:videoflow-webclient}.
-			\begin{figure}[t]
-				\centering
-				\includegraphics[width=\columnwidth]{images/VideoDataFlow_WebClient.pdf}
-				\caption{Video Receiving, Assembling, Decoding, Rendering on Remote Control Client}
-				\label{fig:videoflow-webclient}
-			\end{figure}
+%   	\subsection{Real-Time Video Data}
+% 		Real-time video data transmission presents significant challenges, particularly in applications involving remote monitoring and control of moving vehicles such as trains. The transmission pipeline must be optimized for low latency while ensuring smooth and reliable video playback to support remote-driving operations. To minimize delay, no component within the pipeline should impose unnecessary blocking behavior. Consequently, a robust video transmission architecture is required—one capable of adapting to dynamic network conditions while maintaining both low latency and high video quality. In this subsection, we present our real-time video transmission workflow, which transfers video data from the train client to the remote-control client via a central server using WebTransport over the QUIC/HTTP3 protocol. The end-to-end pipeline comprises video capture, encoding, relaying, decoding, and display. The following subsections describe each stage of this process in detail.
+%     	\subsubsection{Capturing Video and Encoding Step}
+% 			The video capturing and encoding pipeline is executed on the train client. The client employs the picamera2 library to capture real-time video frames from the onboard camera. Each frame is then processed by the PyAV library, which uses hardware-accelerated H.264 encoding to efficiently compress the video stream. The encoded frames are placed into a queue, from which a dedicated sending thread retrieves them and fragments them into smaller packets suitable for QUIC/HTTP3 transmission. These packets are subsequently delivered to the central server via the established QUIC/HTTP3 connection using its unreliable datagram transport feature, enabling low-latency video delivery. The whole process is shown in Figure~\ref{fig:videoflow-trainclient}.
+% 			\begin{figure}[t]
+% 				\centering
+% 				\includegraphics[width=\columnwidth]{images/VideoDataFlow_TrainClient.pdf}
+% 				\caption{Video Capturing, Encoding, Packetizing, sending on Train Client}
+% 				\label{fig:videoflow-trainclient}
+% 			\end{figure}
+%     	\subsubsection{Relaying Video Step}
+% 			The relaying video step occurs on the central server. Upon receiving the packets from different train clients via the QUIC/HTTP3 connection, the central server relays these packets to the connected remote control clients. The server utilizes seperate WebTransport connection channel with different remote control clients. The video packets are then forwarded to the appropriate remote control client based on the selected train identifier, ensuring that each operator receives the correct video stream. The relaying process is illustrated in Figure~\ref{fig:videoflow-centralserver}.
+% 			\begin{figure}[t]
+% 				\centering
+% 				\includegraphics[width=\columnwidth]{images/VideoDataFlow_CentralServer.pdf}
+% 				\caption{Video Relaying on Central Server}
+% 				\label{fig:videoflow-centralserver}
+% 			\end{figure}
+%     	\subsubsection{Decoding and Displaying Video Step}
+% 			The remote control client receives encoded video packets from the central server through a WebTransport connection, using its datagram readers. An assembler module parses these packets and stores them in a buffer. Due to the dynamic nature of network, packets may arrive out of order, the assembler is responsible for reordering them correctly. A frame is considered complete only when all packets associated with that frame have been received; at this point, the assembler updates a state variable, frameRef, to reference the newly assembled frame. A watcher registered in the Vue.js event system monitors changes to frameRef. When a new frame becomes available, it is pushed into a queue, from which the VideoPanel component retrieves frames for decoding using the standard WebCodec APIs supported by most modern browsers. After decoding, the resulting image data is rendered onto a 2D canvas, providing the remote train driver or operator with a real-time visual feed. To maintain low latency, the assembler retains only the most recent 30 frames, discarding older ones. This strategy ensures that the displayed video remains as close to real time as possible, offering an accurate and timely representation of the train’s environment. The overall process is illustrated in Figure~\ref{fig:videoflow-webclient}.
+% 			\begin{figure}[t]
+% 				\centering
+% 				\includegraphics[width=\columnwidth]{images/VideoDataFlow_WebClient.pdf}
+% 				\caption{Video Receiving, Assembling, Decoding, Rendering on Remote Control Client}
+% 				\label{fig:videoflow-webclient}
+% 			\end{figure}
 
-  	\subsection{Control Command Data}
-		Control command data is transmitted from the remote control client to central server using WebTransport's reliable stream feature, and then forwarded to the respective train client via established QUIC connection. The control commands include instructions such as starting the vehicle, speed adjustments, emergency stops, and changing direction. This subsection describes the command structure and the flow of command sending in detail.
-      	\subsubsection{Command Structure}
-			The control commands are represented using a JSON-based structure, enabling reliable parsing and interpretation by both the train-side client and the remote control interface. Each command specifies an instruction type along with the identifier of the target train. For example, an emergency-stop request is issued as sending a command message structured as follows:
+%   	\subsection{Control Command Data}
+% 		Control command data is transmitted from the remote control client to central server using WebTransport's reliable stream feature, and then forwarded to the respective train client via established QUIC connection. The control commands include instructions such as starting the vehicle, speed adjustments, emergency stops, and changing direction. This subsection describes the command structure and the flow of command sending in detail.
+%       	\subsubsection{Command Structure}
+% 			The control commands are represented using a JSON-based structure, enabling reliable parsing and interpretation by both the train-side client and the remote control interface. Each command specifies an instruction type along with the identifier of the target train. For example, an emergency-stop request is issued as sending a command message structured as follows:
 
-			\begin{lstlisting}[style=codeStyle]
-			command = {
-				instruction: "EMERGENCY_STOP",
-				train_id: "e30657fc9fe2"
-			}
-			\end{lstlisting}
+% 			\begin{lstlisting}[style=codeStyle]
+% 			command = {
+% 				instruction: "EMERGENCY_STOP",
+% 				train_id: "e30657fc9fe2"
+% 			}
+% 			\end{lstlisting}
 
-			Similarly, commands that require additional parameters—such as setting a new target speed—extend the same structure with the necessary fields:
+% 			Similarly, commands that require additional parameters—such as setting a new target speed—extend the same structure with the necessary fields:
 
-			\begin{lstlisting}[style=codeStyle]
-			command = {
-				instruction: "CHANGE_TARGET_SPEED",
-				train_id: "e30657fc9fe2",
-				target_speed: 30
-			}
-			\end{lstlisting}
-      	\subsubsection{Command Sending Flow}
-			The command sending process is initiated on the remote control client when an operator issues a control command through the web interface. The command is serialized into JSON format and transmitted to the central server via WebTransport's reliable stream feature. Upon receiving the command, the central server parses the JSON message to extract the train identifier. It then forwards the command to the corresponding train client over the established QUIC connection. The train client receives the command, interpretes the instruction, and executes the appropriate action through its actuator component.
+% 			\begin{lstlisting}[style=codeStyle]
+% 			command = {
+% 				instruction: "CHANGE_TARGET_SPEED",
+% 				train_id: "e30657fc9fe2",
+% 				target_speed: 30
+% 			}
+% 			\end{lstlisting}
+%       	\subsubsection{Command Sending Flow}
+% 			The command sending process is initiated on the remote control client when an operator issues a control command through the web interface. The command is serialized into JSON format and transmitted to the central server via WebTransport's reliable stream feature. Upon receiving the command, the central server parses the JSON message to extract the train identifier. It then forwards the command to the corresponding train client over the established QUIC connection. The train client receives the command, interpretes the instruction, and executes the appropriate action through its actuator component.
