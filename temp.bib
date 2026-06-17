@@ -36,7 +36,6 @@
   address = {New York, NY, USA},
   url = {https://doi.org/10.1145/3696355.3699698},
   doi = {10.1145/3696355.3699698},
-  abstract = {QUIC is a UDP-based transport protocol, standardized in RFC9000 (2021). It enhances privacy by encrypting entire packets and offers improvements over TCP, such as native multiplexing and connection migration. Despite these advantages, QUIC, like TCP, suffers from head-of-line blocking and variable latency, making it unsuitable for critical real-time systems.RFC9221 addresses this by introducing an extension that allows QUIC to transmit datagrams without retransmission, improving its suitability for real-time applications. However, real-time networks require a thorough evaluation of QUIC’s performance. The potential delays caused by its cryptographic operations and the complex traffic patterns it generates could impact time-sensitive traffic.We conduct experiments using Mininet across a range of scenarios, including software updates in bandwidth-constrained environments and in the presence of malicious nodes. Additionally, we assess implementations in both Go and C. The performance of QUIC, along with its datagram extension, is compared against UDP and DTLS. Finally, the results are validated through testing on a physical network testbed.Our results show that, despite its cryptographic overhead, QUIC performs similarly to UDP and DTLS in most cases. However, it may interact poorly with lower-layer mechanisms like token-bucket filters. Overall, QUIC shows potential to replace older transport protocols in real-time systems.},
   booktitle = {Proceedings of the 32nd International Conference on Real-Time Networks and Systems},
   pages = {255–265},
   numpages = {11},
@@ -44,16 +43,6 @@
   location = {
   },
   series = {RTNS '24}
-}
-
-@misc{mejías2025streamingremoterenderingservices,
-      title={Streaming Remote rendering services: Comparison of QUIC-based and WebRTC Protocols}, 
-      author={Daniel Mejías and Inhar Yeregui and Ángel Martín and Roberto Viola and Pablo Angueira and Jon Montalbán},
-      year={2025},
-      eprint={2505.22132},
-      archivePrefix={arXiv},
-      primaryClass={cs.NI},
-      url={https://arxiv.org/abs/2505.22132}, 
 }
 
 @report{ERA2023SafetyOverview,
@@ -143,4 +132,54 @@
       url={https://arxiv.org/abs/2606.09203}, 
 }
 
+@inproceedings{Langley2017QUIC,
+  author    = {Adam Langley et al.},
+  title     = {The {QUIC} Transport Protocol: Design and Internet-Scale Deployment},
+  booktitle = {Proceedings of the Conference of the ACM Special Interest Group on Data Communication (SIGCOMM)},
+  pages     = {183--196},
+  year      = {2017},
+  doi       = {10.1145/3098822.3098842}
+}
 
+@inproceedings{Mejias2025QUICWebRTC,
+  author    = {Daniel Mej{\'i}as and Inhar Yeregui and {\'A}ngel Mart{\'i}n and Roberto Viola and Pablo Angueira and Jon Montalb{\'a}n},
+  title     = {Streaming Remote Rendering Services: Comparison of QUIC-based and WebRTC Protocols},
+  booktitle = {Proceedings of the IEEE International Conference on Communications (ICC)},
+  year       = {2025},
+  pages      = {1--6},
+  doi        = {10.48550/arXiv.2505.22132}
+}
+
+@techreport{rfc9000,
+  author      = {J. Iyengar and M. Thomson},
+  title       = {{QUIC}: A UDP-Based Multiplexed and Secure Transport},
+  institution = {Internet Engineering Task Force (IETF)},
+  number      = {RFC 9000},
+  year        = {2021},
+  month       = may,
+  doi         = {10.17487/RFC9000},
+  url         = {https://www.rfc-editor.org/rfc/rfc9000},
+  type        = {RFC},
+  series      = {Request for Comments},
+  issn        = {2070-1721}
+}
+
+@article{10.1145/3448128,
+  author = {Lohstroh, Marten and Menard, Christian and Bateni, Soroush and Lee, Edward A.},
+  title = {Toward a Lingua Franca for Deterministic Concurrent Systems},
+  year = {2021},
+  issue_date = {July 2021},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  volume = {20},
+  number = {4},
+  issn = {1539-9087},
+  url = {https://doi.org/10.1145/3448128},
+  doi = {10.1145/3448128},
+  abstract = {Many programming languages and programming frameworks focus on parallel and distributed computing. Several frameworks are based on actors, which provide a more disciplined model for concurrency than threads. The interactions between actors, however, if not constrained, admit nondeterminism. As a consequence, actor programs may exhibit unintended behaviors and are less amenable to rigorous testing. We show that nondeterminism can be handled in a number of ways, surveying dataflow dialects, process networks, synchronous-reactive models, and discrete-event models. These existing approaches, however, tend to require centralized control, pose challenges to modular system design, or introduce a single point of failure. We describe “reactors,” a new coordination model that combines ideas from several of these approaches to enable determinism while preserving much of the style of actors. Reactors promote modularity and allow for distributed execution. By using a logical model of time that can be associated with physical time, reactors also provide control over timing. Reactors also expose parallelism that can be exploited on multicore machines and in distributed configurations without compromising determinacy.},
+  journal = {ACM Trans. Embed. Comput. Syst.},
+  month = may,
+  articleno = {36},
+  numpages = {27},
+  keywords = {Polyglot, concurrency, coordination language, determinism}
+}
