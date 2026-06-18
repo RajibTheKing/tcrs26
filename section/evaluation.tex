@@ -1,20 +1,40 @@
 \section{Experiment and Evaluation}
 \label{sec:evaluation}
-    To evaluate the performance of our remote control system, we conducted a series of experiments under realistic network conditions. The primary focus of our evaluation was to assess the latency and reliability of control command transmission and video streaming using WebTransport in the context of remote train operations. The Lingua Franca–based train client was deployed on a \textbf{Raspberry Pi 5}, which coordinates a physical test vehicle equipped with a camera and a motor control system. Central server were deployed on a cloud instance hosted in Frankfurt, Germany. During the experiments, the physical test vehicle was in Lütjenburg, Germany which was controlled from the laboratory in Kiel University using the Remote Control interface. In these experiments, the train client was connected to the central server via a 5G network using a \textbf{Chateau 5G R17 ax} router. The remote control client was connected to the central server over a wired Ethernet connection.
+    To evaluate the performance of our remote control system, we conducted a series of experiments under realistic network conditions. The primary focus of our evaluation was to assess the latency and reliability of control command transmission and video streaming using WebTransport in the context of remote train operations. The Lingua Franca–based train client was deployed on a \textbf{Raspberry Pi 5}, which coordinates a physical test vehicle equipped with a camera and a motor control system. Central server were deployed on a cloud instance hosted in Frankfurt, Germany. During the experiments, the physical test vehicle was in Lütjenburg, Germany which was controlled from the laboratory in Kiel University using the Remote Control interface. In these experiments, the train client was connected to the central server via a 5G network using a \textbf{Chateau 5G R17 ax} router. The remote control client was connected to the central server over a wired Ethernet connection. 
+    
+    Figure \ref{fig:command_latency} shows the latency measurements for control command transmission from the remote control client to the train client. The latency was measured as the time difference between when a control command was sent from the remote control and when it was received by the train client. The results indicate that the average latency for control command transmission was approximately 61.11 ms. 
 
     \begin{figure}[ht]
         \centering
     \begin{subfigure}[b]{0.49\linewidth}
         \centering
         \includegraphics[height=4.5cm]{command_latency_histogram.pdf}
-        \label{fig:command_latency_histogram}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\linewidth}
         \centering
         \includegraphics[height=4.5cm]{command_latency_boxplot.pdf}
-        \label{fig:command_latency_boxplot}
     \end{subfigure}
         \caption{Latency measurements for control commands.}
         \label{fig:command_latency}
+    \end{figure}
+
+
+    % now add video_latency_histogram and video_latency_boxplot as well
+
+    Regarding video streaming, German regulations require that glass-to-glass latency for remotely controlled systems be maintained below 200 ms. That means for each video frame, the total time that includes capturing, encoding, transmission, decoding and display should be less than 200 ms. Among them encoding is the most computation heavy part. Current modern GPU can encode a 4k video frame in around 8ms. In our experiments, we used a 720p30 video stream, our assumption is that for each frame all the other tasks can be done in around 40-50 ms. As other computation heavy tasks hardly depends on Hardware specification, we are more interested in latency induced by realistic network conditions. Figure \ref{fig:video_latency} shows the latency measurements for video streaming from the train client to the remote control client. The latency was measured as the time difference between when a video frame was sent by the train's camera and when it was received on the remote control client. The results indicate that the average latency for video frames was approximately 85 ms. Although I-frames typically shows latencies exceeding 150 ms, consecutive P-frames experience substantially lower latency. When evaluated using a rolling average of the last 30 frames (1sec), the latency remains consistently below 100 ms. Additionally, boxplot analysis confirms that the latency distribution is within the acceptable performance limits
+
+    \begin{figure}[ht]
+        \centering
+    \begin{subfigure}[b]{0.49\linewidth}
+        \centering
+        \includegraphics[height=4.5cm]{video_latency_histogram.pdf}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\linewidth}
+        \centering
+        \includegraphics[height=4.5cm]{video_latency_boxplot.pdf}
+    \end{subfigure}
+        \caption{Latency measurements for video streaming.}
+        \label{fig:video_latency}
     \end{figure}
