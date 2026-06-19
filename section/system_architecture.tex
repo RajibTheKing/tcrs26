@@ -4,7 +4,7 @@
 
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=\columnwidth]{images/System_Architecture_Overview.pdf}
+		\includegraphics[width=\columnwidth]{graphics/gen/System_Architecture_Overview.pdf}
 		\caption{High level overview of the system}
 		\label{fig:overview}
 	\end{figure}
@@ -13,7 +13,7 @@
 
 	\begin{figure*}[!t]
 		\centering
-		\includegraphics[width=\textwidth]{images/TrainClient.pdf}
+		\includegraphics[width=\textwidth]{graphics/gen/TrainClient.pdf}
 		\caption{Top level components of the Train Client}
 		\label{fig:train-client}
 	\end{figure*}
@@ -23,7 +23,7 @@
 	The HeartbeatHandler manages the periodic exchange of heartbeat messages between the train and the remote control client to monitor connectivity. If a heartbeat message is not received within a specified timeout period, the HeartbeatHandler triggers an event to indicate the connection is no longer active, allowing the system to take appropriate actions such as entering a safe state. This reactor is designed using Lingua Franca's modal reactors, which allow it to operate in different modes based on the status. Figure \ref{fig:heartbeat} illustrates the heartbeat handling mechanism.
 	\begin{figure}[t]
 		\centering
-		\includegraphics[width=\columnwidth]{images/HeartbeatHandler-cropped.pdf}
+		\includegraphics[width=\columnwidth]{graphics/gen/HeartbeatHandler-cropped.pdf}
 		\caption{Heartbeat handling to monitor connectivity between the train and remote control client}
 		\label{fig:heartbeat}
 	\end{figure}
