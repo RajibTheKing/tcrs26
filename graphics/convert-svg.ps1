@@ -5,7 +5,7 @@
 param([switch]$Clean)
 
 $graphicsDir = "..\graphics"
-$outputDir = "."
+$outputDir = ".\gen"
 
 # Handle clean operation first
 if ($Clean) {
