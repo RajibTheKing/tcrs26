@@ -1,6 +1,6 @@
 \section{System Architecture}
 \label{sec:system-architecture}
-	This section presents an overview of the system architecture, emphasizing its core components and the interactions among them. Figure \ref{fig:overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. Both the trains and other system components can utilize various communication media such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Central server is responsible to relay the information between the train and remote control client, deployed on a cloud instance, which can be accessed by both through the internet. In the context of system architecture,central server and the remote control interface are not described in detail. However, the focus is on the design and implementation of the train client using Lingua Franca.
+	 Figure \ref{fig:overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. Both the trains and other system components can utilize various communication media such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Central server is responsible to relay the information between the train and remote control client, deployed on a cloud instance, which can be accessed by both through the internet. In the context of system architecture,central server and the remote control interface are not described in detail. However, the focus is on the design and implementation of the train client using Lingua Franca.
 
 	\begin{figure}[t]
 		\centering
@@ -8,7 +8,7 @@
 		\caption{High level overview of the system}
 		\label{fig:overview}
 	\end{figure}
-	
+
 	In LF, a reactor is a concurrent, stateful component with well-defined input and output ports, timers, and actions. Reactions are functions triggered by events, execute atomically and deterministically. LF enforces a logical time semantics: all events are scheduled and processed in timestamp order, and physical time can be explicitly referenced for real-time interactions. Figure \ref{fig:train-client} shows top level components of the train client.
 
 	\begin{figure*}[!t]
@@ -19,7 +19,7 @@
 	\end{figure*}
 
 	The TrainClient is the main reactor which instantiates other reactors upon startup. The VideoStreamer reactor is responsible for capturing and encoding video frames from physical camera mounted on the train. The encoded video frames are then passed to both NetworkProtocol, and DataStorage reactors. The DataStorage reactor is responsible for storing the video frames and other relevant data locally on the train for later retrieval and analysis. The NetworkProtocol reactor handles the communication with the central server. For video transmission and command reception, the NetworkProtocol maintains two separate communication channels over QUIC. Upon receiving control commands NetworkProtocol forwards them to the Parser reactor which parses the receiving bytes and extracts to meaningful events. When the parser identifies a connect event, it initializes the ClockSynchronizer and the Heartbeat Handler. The ClockSynchronizer is responsible for synchronizing the train's local clock with the remote control client's clock to ensure accurate timing. 
-	
+
 	The HeartbeatHandler manages the periodic exchange of heartbeat messages between the train and the remote control client to monitor connectivity. If a heartbeat message is not received within a specified timeout period, the HeartbeatHandler triggers an event to indicate the connection is no longer active, allowing the system to take appropriate actions such as entering a safe state. This reactor is designed using Lingua Franca's modal reactors, which allow it to operate in different modes based on the status. Figure \ref{fig:heartbeat} illustrates the heartbeat handling mechanism.
 	\begin{figure}[t]
 		\centering
