@@ -9,10 +9,10 @@
 
     Remote Control System includes physical components such as sensors and actuators. Data exchange and coordination among these components are commonly implemented using mechanisms such as the publish–subscribe pattern or callback-based execution. While widely adopted, these approaches can introduce non-deterministic behavior due to unpredictable callback ordering and concurrent event handling. To achieve deterministic execution in this cyber-physical environment, the train client is implemented using Lingua Franca, a reactor-oriented coordination language that guarantees determinism by construction. Lingua Franca decouples logical time from physical wall-clock time, enabling predictable and reproducible execution semantics \cite{10.1145/3448128}. This design eliminates race conditions and the non-deterministic callback ordering often associated with traditional publish–subscribe mechanism, thereby ensuring consistent and predictable execution traces on the physical train system \cite{teper2026deterministicexecutionros2}.
 
-    
+
     This paper provides following contribution:
         \begin{itemize}
             \item The architectural design of a train client using Lingua Franca
-            
-            \item A performance analysis of WebTransport in the context of remote control system under realistic network conditions.
+
+            \item A performance analysis of QUIC based WebTransport in the context of remote control system under realistic network conditions.
         \end{itemize}
