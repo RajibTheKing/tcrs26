@@ -18,7 +18,7 @@
             \label{fig:experiment_setup}
     \end{figure}
 
-    Regarding video and control data transmission, German regulations require the glass-to-glass latency of remotely controlled systems to remain below 200ms \cite{StVFernLV2025}. For each video frame, the total delay, including image capture, encoding, network transmission, decoding, and display, must therefore not exceed 200ms. Modern GPUs can encode a 4K video frame in approximately 15.8ms \cite{10637525}. In our experiments, we used a video stream with a resolution of 1280$\times$720 pixels at 30~FPS. Based on the performance of modern hardware, we assume that all computationally intensive processing stages can be completed within approximately 50ms per frame. Consequently, our evaluation focuses primarily on latency introduced by realistic network conditions. We are presenting the results of two trip sessions. The first session was conducted in the forward direction from Lütjenburg to Friederikenthal, while the second session was conducted in the backward direction, see \ref{tab:data_collection_runs}.
+    Regarding video and control data transmission, German regulations require the glass-to-glass latency of remotely controlled systems to remain below 200ms \cite{StVFernLV2025}. For each video frame, the total delay, including image capture, encoding, network transmission, decoding, and display, must therefore not exceed 200ms. Modern GPUs can encode a 4K video frame in approximately 15.8ms \cite{ArunruangsirilertK24}. In our experiments, we used a video stream with a resolution of 1280$\times$720 pixels at 30~FPS. Based on the performance of modern hardware, we assume that all computationally intensive processing stages can be completed within approximately 50ms per frame. Consequently, our evaluation focuses primarily on latency introduced by realistic network conditions. We are presenting the results of two trip sessions. The first session was conducted in the forward direction from Lütjenburg to Friederikenthal, while the second session was conducted in the backward direction, see \ref{tab:data_collection_runs}.
 
     \begin{table*}[t]
         \centering
@@ -59,19 +59,19 @@
 
     Figure \ref{fig:video_latency} shows the latency measurements for video streaming from the train client to the remote control client. We observed that many video frames missed the threshold. However, video frames are continous data and we are perceiving 30 frames per second, it is sensible to look at the rolling average where window size is 30. The rolling average latency indicates that video frames were mostly received within the acceptable limits in both trip sessions. We also observed that only few occurance of latency spikes above the threschold.
 
-    \begin{figure}[ht]
-        \centering
-        \begin{subfigure}[b]{\linewidth}
-            \centering
-            \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency_forward_trip.pdf}
-            \caption{Forward trip}
-        \end{subfigure}
-        \hfill
-        \begin{subfigure}[b]{\linewidth}
-            \centering
-            \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency_backward_trip.pdf}
-            \caption{Backward trip}
-        \end{subfigure}
-            \caption{Latency measurements for video streaming.}
-            \label{fig:video_latency}
-    \end{figure}
+    % \begin{figure}[ht]
+    %     \centering
+    %     \begin{subfigure}[b]{\linewidth}
+    %         \centering
+    %         \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency_forward_trip.pdf}
+    %         \caption{Forward trip}
+    %     \end{subfigure}
+    %     \hfill
+    %     \begin{subfigure}[b]{\linewidth}
+    %         \centering
+    %         \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency_backward_trip.pdf}
+    %         \caption{Backward trip}
+    %     \end{subfigure}
+    %         \caption{Latency measurements for video streaming.}
+    %         \label{fig:video_latency}
+    % \end{figure}
