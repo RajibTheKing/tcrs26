@@ -1,12 +1,5 @@
 \section{System Architecture}
 \label{sec:system-architecture}
-	\begin{figure}[t]
-		\centering
-		\includegraphics[width=\columnwidth]{graphics/gen/System_Architecture_Overview.pdf}
-		\caption{High-level overview of the remote control architecture}
-		\label{fig:overview}
-	\end{figure}
-	
 	\begin{figure*}[!t]
 		\centering
 		\includegraphics[width=\textwidth]{graphics/gen/TrainClient.pdf}
@@ -14,9 +7,16 @@
 		\label{fig:train-client}
 	\end{figure*}
 
+	\begin{figure}[t]
+		\centering
+		\includegraphics[width=\columnwidth]{graphics/gen/System_Architecture_Overview.pdf}
+		\caption{High-level overview of the remote control architecture}
+		\label{fig:overview}
+	\end{figure}
+
+
 	 Figure \ref{fig:overview} illustrates the high-level structure of the system, highlighting the main modules and their interconnections. Both the trains and other system components can utilize various communication media such as 4G, 5G, or Wi-Fi, depending on network availability and operational requirements. Central server is responsible to relay the information between the train and remote control client, deployed on a cloud instance, which can be accessed by both through the internet. In the context of system architecture,central server and the remote control interface are not described in detail. However, the focus is on the design and implementation of the train client using Lingua Franca.
 
-	
 
 	In LF, a reactor is a concurrent, stateful component with well-defined input and output ports, timers, and actions. Reactions are functions triggered by events, execute atomically and deterministically. LF enforces a logical time semantics: all events are scheduled and processed in timestamp order, and physical time can be explicitly referenced for real-time interactions. Figure \ref{fig:train-client} shows top level components of the train client.
 
