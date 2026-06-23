@@ -1,0 +1,11 @@
+@startuml
+
+node "CentralServer" as S
+
+node "TrainClient" as TC
+node "RemoteControlClient" as RCC
+
+S <--> TC : QUIC
+S <--> RCC : QUIC-based\nWebTransport
+
+@enduml
