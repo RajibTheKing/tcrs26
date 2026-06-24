@@ -1,38 +1,24 @@
 \section{Experiment and Evaluation}
 \label{sec:evaluation}
-    The Lingua Franca-based train client was deployed on a \textbf{Raspberry Pi 5}, which coordinates the test vehicle equipped with a camera and a motor controller. The central server was deployed on a cloud instance hosted in Frankfurt, Germany. During the experiments, the test vehicle was located in Lütjenburg, Germany and was controlled remotely from the laboratory at Kiel University using the remote control interface. In these experiments, the train client was connected to the central server via a 5G network using a \textbf{Chateau 5G R17 AX} router. The remote control client was connected to the central server over a wired Ethernet connection. Figure \ref{fig:experiment_setup} shows real-time remote control operation while three persons were onboard in the test vehicle.
+    The train client based on Lingua Franca was deployed on a Raspberry Pi 5, which coordinates the test vehicle equipped with a camera and a motor controller. The central server was deployed on a cloud instance hosted in Frankfurt, Germany. During the experiments, the test vehicle was located in Lütjenburg, Germany, approximately 483 km from Frankfurt, and was controlled remotely from the laboratory at Kiel University, approximately 480 km from Frankfurt, using the remote control interface. The test vehicle was approximately 31 km away from the remote control setup. In these experiments, the train client was connected to the central server over QUIC protocol via 5G network using a Chateau 5G R17 AX router, while the remote control client was connected to the central server over WebTransport protocol using wired Ethernet cable. Figure \ref{fig:experiment_setup} shows real-time remote control setup and the test vehicle on the track.
     \begin{figure}[ht]
         \centering
         \begin{subfigure}[b]{\linewidth}
             \centering
             \includegraphics[height=3.0cm]{graphics/Remote_Control.jpeg}
-            \caption{Controlling Vehicle remotely.}
+            \caption{Remote Control Setup.}
         \end{subfigure}
         \hfill
         \begin{subfigure}[b]{\linewidth}
             \centering
             \includegraphics[height=3.0cm]{graphics/Vehicle.jpg}
-            \caption{Physical test vehicle on the track.}
+            \caption{Test vehicle on the track.}
         \end{subfigure}
-            \caption{Real-time remote control operation.}
+            \caption{Experimental setup for remote control system.}
             \label{fig:experiment_setup}
     \end{figure}
 
-    Regarding video and control data transmission, German regulations require the glass-to-glass latency of remotely controlled systems to remain below 200ms \cite{StVFernLV2025}. For each video frame, the total delay, including image capture, encoding, network transmission, decoding, and display, must therefore not exceed 200ms. Modern GPUs can encode single 4K video frame in approximately 15.8ms \cite{ArunruangsirilertK24}. In our experiments, we used a video stream with a resolution of 1280$\times$720 pixels at 30~FPS. Based on the performance of modern hardware, we assume that all computationally intensive processing stages can be completed within approximately 50ms per frame. Our evaluation focuses primarily on latency introduced by realistic network conditions. We are presenting the results of two trip sessions. The first session was conducted in the forward direction from Lütjenburg to Friederikenthal, while the second session was conducted in the backward direction, see \ref{tab:data_collection_runs}.
-
-    \begin{table*}[t]
-        \centering
-        \caption{Summary of two trip sessions.}
-        \label{tab:data_collection_runs}
-        \begin{tabular}{lccccc}
-        \toprule
-        \textbf{Direction} & \textbf{Distance (m)} & \textbf{Duration (s)} & \textbf{Received Frames} & \textbf{Missed Frames} \\
-        \midrule
-        Lütjenburg $\rightarrow$ Friederikenthal & 1810 & 578 & 17\,325 & 49 \\
-        Friederikenthal $\rightarrow$ Lütjenburg & 1781 & 580 & 17\,387 & 44 \\
-        \bottomrule
-        \end{tabular}
-    \end{table*}
+   German regulations require glass-to-glass latency for control commands and video transmission in remotely operated vehicles to remain below 200 ms \cite{StVFernLV2025}. For each video frame, the total delay, including image capture, encoding, network transmission, decoding, and rendering, must therefore not exceed 200 ms. No specific German regulation exists for remotely controlled trains so far, but we assume that our system should meet similar requirement. Modern GPUs can encode single 4K video frame in approximately 15.8ms \cite{ArunruangsirilertK24}. In our experiments, we used 1280×720 video stream at 30 FPS with a 3 Mbps bitrate. Based on the performance of modern hardware, we assume that all computationally intensive processing stages can be completed within approximately 50 ms per frame. Our evaluation focuses primarily on latency introduced by realistic network conditions. We are presenting the results of one trip session starting from Friederikenthal to Lütjenburg, traveling a distance of 1781 meters with a duration of 580 seconds. During this trip the remote control client received 17387 video frames and missed 44 frames, while the train client received all 19 control commands without any loss.
 
     Figure \ref{fig:command_latency} shows the latency measurements for control command transmission from the remote control client to the train client. The results indicate that all the control commands were received within acceptable limits. We have also observed that no control commands were missed on both trip sessions.
 
