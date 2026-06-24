@@ -18,9 +18,9 @@
             \label{fig:experiment_setup}
     \end{figure}
 
-   German regulations require glass-to-glass latency for control commands and video transmission in remotely operated vehicles to remain below 200 ms \cite{StVFernLV2025}. For each video frame, the total delay, including image capture, encoding, network transmission, decoding, and rendering, must therefore not exceed 200 ms. No specific German regulation exists for remotely controlled trains so far, but we assume that our system should meet similar requirement. Modern GPUs can encode single 4K video frame in approximately 15.8ms \cite{ArunruangsirilertK24}. In our experiments, we used 1280×720 video stream at 30 FPS with a 3 Mbps bitrate. Based on the performance of modern hardware, we assume that all computationally intensive processing stages can be completed within approximately 50 ms per frame. Our evaluation focuses primarily on latency introduced by realistic network conditions. We are presenting the results of one trip session starting from Friederikenthal to Lütjenburg, traveling a distance of 1781 meters with a duration of 580 seconds. During this trip the remote control client received 17387 video frames and missed 44 frames, while the train client received all 19 control commands without any loss.
+    German regulations require glass-to-glass latency for control commands and video transmission in remotely operated vehicles to remain below 200 ms \cite{StVFernLV2025}. For each video frame, the total delay, including image capture, encoding, network transmission, decoding, and rendering, must therefore not exceed 200 ms. No specific German regulation exists for remotely controlled trains so far, but we assume that our system should meet similar requirement. Modern GPUs can encode single 4K video frame in approximately 15.8ms \cite{ArunruangsirilertK24}. In our experiments, we used 1280×720 video stream at 30 FPS with a 3 Mbps bitrate. Based on the performance of modern hardware, we assume that all computationally intensive processing stages can be completed within approximately 50 ms per frame. Our evaluation focuses primarily on latency introduced by realistic network conditions. We are presenting the results of one trip session starting from Friederikenthal to Lütjenburg, traveling a distance of 1781 meters with a duration of 580 seconds.
 
-    Figure \ref{fig:command_latency} shows the latency measurements for control command transmission from the remote control client to the train client. The results indicate that all the control commands were received within acceptable limits. We have also observed that no control commands were missed on both trip sessions.
+    The left panel of Figure \ref{fig:latency_measurements} presents the end-to-end latency measurements for control commands, while the right panel shows the rolling average latency for video frames, calculated with a window size of 30 frames. The results indicate that all control commands were received within acceptable limits. Additionally, no control commands were missed during the trip sessions. Consequently, the reliable channel enabled by the QUIC-based WebTransport protocol is suitable for transmitting control commands in remote train control systems.
 
 
      % Here add the figure for command latency for two trips side by side
@@ -28,36 +28,17 @@
         \centering
         \begin{subfigure}[b]{0.49\linewidth}
             \centering
-            \includegraphics[height=4.0cm]{graphics/gen/command_latency_histogram_forward_trip.pdf}
-            \caption{Forward trip}
+            \includegraphics[height=4.0cm]{graphics/gen/command_latency.pdf}
         \end{subfigure}
         \hfill
         \begin{subfigure}[b]{0.49\linewidth}
             \centering
-            \includegraphics[height=4.0cm]{graphics/gen/command_latency_histogram_backward_trip.pdf}
-            \caption{Backward trip}
+            \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency.pdf}
         \end{subfigure}
-            \caption{Latency measurements for control command transmission.}
-            \label{fig:command_latency}
+            \caption{Latency measurements for control commands and video frames.}
+            \label{fig:latency_measurements}
     \end{figure}
 
 
 
-    Figure \ref{fig:video_latency} shows the latency measurements for video streaming from the train client to the remote control client. We observed that many video frames missed the threshold. However, video frames are continous data and we are perceiving 30 frames per second, it is sensible to look at the rolling average where window size is 30. The rolling average latency indicates that video frames were mostly received within the acceptable limits in both trip sessions. We also observed that only few occurance of latency spikes above the threschold.
-
-    % \begin{figure}[ht]
-    %     \centering
-    %     \begin{subfigure}[b]{\linewidth}
-    %         \centering
-    %         \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency_forward_trip.pdf}
-    %         \caption{Forward trip}
-    %     \end{subfigure}
-    %     \hfill
-    %     \begin{subfigure}[b]{\linewidth}
-    %         \centering
-    %         \includegraphics[height=4.0cm]{graphics/gen/video_frame_latency_backward_trip.pdf}
-    %         \caption{Backward trip}
-    %     \end{subfigure}
-    %         \caption{Latency measurements for video streaming.}
-    %         \label{fig:video_latency}
-    % \end{figure}
+    In the results, we observed that 17,387 video frames were received and 44 video frames were missed during the trip session, which is expected under real-world network conditions. The rolling average latency of the video stream indicates that frames were mostly received within acceptable limits. However, there were a few instances where latency exceeded the threshold. In such cases, the remote control interface can be designed to provide immediate alerts to the operator, indicating that the video stream is experiencing delays and enabling appropriate corrective action. Overall, the results demonstrate that the system is capable of providing low-latency remote control of trains over WebTransport.
