@@ -89,7 +89,7 @@ FUNCTION {default.is.use.url} { #1 }
 
 % #0 turns off the forced use of "et al."
 % #1 enables
-FUNCTION {default.is.forced.et.al} { #0 }
+FUNCTION {default.is.forced.et.al} { #1 }
 
 
 % The maximum number of names that can be present beyond which an "et al."
@@ -98,7 +98,7 @@ FUNCTION {default.is.forced.et.al} { #0 }
 % Note: There are many instances of references in IEEE journals which have
 % a very large number of authors as well as instances in which "et al." is
 % used profusely.
-FUNCTION {default.max.num.names.before.forced.et.al} { #10 }
+FUNCTION {default.max.num.names.before.forced.et.al} { #1 }
 
 
 % The number of names that will be shown with a forced "et al.".
@@ -129,7 +129,7 @@ FUNCTION {default.is.dash.repeated.names} { #1 }
 
 
 % The default name format control string.
-FUNCTION {default.name.format.string}{ "{f.~}{vv~}{ll}{, jj}" }
+FUNCTION {default.name.format.string}{ "{ff~}{vv~}{ll}{, jj}" }
 
 
 % The default LaTeX font command for the names.
