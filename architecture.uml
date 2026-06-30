@@ -5,7 +5,10 @@ node "CentralServer" as S
 node "TrainClient" as TC
 node "RemoteControlClient" as RCC
 
-S <--> TC : QUIC
-S <--> RCC : QUIC-based\nWebTransport
+TC --> S : Video\nStream
+S --> TC : Control\nCommands
+
+S --> RCC : Video\nStream
+RCC --> S : Control\nCommands
 
 @enduml
