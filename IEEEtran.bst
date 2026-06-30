@@ -1154,27 +1154,22 @@ FUNCTION {format.address.org.or.pub.date}
     { "empty year in " cite$ * warning$ }
     { skip$ }
   if$
-  address empty$ t empty$ and
+  t empty$
   year empty$ and month empty$ and
     { skip$ }
     { this.to.prev.status
       this.status.std
       cap.status.std
-      address "address" bibinfo.check *
       t empty$
         { skip$ }
         { punct.period 'prev.status.punct :=
           space.large 'prev.status.space :=
-          address empty$
-            { skip$ }
-            { ": " * }
-          if$
           t *
         }
       if$
       year empty$ month empty$ and
         { skip$ }
-        { t empty$ address empty$ and
+        { t empty$
             { skip$ }
             { ", " * }
           if$
@@ -1260,13 +1255,7 @@ FUNCTION {format.names}
 %% addresses/locations
 
 FUNCTION {format.address}
-{ address duplicate$ empty$ 'skip$
-    { this.to.prev.status
-      this.status.std
-      cap.status.std
-    }
-  if$
-}
+{ "" }
 
 
 
@@ -1275,14 +1264,7 @@ FUNCTION {format.address}
 FUNCTION {format.authors}{ author "author" format.names }
 
 FUNCTION {format.editors}
-{ editor "editor" format.names duplicate$ empty$ 'skip$
-    { ", " *
-      get.bbl.editor
-      capitalize
-      *
-    }
-  if$
-}
+{ "" }
 
 
 
