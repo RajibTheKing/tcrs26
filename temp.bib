@@ -20,11 +20,17 @@
   year = {2025},
   isbn = {9798400717246},
   publisher = {ACM},
+  address = {New York, NY, USA},
   url = {https://doi.org/10.1145/3696355.3699698},
   doi = {10.1145/3696355.3699698},
+  abstract = {QUIC is a UDP-based transport protocol, standardized in RFC9000 (2021). It enhances privacy by encrypting entire packets and offers improvements over TCP, such as native multiplexing and connection migration. Despite these advantages, QUIC, like TCP, suffers from head-of-line blocking and variable latency, making it unsuitable for critical real-time systems.RFC9221 addresses this by introducing an extension that allows QUIC to transmit datagrams without retransmission, improving its suitability for real-time applications. However, real-time networks require a thorough evaluation of QUIC’s performance. The potential delays caused by its cryptographic operations and the complex traffic patterns it generates could impact time-sensitive traffic.We conduct experiments using Mininet across a range of scenarios, including software updates in bandwidth-constrained environments and in the presence of malicious nodes. Additionally, we assess implementations in both Go and C. The performance of QUIC, along with its datagram extension, is compared against UDP and DTLS. Finally, the results are validated through testing on a physical network testbed.Our results show that, despite its cryptographic overhead, QUIC performs similarly to UDP and DTLS in most cases. However, it may interact poorly with lower-layer mechanisms like token-bucket filters. Overall, QUIC shows potential to replace older transport protocols in real-time systems.},
   booktitle = {Proceedings of the 32nd International Conference on Real-Time Networks and Systems},
+  pages = {255–265},
   numpages = {11},
   keywords = {QUIC, Network, Performance, Latency, Real-time, Reliability, Evaluation},
+  location = {
+  },
+  series = {RTNS '24}
 }
 
 @article{YuL22,
@@ -32,6 +38,9 @@
   title = {Remote Driving Control With Real-Time Video Streaming Over Wireless Networks: Design and Evaluation},
   journal = {IEEE Access},
   year = {2022},
+  volume={10},
+  number={},
+  pages={64920-64932},
   publisher = {IEEE},
   doi = {10.1109/ACCESS.2022.3183758},
   url = {https://doi.org/10.1109/ACCESS.2022.3183758},
@@ -44,6 +53,9 @@
   booktitle={{2024 EuCNC/6G Summit}},
   title={Towards Railways Remote Driving: Analysis of Video Streaming Latency and Adaptive Rate Control},
   year={2024},
+  volume={},
+  number={},
+  pages={1090-1095},
   keywords={Transport protocols;Visualization;Wireless networks;Streaming media;Rail transportation;Low latency communication;Sustainable development;Future Railway Mobile Communication;Remote driving;Low latency Streaming;Adaptive Rate Control;Network Monitoring},
   doi={10.1109/EuCNC/6GSummit60053.2024.10597107},
   url={https://doi.org/10.1109/EuCNC/6GSummit60053.2024.10597107}
@@ -54,6 +66,9 @@
   booktitle={2025 IEEE Annual Congress on Artificial Intelligence of Things (AIoT)},
   title={A Modular {AIoT} Framework for Low-Latency Real-Time Robotic Teleoperation in Smart Cities},
   year={2025},
+  volume={},
+  number={},
+  pages={164-171},
   keywords={Cloud computing;Smart cities;Robot kinematics;Grasping;Internet of Things;Artificial intelligence;Low latency communication;Usability;Robots;WebRTC;AIoT;robotic teleoperation;WebRTC;MQTT;YOLOv11-nano;low latency;smart city;edge computing;real-time control;distributed systems},
   doi={10.1109/AIoT66900.2025.00034},
   url={https://doi.org/10.1109/AIoT66900.2025.00034}
@@ -64,6 +79,9 @@
   journal={IEEE Transactions on Networking},
   title={Teleoperating Autonomous Vehicles Over Commercial {5G} Networks: Are We There Yet?},
   year={2026},
+  volume={34},
+  number={},
+  pages={4913-4928},
   keywords={Payloads;Feeds;Antennas;Feedback;Circuits;Integrated circuits;5G mobile communication;Mobile communication;Cellular technology;Videos;5G;PHY/MAC layers;autonomous vehicles;teleoperation;AI/ML;measurement;latency;QoE;performance},
   doi={10.1109/TON.2026.3686751},
   url={https://doi.org/10.1109/TON.2026.3686751}
@@ -71,11 +89,19 @@
 
 @inproceedings{LangleyRWVKZ+17,
   author = {Langley, Adam and Riddoch, Alistair and Wilk, Alyssa and Vicente, Antonio and Krasic, Charles and Zhang, Dan and Yang, Fan and Kouranov, Fedor and Swett, Ian and Iyengar, Janardhan and Bailey, Jeff and Dorfman, Jeremy and Roskind, Jim and Kulik, Joanna and Westin, Patrik and Tenneti, Raman and Shade, Robbie and Hamilton, Ryan and Vasiliev, Victor and Chang, Wan-Teh and Shi, Zhongyi},
-  title     = {The {QUIC} Transport Protocol: Design and Internet-Scale Deployment},
+  title = {The {QUIC} Transport Protocol: Design and Internet-Scale Deployment},
+  year = {2017},
+  isbn = {9781450346535},
+  publisher = {ACM},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/3098822.3098842},
+  doi = {10.1145/3098822.3098842},
+  abstract = {We present our experience with QUIC, an encrypted, multiplexed, and low-latency transport protocol designed from the ground up to improve transport performance for HTTPS traffic and to enable rapid deployment and continued evolution of transport mechanisms. QUIC has been globally deployed at Google on thousands of servers and is used to serve traffic to a range of clients including a widely-used web browser (Chrome) and a popular mobile video streaming app (YouTube). We estimate that 7\% of Internet traffic is now QUIC. We describe our motivations for developing a new transport, the principles that guided our design, the Internet-scale process that we used to perform iterative experiments on QUIC, performance improvements seen by our various services, and our experience deploying QUIC globally. We also share lessons about transport design and the Internet ecosystem that we learned from our deployment.},
   booktitle = {Proceedings of the Conference of the ACM Special Interest Group on Data Communication},
-  year      = {2017},
-  doi       = {10.1145/3098822.3098842},
-  url       = {https://doi.org/10.1145/3098822.3098842}
+  pages = {183–196},
+  numpages = {14},
+  location = {Los Angeles, CA, USA},
+  series = {SIGCOMM '17}
 }
 
 @inproceedings{MejiasYMVA+25,
@@ -99,16 +125,23 @@
   issn        = {2070-1721}
 }
 
-
 @article{LohstrohMBL21,
   author = {Lohstroh, Marten and Menard, Christian and Bateni, Soroush and Lee, Edward A.},
   title = {Toward a Lingua Franca for Deterministic Concurrent Systems},
   year = {2021},
-  publisher = {ACM},
+  issue_date = {July 2021},
+  publisher = {Association for Computing Machinery},
   address = {New York, NY, USA},
+  volume = {20},
+  number = {4},
+  issn = {1539-9087},
   url = {https://doi.org/10.1145/3448128},
   doi = {10.1145/3448128},
-  journal = {ACM Transactions on Embedded Computing Systems},
+  abstract = {Many programming languages and programming frameworks focus on parallel and distributed computing. Several frameworks are based on actors, which provide a more disciplined model for concurrency than threads. The interactions between actors, however, if not constrained, admit nondeterminism. As a consequence, actor programs may exhibit unintended behaviors and are less amenable to rigorous testing. We show that nondeterminism can be handled in a number of ways, surveying dataflow dialects, process networks, synchronous-reactive models, and discrete-event models. These existing approaches, however, tend to require centralized control, pose challenges to modular system design, or introduce a single point of failure. We describe “reactors,” a new coordination model that combines ideas from several of these approaches to enable determinism while preserving much of the style of actors. Reactors promote modularity and allow for distributed execution. By using a logical model of time that can be associated with physical time, reactors also provide control over timing. Reactors also expose parallelism that can be exploited on multicore machines and in distributed configurations without compromising determinacy.},
+  journal = {ACM Trans. Embed. Comput. Syst.},
+  month = may,
+  articleno = {36},
+  numpages = {27},
   keywords = {Polyglot, concurrency, coordination language, determinism}
 }
 
@@ -117,6 +150,9 @@
   booktitle={2024 33rd International Conference on Computer Communications and Networks},
   title={Evaluation of Hardware-based Video Encoders on Modern {GPUs} for {UHD} Live-Streaming},
   year={2024},
+  volume={},
+  number={},
+  pages={1-9},
   keywords={Video on demand;Bit rate;Transcoding;Throughput;Hardware;Encoding;Software;Video Encoders;Graphic Processing Unit (GPU);Hardware Acceleration;Ultra High-Definition (UHD);Live-Streaming},
   doi={10.1109/ICCCN61486.2024.10637525},
   url={https://doi.org/10.1109/ICCCN61486.2024.10637525}
@@ -145,7 +181,9 @@
   numpages = {6},
   location = {San Antonio, TX, USA},
   series = {CPS-IoT Week '23},
-  pdf = {tcrs23.pdf}
+  pdf = {tcrs23.pdf},
+  doi = {10.1145/3576914.3587498},
+  url = {https://doi.org/10.1145/3576914.3587498}
 }
 
 @InProceedings{KasperowskiDvH24,
@@ -161,7 +199,7 @@
   editor =	{Felsner, Stefan and Klein, Karsten},
   publisher =	{Schloss Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik},
   address =	{Dagstuhl, Germany},
-  URL =		{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.GD.2024.56},
+  URL =		{https://doi.org/10.4230/LIPIcs.GD.2024.56},
   URN =		{urn:nbn:de:0030-drops-213401},
   doi =		{10.4230/LIPIcs.GD.2024.56},
   annote =	{Keywords: Automatic Layout, Layered Layout, Layout Library}
@@ -171,7 +209,10 @@
   author =   {Christian Schneider and Miro Sp{\"o}nemann and Reinhard von Hanxleden},
   title =    {Just Model! -- {P}utting Automatic Synthesis of Node-Link-Diagrams into Practice},
   booktitle = {Proceedings of the IEEE Symposium on Visual Languages and Human-Centric Computing (VL/HCC '13)},
-  year =     2013,
+  year =     {2013},
+  volume={},
+  number={},
+  pages={75-82},
   publisher = {IEEE},
   doi = {10.1109/VLHCC.2013.6645246},
   url = {https://doi.org/10.1109/VLHCC.2013.6645246},

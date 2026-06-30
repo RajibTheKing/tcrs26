@@ -1584,16 +1584,7 @@ FUNCTION {format.number.if.use.for.article}
 % and number as is done in other bibliography styles. Instead the
 % series is treated somewhat like an extension of the title.
 FUNCTION {format.series}
-{ series empty$ 
-   { "" }
-   { this.to.prev.status
-     this.status.std
-     bbl.series " " *
-     series "series" bibinfo.check *
-     cap.status.std
-   }
- if$
-}
+{ "" }
 
 
 FUNCTION {format.chapter}
