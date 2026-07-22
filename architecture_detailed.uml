@@ -1,0 +1,40 @@
+@startuml
+left to right direction
+
+skinparam backgroundColor #F8FAFC
+skinparam shadowing true
+skinparam roundcorner 18
+skinparam defaultFontName DejaVu Sans
+
+skinparam rectangle {
+	BorderColor #1F2937
+	BorderThickness 2
+	FontColor #111827
+}
+
+skinparam ArrowColor #0F4C81
+skinparam ArrowThickness 2
+
+rectangle "<size:18><b>TrainClient</b></size>\n\n- Raspberry Pi 5\n- Camera Sensor\n- Motor Controller" as TC #EAF4FF
+
+rectangle "<size:18><b>CentralServer</b></size>\n\n- Python FastAPI\n- Relay Server\n- MQTT Broker" as S #FFF7E6
+
+rectangle "<size:18><b>RemoteControlClient</b></size>\n\n- Web Application\n- Vue.js\n- WebCodecs" as RCC #E9FCEB
+
+TC <--> S : Signaling (WebSocket)
+S <--> RCC : Signaling (WebSocket)
+
+
+TC --> S : Video Stream (QUIC)
+S --> RCC : Video Stream (WebTransport)
+
+
+RCC --> S : Control Commands (WebTransport)
+S --> TC : Control Commands (QUIC)
+
+TC --> S : Telemetry (MQTT)
+S --> RCC: Telemetry (MQTT)
+
+RCC <--> S : Request/Response (HTTP)
+
+@enduml
