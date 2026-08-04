@@ -1,8 +1,8 @@
 ### Timeline
 ---
 
-- Review Received: 03 August 2026
-- Deadline for Manuscript Revision: 17 August 2026 (Two weeks)
+- Review Received: <b>03 August 2026</b>
+- Deadline for Manuscript Revision: <b>17 August 2026 (Two weeks)</b>
 
 
 
@@ -21,7 +21,13 @@
 - <b>Reviewer: 2</b>
     - This paper presents a practical remote train-control architecture that uses WebTransport/QUIC for communication and Lingua Franca for deterministic coordination of system components. This paper is highly relevant to TCRS because it combines time-sensitive communication, control for a cyber-physical system, reactor-model-based software, and a realistic safety-critical CPS application. A notable strength of this paper is the evaluation on an actual test vehicle and railway test track using an embedded platform, a 5G connection, a cloud-hosted central server, and a remote-control station. The Lingua Franca model and heartbeat mechanism demonstrate a clear system architecture for connectivity monitoring and deterministic orchestration.
 
-    - My main feedback on the final submission concerns formatting and the depth of evaluation. This manuscript does not appear to use the required IEEE ESL journal template available through the IEEE Template Selector (https://template-selector.ieee.org/) and should be reformatted. The real-world experiment of the proposed approach is highly valuable, but the results are based on a single 580-second trip and are presented primarily via latency traces and a rolling average of video frame latency. Please explain precisely how the reported latencies were calculated, including which timestamps were recorded at the sender and receiver, how the ClockSynchronizer estimated the clock offset between the train and remote-control system, and what synchronization error remained after correction. For the video frame latency measurements, please clarify whether Fig. 5 reports network transmission latency or the full capture-to-display latency. This paper assumes approximately 50 ms for video processing and appears to use 150 ms as the network-latency budget under the 200 ms total requirement; this relationship should be stated explicitly. Please also provide summary statistics for the measured control-command and video latencies. Finally, the authors should clarify which WebTransport mechanisms are used for control commands and video, and distinguish the reliability and ordering guarantees of reliable streams from the behavior of unreliable datagrams. I believe these issues can be addressed before the final submission without changing the main contribution.
+    - My main feedback on the final submission concerns formatting and the depth of evaluation.
+        - This manuscript does not appear to use the required IEEE ESL journal template available through the IEEE Template Selector (https://template-selector.ieee.org/) and should be reformatted.
+        - The real-world experiment of the proposed approach is highly valuable, but the results are based on a single 580-second trip and are presented primarily via latency traces and a rolling average of video frame latency. Please explain precisely how the reported latencies were calculated, including which timestamps were recorded at the sender and receiver, how the ClockSynchronizer estimated the clock offset between the train and remote-control system, and what synchronization error remained after correction.
+        - For the video frame latency measurements, please clarify whether Fig. 5 reports network transmission latency or the full capture-to-display latency.
+        - This paper assumes approximately 50 ms for video processing and appears to use 150 ms as the network-latency budget under the 200 ms total requirement; this relationship should be stated explicitly.
+        - Please also provide summary statistics for the measured control-command and video latencies.
+        - Finally, the authors should clarify which WebTransport mechanisms are used for control commands and video, and distinguish the reliability and ordering guarantees of reliable streams from the behavior of unreliable datagrams. I believe these issues can be addressed before the final submission without changing the main contribution.
 
 - <b>Reviewer: 3</b>
     - The following comments are suggestions rather than mandatory revisions. I hope the authors may consider them to further improve the manuscript.
