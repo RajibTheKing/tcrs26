@@ -25,14 +25,14 @@ def process(path, file):
         return
 
     if ext == "svg":
-        pdfcommand = "inkscape --export-area-drawing --export-dpi=1200 " + str(abspath) + " --export-filename=" + str(pdffile) + " 2>/dev/null"
+        pdfcommand = "inkscape --export-area-drawing --export-dpi=1200 " + str(abspath) + " --export-filename=" + str(pdffile)
     else:
-        pdfcommand = "inkscape " + str(abspath) + " --export-filename=" + str(pdffile) + " 2>/dev/null"
+        pdfcommand = "inkscape " + str(abspath) + " --export-filename=" + str(pdffile)
 
     if not os.path.exists(genpath):
         os.makedirs(genpath)
 
-    subprocess.Popen(pdfcommand, shell=True, stdout=subprocess.DEVNULL).wait()
+    subprocess.Popen(pdfcommand, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).wait()
 
     print("OK")
     return
