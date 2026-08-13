@@ -81,4 +81,4 @@
         - <span style="color:green">We agree that including additional details about the camera and motor controller could provide further insight on Figure 1. <b>However, since Figure 1 is intended to provide a high-level overview of the proposed architecture and communication flow, we have decided to keep the figure unchanged.</b></span>
 
     - On page 2, atleast -> at least
-        - <span style="color:green"><b> Fixed on revised Menuscript </b></span>
+        - <span style="color:green"><b> Fixed on revised Manuscript </b></span>
