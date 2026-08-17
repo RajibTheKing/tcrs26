@@ -5,9 +5,9 @@ MAIN = tcrs26
 PDF = $(MAIN).pdf
 
 ifeq ($(OS),Windows_NT)
-    CLEAN_CMD = -del /Q /F *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out *.toc *.lof *.lot *.nav *.snm *.synctex.gz tcrs26.pdf 2>nul
+    CLEAN_CMD = -del /Q /F *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out *.toc *.lof *.lot *.nav *.snm *.synctex.gz $(MAIN).pdf 2>nul
 else
-    CLEAN_CMD = rm -f *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out *.toc *.lof *.lot *.nav *.snm *.synctex.gz tcrs26.pdf
+    CLEAN_CMD = rm -f *.aux *.bbl *.blg *.fdb_latexmk *.fls *.log *.out *.toc *.lof *.lot *.nav *.snm *.synctex.gz $(MAIN).pdf
 endif
 
 .PHONY: all clean rebuild
