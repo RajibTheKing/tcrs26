@@ -1,13 +1,9 @@
-% !TEX root = main.tex
-\documentclass[10pt,journal,cspaper]{IEEEtran}
-\usepackage{cite}
+% !TEX root = tcrs26.tex
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{algorithmic}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
-\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
-    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
 %% -- Own packages below --
 
@@ -191,7 +187,9 @@
 \usepackage[scaled=0.88]{helvet}
 
 \usepackage[bookmarks=false]{hyperref}
-\usepackage[numbers]{natbib}
+\usepackage{cite}
+% Use "[x, y]" instead of IEEEtran's default "[x], [y]" for multiple citations
+\renewcommand{\citepunct}{,~}
 \def\sectionautorefname{Sec.}
 \def\subsectionautorefname{Sec.}
 \def\figureautorefname{Fig.}
